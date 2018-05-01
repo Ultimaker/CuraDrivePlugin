@@ -42,13 +42,13 @@ class DrivePluginExtension(QObject, Extension):
         catalog = i18nCatalog("cura")
         self.addMenuItem(catalog.i18nc("@item:inmenu", "Cura Drive"), self.showDriveWindow)
 
+        # Initialize data after Cura has started.
         Application.getInstance().applicationRunning.connect(self._run)
 
     def _run(self) -> None:
         """Populate initial values."""
         self._user_profile = self._authorization_service.getUserProfile()
         self._backups = self._drive_api_service.getBackups()
-        self.showDriveWindow()
 
     def showDriveWindow(self) -> None:
         """Show the Drive UI popup window."""
