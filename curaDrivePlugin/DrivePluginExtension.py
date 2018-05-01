@@ -24,11 +24,11 @@ class DrivePluginExtension(QObject, Extension):
     def __init__(self):
         super(DrivePluginExtension, self).__init__()
 
-        self._user_profile = None
+        # Local data caching for the UI.
+        self._user_profile = None  # type: dict
+        self._auth_error_message = ""
         self._backups = []
-
-        # Placeholder for UI components.
-        self._drive_window = None
+        self._drive_window = None  # type: QObject
 
         # Initialize services.
         self._authorization_service = AuthorizationService()  # type: AuthorizationService
@@ -36,6 +36,7 @@ class DrivePluginExtension(QObject, Extension):
 
         # Attach signals.
         self._authorization_service.onAuthenticated.connect(self._onLoginStateChanged)
+        self._authorization_service.onAuthenticationError.connect(self._onLoginStateChanged)
 
         # Register menu items.
         catalog = i18nCatalog("cura")
@@ -44,17 +45,13 @@ class DrivePluginExtension(QObject, Extension):
         Application.getInstance().applicationRunning.connect(self._run)
 
     def _run(self) -> None:
-        """
-        Populate initial values.
-        """
+        """Populate initial values."""
         self._user_profile = self._authorization_service.getUserProfile()
         self._backups = self._drive_api_service.getBackups()
         self.showDriveWindow()
 
     def showDriveWindow(self) -> None:
-        """
-        Show the Drive UI popup window.
-        """
+        """Show the Drive UI popup window."""
         if not self._drive_window:
             self._drive_window = self.createDriveWindow()
         self._drive_window.show()
@@ -68,14 +65,16 @@ class DrivePluginExtension(QObject, Extension):
                             "curaDrivePlugin/qml/main.qml")
         return Application.getInstance().createQmlComponent(path, {"CuraDrive": self})
 
-    def _onLoginStateChanged(self, access_token):
+    def _onLoginStateChanged(self, error_message: str = None):
+        """Callback handler for changes in the login state."""
+        if error_message:
+            self._auth_error_message = error_message
+            # TODO: trigger a popup with the message
         self.loginStateChanged.emit()
 
-    @pyqtSlot()
+    @pyqtSlot(name = "login")
     def login(self) -> None:
-        """
-        Start the OAuth2 authorization flow to log in.
-        """
+        """Start the OAuth2 authorization flow to log in."""
         self._authorization_service.startAuthorizationFlow()
 
     @pyqtProperty("QVariantMap", notify = loginStateChanged)
@@ -86,10 +85,10 @@ class DrivePluginExtension(QObject, Extension):
         """
         return self._authorization_service.getUserProfile()
 
-    @pyqtProperty("QVariantMap", notify=loginStateChanged)
-    def token(self) -> dict:
+    @pyqtProperty(str, notify = loginStateChanged)
+    def authError(self) -> str:
         """
-        Get the access token and relevant data.
-        :return: A dict containing the access token data.
+        Get the error message from the authorization flow.
+        :return: The error message as string.
         """
-        return self._authorization_service.getAccessToken()
+        return self._auth_error_message

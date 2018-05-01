@@ -2,12 +2,32 @@
 import random
 from _sha512 import sha512
 from base64 import b64encode
+from collections import namedtuple
+from typing import Optional
+
+
+# Authentication data template.
+AuthenticationResponse = namedtuple("AuthenticationResponse",
+                                    ["success", "access_token", "refresh_token", "expires_in", "err_message"])
+
+# Response status template.
+ResponseStatus = namedtuple("HTTPStatus", ["code", "message"])
+
+# Response data template.
+ResponseData = namedtuple("ResponseData", ["status", "content_type", "data_stream"])
+
+# Possible HTTP responses.
+HTTP_STATUS = {
+    "OK": ResponseStatus(code=200, message="OK"),
+    "NOT_FOUND": ResponseStatus(code=404, message="NOT FOUND")
+}
 
 
 class AuthorizationHelpers:
+    """Class containing several helpers to deal with the authorization flow."""
     
     @staticmethod
-    def parseJWT(jwt: str) -> dict:
+    def parseJWT(jwt: str) -> Optional[dict]:
         return {
             "username": "chris",
             "avatar_url": "https://avatars3.githubusercontent.com/u/1134120?s=400&u=fe77552dc88f20e71d85826c36a4e36f123df5f8&v=4",

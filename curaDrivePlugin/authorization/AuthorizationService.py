@@ -1,14 +1,17 @@
 # Copyright (c) 2017 Ultimaker B.V.
+import json
 import threading
 import webbrowser
 from http.server import HTTPServer
+from typing import Optional
 from urllib.parse import urlencode
 
 from UM.Logger import Logger
+from UM.Preferences import Preferences
 from UM.Signal import Signal
 
 from curaDrivePlugin.Settings import Settings
-from curaDrivePlugin.authorization.AuthorizationHelpers import AuthorizationHelpers
+from curaDrivePlugin.authorization.AuthorizationHelpers import AuthorizationHelpers, AuthenticationResponse
 from curaDrivePlugin.authorization.AuthorizationRequestServer import AuthorizationRequestServer
 from curaDrivePlugin.authorization.AuthorizationRequestHandler import AuthorizationRequestHandler
 
@@ -18,6 +21,8 @@ class AuthorizationService:
     The authorization service is responsible for handling the login flow,
     storing user credentials and providing account information.
     """
+    
+    AUTH_DATA_PREFERENCE_KEY = "cura_drive_plugin/manual_instances"
 
     AUTH_URL = "{}/authorize".format(Settings.OAUTH_SERVER_URL)
 
@@ -25,26 +30,37 @@ class AuthorizationService:
 
     # Emit signal when authentication is completed.
     onAuthenticated = Signal()
+    onAuthenticationError = Signal()
 
     def __init__(self):
         self._web_server = None  # type: HTTPServer
         self._web_server_thread = None  # type: threading.Thread
-        self._user_profile_data = {}
-        self._access_token_data = {}
+        self._auth_data = None  # type: AuthenticationResponse
+        self._cura_preferences = Preferences.getInstance()
+        self._loadAuthData()
 
-    def getUserProfile(self) -> dict:
+    def getUserProfile(self) -> Optional[dict]:
         """
         Get the user data that is stored in the JWT token.
         :return: Dict containing some user data.
         """
-        return self._user_profile_data
+        if not self._auth_data:
+            return None
+        return AuthorizationHelpers.parseJWT(self._auth_data.access_token)
 
-    def getAccessToken(self) -> dict:
+    def getAccessToken(self) -> Optional[str]:
         """
         Get the access token response data.
         :return: Dict containing token data.
         """
-        return self._access_token_data
+        if not self._auth_data:
+            return None
+        return self._auth_data.access_token
+    
+    def deleteAuthData(self):
+        """Delete authentication data from preferences and locally."""
+        self._storeAuthData()
+        self.onAuthenticated.emit()
 
     def startAuthorizationFlow(self) -> None:
         """Start a new OAuth2 authorization flow."""
@@ -90,7 +106,7 @@ class AuthorizationService:
 
     def _stopWebServer(self) -> None:
         """Stop the web server if it was running. Also deletes the objects."""
-        
+
         Logger.log("d", "Stopping local web server...")
         
         if self._web_server:
@@ -98,8 +114,28 @@ class AuthorizationService:
         self._web_server = None
         self._web_server_thread = None
 
-    def _onAuthenticated(self, auth_response: dict) -> None:
+    def _onAuthenticated(self, auth_response: "AuthenticationResponse") -> None:
         """Callback method for a successful authentication flow."""
-        self._access_token_data = auth_response
-        self.onAuthenticated.emit(auth_response)
-        self._stopWebServer()
+        if auth_response.success:
+            self._storeAuthData(auth_response)
+            self.onAuthenticated.emit()
+        else:
+            self.onAuthenticationError.emit(auth_response.err_message)
+        self._stopWebServer()  # Stop the web server at all times.
+
+    def _loadAuthData(self) -> None:
+        """Load authentication data from preferences if available."""
+        self._cura_preferences.addPreference(self.AUTH_DATA_PREFERENCE_KEY, "{}")  # Ensure the preference exists.
+        try:
+            self._profile_data = json.loads(self._cura_preferences.getValue(self.AUTH_DATA_PREFERENCE_KEY))
+            self.onAuthenticated.emit()
+        except ValueError as err:
+            Logger.log("w", "Could not load auth data from preferences: %s", err)
+
+    def _storeAuthData(self, profile_data: Optional["AuthenticationResponse"] = None) -> None:
+        """Store authentication data in preferences and locally."""
+        self._profile_data = profile_data
+        if profile_data:
+            self._cura_preferences.setValue(self.AUTH_DATA_PREFERENCE_KEY, json.dumps(profile_data))
+        else:
+            self._cura_preferences.resetPreference(self.AUTH_DATA_PREFERENCE_KEY)

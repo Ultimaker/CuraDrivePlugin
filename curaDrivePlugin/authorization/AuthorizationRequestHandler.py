@@ -1,26 +1,16 @@
 # Copyright (c) 2017 Ultimaker B.V.
 import os.path
 import json
+from typing import Optional
+
 import requests
 
-from collections import namedtuple
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs
 
+from UM.Logger import Logger
 from curaDrivePlugin.Settings import Settings
-
-
-# Response status template.
-ResponseStatus = namedtuple("HTTPStatus", ["code", "message"])
-
-# Response data template.
-ResponseData = namedtuple("ResponseData", ["status", "content_type", "data_stream"])
-
-# Possible HTTP responses.
-HTTP_STATUS = {
-    "OK": ResponseStatus(code=200, message="OK"),
-    "NOT_FOUND": ResponseStatus(code=404, message="NOT FOUND")
-}
+from curaDrivePlugin.authorization.AuthorizationHelpers import AuthenticationResponse, ResponseData, HTTP_STATUS
 
 
 class AuthorizationRequestHandler(BaseHTTPRequestHandler):
@@ -37,11 +27,11 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
         super().__init__(request, client_address, server)
         
         # These values will be injected by the HTTPServer that this handler belongs to.
-        self.authorization_callback = None
-        self.verification_code = None
+        self.authorization_callback = None  # type: function
+        self.verification_code = None  # type: str
         
         # The token response will be stored temporarily so we can finish the response before stopping the server.
-        self._token_response = None
+        self._token_response = None  # type: AuthenticationResponse
 
     def do_GET(self):
         """Entry point for GET requests"""
@@ -66,7 +56,7 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
             self.authorization_callback(self._token_response)
             self._token_response = None
 
-    def _requestAccessToken(self, authorization_code: str) -> dict:
+    def _requestAccessToken(self, authorization_code: str) -> Optional["AuthenticationResponse"]:
         """
         Request the access token from the authorization server.
         :param authorization_code: The authorization code from the 1st step.
@@ -79,7 +69,15 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
             "code": authorization_code,
             "code_verifier": self.verification_code
         })
-        return json.loads(token_request.text)
+        try:
+            token_data = json.loads(token_request.text)
+            return AuthenticationResponse(success = True,
+                                          access_token = token_data["access_token"],
+                                          refresh_token = token_data["refresh_token"],
+                                          expires_in = token_data["expires_in"])
+        except ValueError as err:
+            Logger.log("w", "Could not parse token response data: %s", err)
+            return AuthenticationResponse(success = False)
 
     def _handleCallback(self, query: dict) -> "ResponseData":
         """
