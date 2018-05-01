@@ -82,7 +82,7 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
             return AuthenticationResponse(success = False, err_message = "Could not read response.")
         
         if token_request.status_code != 200:
-            return AuthenticationResponse(success = False, err_message = token_data["err_message"])
+            return AuthenticationResponse(success = False, err_message = token_data["error_description"])
             
         return AuthenticationResponse(success = True,
                                       access_token = token_data["access_token"],

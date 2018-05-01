@@ -128,7 +128,7 @@ class AuthorizationService:
         self._cura_preferences.addPreference(self.AUTH_DATA_PREFERENCE_KEY, "{}")  # Ensure the preference exists.
         try:
             preferences_data = json.loads(self._cura_preferences.getValue(self.AUTH_DATA_PREFERENCE_KEY))
-            self._profile_data = AuthenticationResponse(**preferences_data)
+            # self._profile_data = AuthenticationResponse(**preferences_data)
             self.onAuthenticated.emit()
         except ValueError as err:
             Logger.log("w", "Could not load auth data from preferences: %s", err)
