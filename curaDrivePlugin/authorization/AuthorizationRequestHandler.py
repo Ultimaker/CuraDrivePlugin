@@ -69,15 +69,25 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
             "code": authorization_code,
             "code_verifier": self.verification_code
         })
+        token_data = None
+        
         try:
             token_data = json.loads(token_request.text)
-            return AuthenticationResponse(success = True,
-                                          access_token = token_data["access_token"],
-                                          refresh_token = token_data["refresh_token"],
-                                          expires_in = token_data["expires_in"])
         except ValueError as err:
             Logger.log("w", "Could not parse token response data: %s", err)
-            return AuthenticationResponse(success = False)
+            
+        print("token_data", token_data)
+        
+        if not token_data:
+            return AuthenticationResponse(success = False, err_message = "Could not read response.")
+        
+        if token_request.status_code != 200:
+            return AuthenticationResponse(success = False, err_message = token_data["err_message"])
+            
+        return AuthenticationResponse(success = True,
+                                      access_token = token_data["access_token"],
+                                      refresh_token = token_data["refresh_token"],
+                                      expires_in = token_data["expires_in"])
 
     def _handleCallback(self, query: dict) -> "ResponseData":
         """
