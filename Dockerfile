@@ -9,5 +9,5 @@ COPY requirements.txt ./
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . ./
-RUN ENV_NAME=testing coverage run --source="curaDrivePlugin" -m pytest
-RUN coverage report --skip-covered --show-missing --fail-under=0
+#RUN ENV_NAME=testing coverage run --source="curaDrivePlugin" -m pytest
+#RUN coverage report --skip-covered --show-missing --fail-under=0
