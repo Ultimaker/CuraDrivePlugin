@@ -1,0 +1,5 @@
+./.pytest_cache
+./git
+*.py[cod]
+__pycache__/
+*$py.class
