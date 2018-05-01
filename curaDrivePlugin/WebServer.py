@@ -10,10 +10,9 @@ class WebServer:
     PORT = 1337
 
     def __init__(self):
-        self._handler = None  # type: http.server.SimpleHTTPRequestHandler
+        self._handler = http.server.SimpleHTTPRequestHandler
 
     def run(self):
-        self._handler = http.server.SimpleHTTPRequestHandler
-        with socketserver.TCPServer(("", self.PORT), self._handler) as httpd:
-            Logger.log("i", "Running local web server to handle authorization callback on port %s", self.PORT)
+        Logger.log("i", "Starting local web server to handle authorization callback on port %s", self.PORT)
+        with socketserver.TCPServer(("0.0.0.0", self.PORT), self._handler) as httpd:
             httpd.serve_forever()
