@@ -8,9 +8,9 @@ from UM.Logger import Logger
 from UM.Signal import Signal
 
 from curaDrivePlugin.Settings import Settings
-from curaDrivePlugin.Authorization.AuthorizationHelpers import AuthorizationHelpers
-from curaDrivePlugin.Authorization.AuthorizationRequestServer import AuthorizationRequestServer
-from curaDrivePlugin.Authorization.AuthorizationRequestHandler import AuthorizationRequestHandler
+from curaDrivePlugin.authorization.AuthorizationHelpers import AuthorizationHelpers
+from curaDrivePlugin.authorization.AuthorizationRequestServer import AuthorizationRequestServer
+from curaDrivePlugin.authorization.AuthorizationRequestHandler import AuthorizationRequestHandler
 
 
 class AuthorizationService:

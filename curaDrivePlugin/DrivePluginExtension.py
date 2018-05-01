@@ -9,7 +9,7 @@ from UM.Extension import Extension
 from UM.PluginRegistry import PluginRegistry
 from UM.i18n import i18nCatalog
 
-from curaDrivePlugin.Authorization.AuthorizationService import AuthorizationService
+from curaDrivePlugin.authorization.AuthorizationService import AuthorizationService
 from curaDrivePlugin.DriveApiService import DriveApiService
 
 
