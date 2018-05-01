@@ -2,7 +2,7 @@
 import os
 from typing import Optional
 
-from PyQt5.QtCore import QObject, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 
 from UM.Application import Application
 from UM.Extension import Extension
@@ -13,13 +13,16 @@ from curaDrivePlugin.AuthorizationService import AuthorizationService
 from curaDrivePlugin.DriveApiService import DriveApiService
 
 
-class DrivePluginExtension(Extension):
+class DrivePluginExtension(QObject, Extension):
     """
     The DivePluginExtension provides functionality to backup and restore your Cura configuration to Ultimaker's cloud.
     """
 
+    # Signal emitted when user logged in or out.
+    loginStateChanged = pyqtSignal()
+
     def __init__(self):
-        super().__init__()
+        super(DrivePluginExtension, self).__init__()
 
         self._user_profile = None
         self._backups = []
@@ -40,15 +43,14 @@ class DrivePluginExtension(Extension):
     def _run(self) -> None:
         """
         Populate initial values.
-        :return:
         """
         self._user_profile = self._authorization_service.getUserProfile()
         self._backups = self._drive_api_service.getBackups()
+        self.showDriveWindow()
 
     def showDriveWindow(self) -> None:
         """
         Show the Drive UI popup window.
-        :return:
         """
         if not self._drive_window:
             self._drive_window = self.createDriveWindow()
@@ -57,7 +59,7 @@ class DrivePluginExtension(Extension):
     def createDriveWindow(self) -> Optional["QObject"]:
         """
         Create an instance of the Drive UI popup window.
-        :return:
+        :return: The popup window object.
         """
         path = os.path.join(PluginRegistry.getInstance().getPluginPath(self.getPluginId()),
                             "curaDrivePlugin/qml/main.qml")
@@ -66,7 +68,14 @@ class DrivePluginExtension(Extension):
     @pyqtSlot()
     def login(self) -> None:
         """
-        Login flow.
-        :return:
+        Start the OAuth2 authorization flow to log in.
         """
         self._authorization_service.startAuthorizationFlow()
+
+    @pyqtProperty("QVariantMap", notify = loginStateChanged)
+    def profile(self) -> dict:
+        """
+        Get the profile of the authenticated user.
+        :return: A dict containing the profile information.
+        """
+        return self._authorization_service.getUserProfile()
