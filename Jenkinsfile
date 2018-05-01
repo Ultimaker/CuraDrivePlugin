@@ -22,7 +22,7 @@ node(defaultNode)
         // Build the Docker image for this service
         stage("Build")
         {
-            sh "docker build --tag ${imageTag} ."
+            sh "./build.sh ${imageTag}"
         }
     }
     catch(e)
