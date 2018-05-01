@@ -1,19 +1,16 @@
 # Copyright (c) 2017 Ultimaker B.V.
-import random
 import threading
 import webbrowser
-from _sha512 import sha512
-from base64 import b64encode
 from http.server import HTTPServer
 from urllib.parse import urlencode
 
 from UM.Logger import Logger
 from UM.Signal import Signal
 
-from curaDrivePlugin.AuthorizationHelpers import AuthorizationHelpers
-from curaDrivePlugin.AuthorizationRequestServer import AuthorizationRequestServer
 from curaDrivePlugin.Settings import Settings
-from curaDrivePlugin.AuthorizationRequestHandler import AuthorizationRequestHandler
+from curaDrivePlugin.Authorization.AuthorizationHelpers import AuthorizationHelpers
+from curaDrivePlugin.Authorization.AuthorizationRequestServer import AuthorizationRequestServer
+from curaDrivePlugin.Authorization.AuthorizationRequestHandler import AuthorizationRequestHandler
 
 
 class AuthorizationService:
@@ -77,15 +74,15 @@ class AuthorizationService:
         # Start a local web server to receive the callback URL on.
         self._startWebServer(verification_code)
 
-    def _startWebServer(self, code_verifier: str) -> None:
+    def _startWebServer(self, verification_code: str) -> None:
         """Start the local web server to handle the authorization callback."""
-        
-        Logger.log("i", "Starting local web server to handle authorization callback on port %s", self.PORT)
+
+        Logger.log("d", "Starting local web server to handle authorization callback on port %s", self.PORT)
         
         # Create the server and inject the callback and code.
         self._web_server = AuthorizationRequestServer(("0.0.0.0", self.PORT), AuthorizationRequestHandler)
         self._web_server.setAuthorizationCallback(self._onAuthenticated)
-        self._web_server.setCodeVerifier(code_verifier)
+        self._web_server.setVerificationCode(verification_code)
         
         # Start the server on a new thread.
         self._web_server_thread = threading.Thread(None, self._web_server.serve_forever)
@@ -93,6 +90,9 @@ class AuthorizationService:
 
     def _stopWebServer(self) -> None:
         """Stop the web server if it was running. Also deletes the objects."""
+        
+        Logger.log("d", "Stopping local web server...")
+        
         if self._web_server:
             self._web_server.server_close()
         self._web_server = None
