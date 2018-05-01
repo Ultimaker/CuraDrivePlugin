@@ -40,7 +40,22 @@ UM.Dialog
             text: CuraDrive.profile.username
 
             width: parent.width
-            height: 100
+            height: 50
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+
+            font: UM.Theme.getFont("default")
+            color: UM.Theme.getColor("text")
+        }
+
+        Label
+        {
+            id: accessTokenLabel
+            text: CuraDrive.token.access_token
+
+            width: parent.width
+            height: 50
+            anchors.top: usernameLabel.bottom
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
 
@@ -52,7 +67,7 @@ UM.Dialog
         {
             id: loginButton
 
-            anchors.top: usernameLabel.bottom
+            anchors.top: accessTokenLabel.bottom
 
             onClicked: CuraDrive.login()
 

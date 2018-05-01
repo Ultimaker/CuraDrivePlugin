@@ -34,6 +34,9 @@ class DrivePluginExtension(QObject, Extension):
         self._authorization_service = AuthorizationService()  # type: AuthorizationService
         self._drive_api_service = DriveApiService()  # type: DriveApiService
 
+        # Attach signals.
+        self._authorization_service.onAuthenticated.connect(self._onLoginStateChanged)
+
         # Register menu items.
         catalog = i18nCatalog("cura")
         self.addMenuItem(catalog.i18nc("@item:inmenu", "Cura Drive"), self.showDriveWindow)
@@ -65,6 +68,9 @@ class DrivePluginExtension(QObject, Extension):
                             "curaDrivePlugin/qml/main.qml")
         return Application.getInstance().createQmlComponent(path, {"CuraDrive": self})
 
+    def _onLoginStateChanged(self, access_token):
+        self.loginStateChanged.emit()
+
     @pyqtSlot()
     def login(self) -> None:
         """
@@ -79,3 +85,11 @@ class DrivePluginExtension(QObject, Extension):
         :return: A dict containing the profile information.
         """
         return self._authorization_service.getUserProfile()
+
+    @pyqtProperty("QVariantMap", notify=loginStateChanged)
+    def token(self) -> dict:
+        """
+        Get the access token and relevant data.
+        :return: A dict containing the access token data.
+        """
+        return self._authorization_service.getAccessToken()
