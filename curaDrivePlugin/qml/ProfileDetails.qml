@@ -1,7 +1,6 @@
 // Copyright (c) 2018 Ultimaker B.V.
 import QtQuick 2.7
 import QtQuick.Controls 2.1
-import QtGraphicalEffects 1.0
 
 import UM 1.1 as UM
 
@@ -30,7 +29,7 @@ Item
             id: profileImage
             width: 96
             height: 96
-            fillMode: Image.PreserveAspectFit
+            fillMode: Image.PreserveAspectCrop
             source: profile.profile_image_url ? profile.profile_image_url : "avatar_default.png"
         }
 
