@@ -73,8 +73,6 @@ Item
         {
             id: logoutButton
 
-            anchors.top: profileDetails.bottom
-
             onClicked: profileDetails.logoutCallback()
 
             contentItem: Text {
