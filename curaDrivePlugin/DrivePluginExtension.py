@@ -25,10 +25,9 @@ class DrivePluginExtension(QObject, Extension):
         super(DrivePluginExtension, self).__init__()
 
         # Local data caching for the UI.
-        self._user_profile = None  # type: dict
         self._auth_error_message = ""
         self._backups = []
-        self._drive_window = None  # type: QObject
+        self._drive_window = None  # type: Optional[QObject]
 
         # Initialize services.
         self._authorization_service = AuthorizationService()  # type: AuthorizationService
@@ -47,8 +46,8 @@ class DrivePluginExtension(QObject, Extension):
 
     def _run(self) -> None:
         """Populate initial values."""
-        self._user_profile = self._authorization_service.getUserProfile()
         self._backups = self._drive_api_service.getBackups()
+        self.showDriveWindow()
 
     def showDriveWindow(self) -> None:
         """Show the Drive UI popup window."""

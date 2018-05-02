@@ -1,72 +1,41 @@
 // Copyright (c) 2018 Ultimaker B.V.
-// Cura is released under the terms of the LGPLv3 or higher.
 import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Styles 1.4
+import QtQuick.Window 2.2
 
 import UM 1.3 as UM
 
-UM.Dialog
+Window
 {
     id: curaDriveDialog
 
-    minimumWidth: Math.round(UM.Theme.getSize("modal_window_minimum").width * 0.75)
-    minimumHeight: Math.round(UM.Theme.getSize("modal_window_minimum").height * 0.5)
+    minimumWidth: Math.round(UM.Theme.getSize("modal_window_minimum").width)
+    minimumHeight: Math.round(UM.Theme.getSize("modal_window_minimum").height)
     width: minimumWidth
     height: minimumHeight
 
     title: catalog.i18nc("@title:window", "Cura Drive")
 
-    Item
+    color: "white"
+
+    UM.I18nCatalog
     {
-        // UM.I18nCatalog must be wrapped in an item.
-        UM.I18nCatalog
-        {
-            id: catalog
-            name:"cura"
-        }
+        id: catalog
+        name: "cura"
+    }
 
-        // Ensure the Item is always the same size as the whole Dialog.
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-            bottom: parent.bottom
-        }
+    Column
+    {
+        id: welcomeView
+        spacing: UM.Theme.getSize("default_margin").height * 2
+        visible: !CuraDrive.isLoggedIn
 
-        Label
-        {
-            id: usernameLabel
-            text: CuraDrive.profile.username
-
-            width: parent.width
-            height: 50
-            anchors.left: parent.left
-            visible: CuraDrive.isLoggedIn
-
-            font: UM.Theme.getFont("default")
-            color: UM.Theme.getColor("text")
-        }
-
-        Image
-        {
-            id: profileImage
-
-            width: 50
-            height: 50
-            anchors.top: usernameLabel.bottom
-            visible: CuraDrive.isLoggedIn
-
-            fillMode: Image.PreserverAspectFit
-
-            source: CuraDrive.profile.profile_image_url
-        }
-
-        Button
+         Button
         {
             id: loginButton
 
-            anchors.top: profileImage.bottom
+            anchors.top: profileDetails.bottom
             visible: !CuraDrive.isLoggedIn
 
             onClicked: CuraDrive.login()
@@ -82,26 +51,33 @@ UM.Dialog
                 color: UM.Theme.getColor("action_button")
             }
         }
+    }
 
-        Button
+    Column
+    {
+        id: mainView
+        spacing: UM.Theme.getSize("default_margin").height * 2
+        visible: CuraDrive.isLoggedIn
+
+        ProfileDetails
         {
-            id: logoutButton
+            id: profileDetails
+            profile: CuraDrive.profile
+            logoutCallback: CuraDrive.logout
+        }
 
-            anchors.top: profileImage.bottom
-            visible: CuraDrive.isLoggedIn
+        Rectangle
+        {
+            id: profileDetailsSpacer
+            height: UM.Theme.getSize("default_lining").height
+            width: parent.width
+            color: UM.Theme.getColor("lining")
+        }
 
-            onClicked: CuraDrive.logout()
-
-            contentItem: Text {
-                id: logoutButtonText
-                text: "Logout"
-                color: UM.Theme.getColor("action_button_text")
-                font: UM.Theme.getFont("action_button")
-            }
-
-            background: Rectangle {
-                color: UM.Theme.getColor("action_button")
-            }
+        BackupList
+        {
+            id: backupList
+            backups: []
         }
     }
 }

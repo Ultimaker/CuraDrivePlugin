@@ -5,8 +5,13 @@ from base64 import b64encode
 from typing import Optional
 
 
+class BaseModel:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+
 # Authentication data template.
-class AuthenticationResponse:
+class AuthenticationResponse(BaseModel):
     success = True  # type: bool
     token_type = None  # type: Optional[str]
     access_token = None  # type: Optional[str]
@@ -15,27 +20,18 @@ class AuthenticationResponse:
     scope = None  # type: Optional[str]
     err_message = None  # type: Optional[str]
 
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
 
 # Response status template.
-class ResponseStatus:
+class ResponseStatus(BaseModel):
     code = 200  # type: int
     message = ""  # type str
 
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
 
 # Response data template.
-class ResponseData:
+class ResponseData(BaseModel):
     status = None  # type: Optional[ResponseStatus]
     data_stream = None  # type: bytes
     content_type = "text_html"  # type: str
-
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
 
 
 # Possible HTTP responses.
