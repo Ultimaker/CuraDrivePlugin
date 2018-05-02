@@ -6,6 +6,7 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 
 from UM.Application import Application
 from UM.Extension import Extension
+from UM.Message import Message
 from UM.PluginRegistry import PluginRegistry
 from UM.i18n import i18nCatalog
 
@@ -67,14 +68,13 @@ class DrivePluginExtension(QObject, Extension):
     def _onLoginStateChanged(self, error_message: str = None):
         """Callback handler for changes in the login state."""
         if error_message:
-            self._auth_error_message = error_message
-            # TODO: trigger a popup with the message
+            Message(error_message, lifetime=10, title="Cura Drive login").show()
         self.loginStateChanged.emit()
 
     @pyqtProperty(bool, notify = loginStateChanged)
     def isLoggedIn(self) -> bool:
         """Check if a user is logged in or not."""
-        return bool(self._authorization_service.getUserProfile())
+        return bool(self.profile)
 
     @pyqtSlot(name = "login")
     def login(self) -> None:
