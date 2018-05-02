@@ -31,25 +31,12 @@ Window
         spacing: UM.Theme.getSize("default_margin").height * 2
         visible: !CuraDrive.isLoggedIn
 
-         Button
+        ActionButton
         {
             id: loginButton
-
-            anchors.top: profileDetails.bottom
-            visible: !CuraDrive.isLoggedIn
-
             onClicked: CuraDrive.login()
-
-            contentItem: Text {
-                id: loginButtonText
-                text: "Login"
-                color: UM.Theme.getColor("action_button_text")
-                font: UM.Theme.getFont("action_button")
-            }
-
-            background: Rectangle {
-                color: UM.Theme.getColor("action_button")
-            }
+            visible: !CuraDrive.isLoggedIn
+            text: "Login"
         }
     }
 
@@ -64,14 +51,6 @@ Window
             id: profileDetails
             profile: CuraDrive.profile
             logoutCallback: CuraDrive.logout
-        }
-
-        Rectangle
-        {
-            id: profileDetailsSpacer
-            height: UM.Theme.getSize("default_lining").height
-            width: parent.width
-            color: UM.Theme.getColor("lining")
         }
 
         BackupList
