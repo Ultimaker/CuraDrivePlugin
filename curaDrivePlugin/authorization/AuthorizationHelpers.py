@@ -87,6 +87,11 @@ class AuthorizationHelpers:
 
     @staticmethod
     def parseTokenResponse(token_response: "requests.request") -> Optional["AuthenticationResponse"]:
+        """
+        Parse the token response from the authorization server into an AuthenticationResponse object.
+        :param token_response: The JSON string data response from the authorization server.
+        :return: An AuthenticationResponse object.
+        """
         token_data = None
 
         try:
