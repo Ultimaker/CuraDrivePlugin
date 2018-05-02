@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 
 Item
 {
-    id: profileImageHolder
+    id: avatar
 
     width: 96
     height: 96
@@ -15,7 +15,7 @@ Item
     Image
     {
         id: profileImage
-        source: profileImageHolder.sourceImage || "avatar_default.png"
+        source: avatar.source ? avatar.source : "avatar_default.png"
         sourceSize: Qt.size(parent.width, parent.height)
         fillMode: Image.PreserveAspectCrop
         smooth: true
