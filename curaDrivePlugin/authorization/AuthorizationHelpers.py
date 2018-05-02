@@ -5,6 +5,7 @@ from _sha512 import sha512
 from base64 import b64encode
 from typing import Optional
 
+# Note: these modules are available in Cura 4.0 and higher.
 import requests
 import jwt
 
