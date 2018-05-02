@@ -2,19 +2,41 @@
 import random
 from _sha512 import sha512
 from base64 import b64encode
-from collections import namedtuple
 from typing import Optional
 
 
 # Authentication data template.
-AuthenticationResponse = namedtuple("AuthenticationResponse",
-                                    ["success", "access_token", "refresh_token", "expires_in", "err_message"])
+class AuthenticationResponse:
+    success = True  # type: bool
+    token_type = None  # type: Optional[str]
+    access_token = None  # type: Optional[str]
+    refresh_token = None  # type: Optional[str]
+    expires_in = None  # type: Optional[str]
+    scope = None  # type: Optional[str]
+    err_message = None  # type: Optional[str]
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
 
 # Response status template.
-ResponseStatus = namedtuple("HTTPStatus", ["code", "message"])
+class ResponseStatus:
+    code = 200  # type: int
+    message = ""  # type str
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
 
 # Response data template.
-ResponseData = namedtuple("ResponseData", ["status", "content_type", "data_stream"])
+class ResponseData:
+    status = None  # type: Optional[ResponseStatus]
+    data_stream = None  # type: bytes
+    content_type = "text_html"  # type: str
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
 
 # Possible HTTP responses.
 HTTP_STATUS = {
@@ -28,10 +50,12 @@ class AuthorizationHelpers:
     
     @staticmethod
     def parseJWT(jwt: str) -> Optional[dict]:
+        # TODO: actually parse JWT.
         return {
             "username": "chris",
-            "avatar_url": "https://avatars3.githubusercontent.com/u/1134120?s=400&u=fe77552dc88f20e71d85826c36a4e36f123df5f8&v=4",
-            "scopes": ["user.read", "backups.read", "backups.write"]
+            "profile_image_url": "https://avatars3.githubusercontent.com/u/1134120?s=400&u=fe77552dc88f20e71d85826c36a4e36f123df5f8&v=4",
+            "scopes": ["user.read", "backups.read", "backups.write"],
+            "exp": ""
         }
 
     @staticmethod

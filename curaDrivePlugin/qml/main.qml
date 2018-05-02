@@ -42,23 +42,59 @@ UM.Dialog
             width: parent.width
             height: 50
             anchors.left: parent.left
-            anchors.verticalCenter: parent.verticalCenter
+            visible: CuraDrive.isLoggedIn
 
             font: UM.Theme.getFont("default")
             color: UM.Theme.getColor("text")
+        }
+
+        Image
+        {
+            id: profileImage
+
+            width: 50
+            height: 50
+            anchors.top: usernameLabel.bottom
+            visible: CuraDrive.isLoggedIn
+
+            fillMode: Image.PreserverAspectFit
+
+            source: CuraDrive.profile.profile_image_url
         }
 
         Button
         {
             id: loginButton
 
-            anchors.top: accessTokenLabel.bottom
+            anchors.top: profileImage.bottom
+            visible: !CuraDrive.isLoggedIn
 
             onClicked: CuraDrive.login()
 
             contentItem: Text {
                 id: loginButtonText
                 text: "Login"
+                color: UM.Theme.getColor("action_button_text")
+                font: UM.Theme.getFont("action_button")
+            }
+
+            background: Rectangle {
+                color: UM.Theme.getColor("action_button")
+            }
+        }
+
+        Button
+        {
+            id: logoutButton
+
+            anchors.top: profileImage.bottom
+            visible: CuraDrive.isLoggedIn
+
+            onClicked: CuraDrive.logout()
+
+            contentItem: Text {
+                id: logoutButtonText
+                text: "Logout"
                 color: UM.Theme.getColor("action_button_text")
                 font: UM.Theme.getFont("action_button")
             }

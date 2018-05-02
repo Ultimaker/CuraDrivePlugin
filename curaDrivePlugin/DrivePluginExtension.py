@@ -72,10 +72,20 @@ class DrivePluginExtension(QObject, Extension):
             # TODO: trigger a popup with the message
         self.loginStateChanged.emit()
 
+    @pyqtProperty(bool, notify = loginStateChanged)
+    def isLoggedIn(self) -> bool:
+        """Check if a user is logged in or not."""
+        return bool(self._authorization_service.getUserProfile())
+
     @pyqtSlot(name = "login")
     def login(self) -> None:
         """Start the OAuth2 authorization flow to log in."""
         self._authorization_service.startAuthorizationFlow()
+
+    @pyqtSlot(name = "logout")
+    def logout(self) -> None:
+        """Delete all auth data."""
+        self._authorization_service.deleteAuthData()
 
     @pyqtProperty("QVariantMap", notify = loginStateChanged)
     def profile(self) -> dict:

@@ -10,7 +10,8 @@ from urllib.parse import parse_qs
 
 from UM.Logger import Logger
 from curaDrivePlugin.Settings import Settings
-from curaDrivePlugin.authorization.AuthorizationHelpers import AuthenticationResponse, ResponseData, HTTP_STATUS
+from curaDrivePlugin.authorization.AuthorizationHelpers import AuthenticationResponse, ResponseData, HTTP_STATUS, \
+    ResponseStatus
 
 
 class AuthorizationRequestHandler(BaseHTTPRequestHandler):
@@ -85,9 +86,11 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
             return AuthenticationResponse(success = False, err_message = token_data["error_description"])
             
         return AuthenticationResponse(success = True,
+                                      token_type = token_data["token_type"],
                                       access_token = token_data["access_token"],
                                       refresh_token = token_data["refresh_token"],
-                                      expires_in = token_data["expires_in"])
+                                      expires_in = token_data["expires_in"],
+                                      scope = token_data["scope"])
 
     def _handleCallback(self, query: dict) -> "ResponseData":
         """
@@ -97,20 +100,20 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
         """
         self._token_response = self._requestAccessToken(self._queryGet(query, "code"))
         with open(os.path.join(os.path.dirname(__file__), "html", "callback.html"), "rb") as data:
-            return ResponseData(status = HTTP_STATUS["OK"], content_type = "text_html", data_stream = data)
+            return ResponseData(status = HTTP_STATUS["OK"], content_type = "text_html", data_stream = data.read())
 
     @staticmethod
     def _handleNotFound() -> "ResponseData":
         """Handle all other non-existing server calls."""
         return ResponseData(status=HTTP_STATUS["NOT_FOUND"], content_type="text_html", data_stream="")
 
-    def _sendHeaders(self, status, content_type) -> None:
+    def _sendHeaders(self, status: "ResponseStatus", content_type) -> None:
         """Send out the headers"""
         self.send_response(status.code, status.message)
         self.send_header('Content-type', content_type)
         self.end_headers()
 
-    def _sendData(self, data) -> None:
+    def _sendData(self, data: bytes) -> None:
         """Send out the data"""
         self.wfile.write(data)
 

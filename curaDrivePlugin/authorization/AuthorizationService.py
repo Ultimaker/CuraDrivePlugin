@@ -22,7 +22,7 @@ class AuthorizationService:
     storing user credentials and providing account information.
     """
     
-    AUTH_DATA_PREFERENCE_KEY = "cura_drive_plugin/manual_instances"
+    AUTH_DATA_PREFERENCE_KEY = "cura_drive_plugin/auth_data"
 
     AUTH_URL = "{}/authorize".format(Settings.OAUTH_SERVER_URL)
 
@@ -128,15 +128,16 @@ class AuthorizationService:
         self._cura_preferences.addPreference(self.AUTH_DATA_PREFERENCE_KEY, "{}")  # Ensure the preference exists.
         try:
             preferences_data = json.loads(self._cura_preferences.getValue(self.AUTH_DATA_PREFERENCE_KEY))
-            # self._profile_data = AuthenticationResponse(**preferences_data)
-            self.onAuthenticated.emit()
+            if preferences_data:
+                self._auth_data = AuthenticationResponse(**preferences_data)
+                self.onAuthenticated.emit()
         except ValueError as err:
             Logger.log("w", "Could not load auth data from preferences: %s", err)
 
-    def _storeAuthData(self, profile_data: Optional["AuthenticationResponse"] = None) -> None:
+    def _storeAuthData(self, auth_data: Optional["AuthenticationResponse"] = None) -> None:
         """Store authentication data in preferences and locally."""
-        self._profile_data = profile_data
-        if profile_data:
-            self._cura_preferences.setValue(self.AUTH_DATA_PREFERENCE_KEY, json.dumps(profile_data.__dict__))
+        self._auth_data = auth_data
+        if auth_data:
+            self._cura_preferences.setValue(self.AUTH_DATA_PREFERENCE_KEY, json.dumps(vars(auth_data)))
         else:
             self._cura_preferences.resetPreference(self.AUTH_DATA_PREFERENCE_KEY)
