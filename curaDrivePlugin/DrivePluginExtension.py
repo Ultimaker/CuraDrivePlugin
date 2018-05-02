@@ -68,7 +68,7 @@ class DrivePluginExtension(QObject, Extension):
     def _onLoginStateChanged(self, error_message: str = None):
         """Callback handler for changes in the login state."""
         if error_message:
-            Message(error_message, lifetime=10, title="Cura Drive login").show()
+            Message(error_message, lifetime=30, title="Cura Drive login").show()
         self.loginStateChanged.emit()
 
     @pyqtProperty(bool, notify = loginStateChanged)

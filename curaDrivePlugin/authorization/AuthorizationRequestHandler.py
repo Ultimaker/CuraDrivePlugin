@@ -51,10 +51,20 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
         :param query: Dict containing the HTTP query parameters.
         :return: HTTP ResponseData containing a success page to show to the user.
         """
-        token_response = AuthorizationHelpers.getAccessTokenUsingAuthorizationCode(self._queryGet(query, "code"),
-                                                                                   self.verification_code)
+        if self._queryGet(query, "code"):
+            # If the code was returned we get the access token.
+            token_response = AuthorizationHelpers.getAccessTokenUsingAuthorizationCode(self._queryGet(query, "code"),
+                                                                                       self.verification_code)
+        elif self._queryGet(query, "error_code") == "user_denied":
+            # Otherwise we show an error message (probably the user clicked "Deny" in the auth dialog).
+            token_response = AuthenticationResponse(success = False,
+                                                    err_message = "Please allow Cura Drive to access your data.")
+        else:
+            token_response = AuthenticationResponse(success = False,
+                                                    error_message = "Unknown error occurred, please check te logs.")
+
         with open(os.path.join(os.path.dirname(__file__), "html", "callback.html"), "rb") as data:
-            return ResponseData(status = HTTP_STATUS["OK"], content_type = "text_html", data_stream = data.read()),\
+            return ResponseData(status = HTTP_STATUS["OK"], content_type = "text/html", data_stream = data.read()),\
                    token_response
 
     @staticmethod
@@ -73,6 +83,6 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     @staticmethod
-    def _queryGet(query_data: dict, key: str, default="") -> str:
+    def _queryGet(query_data: dict, key: str, default=None) -> Optional[str]:
         """Helper for getting values from a pre-parsed query string"""
         return query_data.get(key, [default])[0]
