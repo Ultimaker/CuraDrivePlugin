@@ -12,6 +12,7 @@ class BaseModel:
 
 # Authentication data template.
 class AuthenticationResponse(BaseModel):
+    """Data comes from the token response with success flag and error message added."""
     success = True  # type: bool
     token_type = None  # type: Optional[str]
     access_token = None  # type: Optional[str]
@@ -45,7 +46,7 @@ class AuthorizationHelpers:
     """Class containing several helpers to deal with the authorization flow."""
     
     @staticmethod
-    def parseJWT(jwt: str) -> Optional[dict]:
+    def parseJWT(jwt: str, public_key: str) -> Optional[dict]:
         # TODO: actually parse JWT.
         return {
             "username": "chris",

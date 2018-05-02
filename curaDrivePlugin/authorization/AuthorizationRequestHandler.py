@@ -1,7 +1,7 @@
 # Copyright (c) 2017 Ultimaker B.V.
 import os.path
 import json
-from typing import Optional
+from typing import Optional, Callable
 
 import requests
 
@@ -28,11 +28,8 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
         super().__init__(request, client_address, server)
         
         # These values will be injected by the HTTPServer that this handler belongs to.
-        self.authorization_callback = None  # type: function
+        self.authorization_callback = None  # type: Callable[[AuthenticationResponse], None]
         self.verification_code = None  # type: str
-        
-        # The token response will be stored temporarily so we can finish the response before stopping the server.
-        self._token_response = None  # type: AuthenticationResponse
 
     def do_GET(self):
         """Entry point for GET requests"""
@@ -40,22 +37,22 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
         # Extract values from the query string.
         path, _, query_string = self.path.partition('?')
         query = parse_qs(query_string)
+        token_response = None
 
         # Handle the possible requests
         if path == "/callback":
-            response = self._handleCallback(query)
+            server_response, token_response = self._handleCallback(query)
         else:
-            response = self._handleNotFound()
+            server_response = self._handleNotFound()
 
         # Send the data to the browser.
-        self._sendHeaders(response.status, response.content_type)
-        self._sendData(response.data_stream)
+        self._sendHeaders(server_response.status, server_response.content_type)
+        self._sendData(server_response.data_stream)
 
-        if self._token_response:
+        if token_response:
             # Trigger the callback if we got a response.
             # This will cause the server to shut down, so we do it at the very end of the request handling.
-            self.authorization_callback(self._token_response)
-            self._token_response = None
+            self.authorization_callback(token_response)
 
     def _requestAccessToken(self, authorization_code: str) -> Optional["AuthenticationResponse"]:
         """
@@ -90,20 +87,21 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
                                       expires_in = token_data["expires_in"],
                                       scope = token_data["scope"])
 
-    def _handleCallback(self, query: dict) -> "ResponseData":
+    def _handleCallback(self, query: dict) -> ("ResponseData", Optional["AuthenticationResponse"]):
         """
         Handler for the callback URL redirect.
         :param query: Dict containing the HTTP query parameters.
         :return: HTTP ResponseData containing a success page to show to the user.
         """
-        self._token_response = self._requestAccessToken(self._queryGet(query, "code"))
+        token_response = self._requestAccessToken(self._queryGet(query, "code"))
         with open(os.path.join(os.path.dirname(__file__), "html", "callback.html"), "rb") as data:
-            return ResponseData(status = HTTP_STATUS["OK"], content_type = "text_html", data_stream = data.read())
+            return ResponseData(status = HTTP_STATUS["OK"], content_type = "text_html", data_stream = data.read()),\
+                   token_response
 
     @staticmethod
     def _handleNotFound() -> "ResponseData":
         """Handle all other non-existing server calls."""
-        return ResponseData(status=HTTP_STATUS["NOT_FOUND"], content_type="text_html", data_stream="")
+        return ResponseData(status=HTTP_STATUS["NOT_FOUND"], content_type="text/html", data_stream="")
 
     def _sendHeaders(self, status: "ResponseStatus", content_type) -> None:
         """Send out the headers"""
