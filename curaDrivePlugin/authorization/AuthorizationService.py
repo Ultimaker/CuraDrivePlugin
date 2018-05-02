@@ -10,11 +10,11 @@ from UM.Logger import Logger
 from UM.Preferences import Preferences
 from UM.Signal import Signal
 
-from curaDrivePlugin.Settings import Settings
-from curaDrivePlugin.authorization.AuthorizationHelpers import AuthorizationHelpers
-from curaDrivePlugin.authorization.AuthorizationRequestServer import AuthorizationRequestServer
-from curaDrivePlugin.authorization.AuthorizationRequestHandler import AuthorizationRequestHandler
-from curaDrivePlugin.authorization.models import AuthenticationResponse
+from ..Settings import Settings
+from .AuthorizationHelpers import AuthorizationHelpers
+from .AuthorizationRequestServer import AuthorizationRequestServer
+from .AuthorizationRequestHandler import AuthorizationRequestHandler
+from .models import AuthenticationResponse
 
 
 class AuthorizationService:

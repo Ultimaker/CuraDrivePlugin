@@ -10,8 +10,8 @@ import requests
 import jwt
 
 from UM.Logger import Logger
-from curaDrivePlugin.Settings import Settings
-from curaDrivePlugin.authorization.models import AuthenticationResponse
+from ..Settings import Settings
+from .models import AuthenticationResponse
 
 
 class AuthorizationHelpers:
