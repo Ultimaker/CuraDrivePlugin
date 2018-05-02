@@ -1,4 +1,5 @@
 # Copyright (c) 2018 Ultimaker B.V.
+import json
 import random
 from _sha512 import sha512
 from base64 import b64encode
@@ -50,6 +51,63 @@ HTTP_STATUS = {
 
 class AuthorizationHelpers:
     """Class containing several helpers to deal with the authorization flow."""
+
+    TOKEN_URL = "{}/token".format(Settings.OAUTH_SERVER_URL)
+    OAUTH_GRANT_TYPE_AUTH_CODE = "authorization_code"
+    OAUTH_GRANT_TYPE_REFRESH = "refresh_token"
+
+    @classmethod
+    def getAccessTokenUsingAuthorizationCode(cls, authorization_code: str, verification_code: str)->\
+            Optional["AuthenticationResponse"]:
+        """
+        Request the access token from the authorization server.
+        :param authorization_code: The authorization code from the 1st step.
+        :param verification_code: The verification code needed for the PKCE extension.
+        :return: An AuthenticationResponse object.
+        """
+        return cls.parseTokenResponse(requests.post(cls.TOKEN_URL, data={
+            "client_id": Settings.CLIENT_ID,
+            "redirect_uri": Settings.CALLBACK_URL,
+            "grant_type": cls.OAUTH_GRANT_TYPE_AUTH_CODE,
+            "code": authorization_code,
+            "code_verifier": verification_code
+        }))
+
+    @classmethod
+    def getAccessTokenUsingRefreshToken(cls, refresh_token: str) -> Optional["AuthenticationResponse"]:
+        """
+        Request the access token from the authorization server using a refresh token.
+        :param refresh_token:
+        :return: An AuthenticationResponse object.
+        """
+        return cls.parseTokenResponse(requests.post(cls.TOKEN_URL, data={
+            "client_id": Settings.CLIENT_ID,
+            "redirect_uri": Settings.CALLBACK_URL,
+            "grant_type": cls.OAUTH_GRANT_TYPE_REFRESH,
+            "refresh_token": refresh_token
+        }))
+
+    @staticmethod
+    def parseTokenResponse(token_response: "requests.request") -> Optional["AuthenticationResponse"]:
+        token_data = None
+
+        try:
+            token_data = json.loads(token_response.text)
+        except ValueError as err:
+            Logger.log("w", "Could not parse token response data: %s", err)
+
+        if not token_data:
+            return AuthenticationResponse(success=False, err_message="Could not read response.")
+
+        if token_response.status_code != 200:
+            return AuthenticationResponse(success=False, err_message=token_data["error_description"])
+
+        return AuthenticationResponse(success=True,
+                                      token_type=token_data["token_type"],
+                                      access_token=token_data["access_token"],
+                                      refresh_token=token_data["refresh_token"],
+                                      expires_in=token_data["expires_in"],
+                                      scope=token_data["scope"])
 
     @staticmethod
     def getPublicKeyJWT() -> Optional[str]:

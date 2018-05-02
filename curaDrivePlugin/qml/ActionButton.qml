@@ -9,6 +9,7 @@ import UM 1.1 as UM
 Button
 {
     id: button
+    property alias cursorShape: mouseArea.cursorShape
 
     contentItem: Text {
         id: buttonText
@@ -20,5 +21,13 @@ Button
     background: Rectangle {
         color: button.hovered ? UM.Theme.getColor("primary_hover") : UM.Theme.getColor("primary")
         border.color: button.hovered ? UM.Theme.getColor("button_text_hover") : UM.Theme.getColor("button_text")
+    }
+
+    MouseArea
+    {
+        id: mouseArea
+        anchors.fill: parent
+        onPressed: mouse.accepted = false
+        cursorShape: hovered ? Qt.PointingHandCursor : Qt.ArrowCursor
     }
 }
