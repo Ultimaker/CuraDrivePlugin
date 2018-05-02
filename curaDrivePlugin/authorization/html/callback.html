@@ -4,9 +4,11 @@
     </head>
     <body>
         <h1>Cura Drive logged in.</h1>
-        <p>You can now close this page if it doesn't close automatically within a few seconds.</p>
+        <p>You can now close this page.</p>
         <script>
-            setTimeout(window.close, 2000)
+            setTimeout(function () {
+                window.location.href = "https://ultimaker.com"
+            }, 500)
         </script>
     </body>
 </html>
