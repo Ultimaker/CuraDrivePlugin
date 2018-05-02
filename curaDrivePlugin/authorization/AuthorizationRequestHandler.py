@@ -76,8 +76,6 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
             token_data = json.loads(token_request.text)
         except ValueError as err:
             Logger.log("w", "Could not parse token response data: %s", err)
-            
-        print("token_data", token_data)
         
         if not token_data:
             return AuthenticationResponse(success = False, err_message = "Could not read response.")
