@@ -74,7 +74,7 @@ class DrivePluginExtension(QObject, Extension):
     @pyqtProperty(bool, notify = loginStateChanged)
     def isLoggedIn(self) -> bool:
         """Check if a user is logged in or not."""
-        return bool(self.profile)
+        return bool(self._authorization_service.getUserProfile())
 
     @pyqtSlot(name = "login")
     def login(self) -> None:

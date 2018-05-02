@@ -61,8 +61,8 @@ class AuthorizationHelpers:
 
         try:
             token_data = json.loads(token_response.text)
-        except ValueError as err:
-            Logger.log("w", "Could not parse token response data: %s", err)
+        except ValueError:
+            Logger.log("w", "Could not parse token response data: %s", token_response.text)
 
         if not token_data:
             return AuthenticationResponse(success=False, err_message="Could not read response.")

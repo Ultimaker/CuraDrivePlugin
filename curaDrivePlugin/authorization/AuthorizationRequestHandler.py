@@ -61,7 +61,7 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
                                                     err_message = "Please allow Cura Drive to access your data.")
         else:
             token_response = AuthenticationResponse(success = False,
-                                                    error_message = "Unknown error occurred, please check te logs.")
+                                                    error_message = "Unknown error occurred, please check the logs.")
 
         with open(os.path.join(os.path.dirname(__file__), "html", "callback.html"), "rb") as data:
             return ResponseData(status = HTTP_STATUS["OK"], content_type = "text/html", data_stream = data.read()),\
