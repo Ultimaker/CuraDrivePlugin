@@ -46,7 +46,9 @@ class AuthorizationService:
         """
         if not self._auth_data:
             return None
-        return AuthorizationHelpers.parseJWT(self._auth_data.access_token, "")
+        public_key = AuthorizationHelpers.getPublicKeyJWT()
+        user_data = AuthorizationHelpers.parseJWT(self._auth_data.access_token, public_key)
+        return user_data
 
     def getAccessToken(self) -> Optional[str]:
         """

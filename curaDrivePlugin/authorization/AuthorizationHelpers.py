@@ -1,8 +1,14 @@
-# Copyright (c) 2017 Ultimaker B.V.
+# Copyright (c) 2018 Ultimaker B.V.
 import random
 from _sha512 import sha512
 from base64 import b64encode
 from typing import Optional
+
+import requests
+import jwt
+
+from UM.Logger import Logger
+from curaDrivePlugin.Settings import Settings
 
 
 class BaseModel:
@@ -44,16 +50,28 @@ HTTP_STATUS = {
 
 class AuthorizationHelpers:
     """Class containing several helpers to deal with the authorization flow."""
-    
+
     @staticmethod
-    def parseJWT(jwt: str, public_key: str) -> Optional[dict]:
-        # TODO: actually parse JWT.
-        return {
-            "username": "chris",
-            "profile_image_url": "https://avatars3.githubusercontent.com/u/1134120?s=400&u=fe77552dc88f20e71d85826c36a4e36f123df5f8&v=4",
-            "scopes": ["user.read", "backups.read", "backups.write"],
-            "exp": ""
-        }
+    def getPublicKeyJWT() -> Optional[str]:
+        """
+        Get the public key to decode the JWT.
+        :return: The public key as string.
+        """
+        key_request = requests.get("{}/public-key".format(Settings.OAUTH_SERVER_URL))
+        if key_request.status_code != 200:
+            Logger.log("w", "Could not retrieve public key from authorization server: %s", key_request.text)
+            return None
+        return key_request.text
+
+    @staticmethod
+    def parseJWT(token: str, public_key: str) -> Optional[dict]:
+        """
+        Decode the JWT token to get the profile info.
+        :param token: The encoded JWT token.
+        :param public_key: The public key to decode with.
+        :return: Dict containing some profile data.
+        """
+        return jwt.decode(token, public_key, algorithms=["RS512"])
 
     @staticmethod
     def generateVerificationCode(code_length: int = 16) -> str:
