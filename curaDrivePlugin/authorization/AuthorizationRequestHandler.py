@@ -5,8 +5,8 @@ from typing import Optional, Callable
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs
 
-from curaDrivePlugin.authorization.AuthorizationHelpers import AuthenticationResponse, ResponseData, HTTP_STATUS, \
-    ResponseStatus, AuthorizationHelpers
+from curaDrivePlugin.authorization.AuthorizationHelpers import AuthorizationHelpers
+from curaDrivePlugin.authorization.models import AuthenticationResponse, ResponseData, HTTP_STATUS, ResponseStatus
 
 
 class AuthorizationRequestHandler(BaseHTTPRequestHandler):

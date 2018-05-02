@@ -11,9 +11,10 @@ from UM.Preferences import Preferences
 from UM.Signal import Signal
 
 from curaDrivePlugin.Settings import Settings
-from curaDrivePlugin.authorization.AuthorizationHelpers import AuthorizationHelpers, AuthenticationResponse
+from curaDrivePlugin.authorization.AuthorizationHelpers import AuthorizationHelpers
 from curaDrivePlugin.authorization.AuthorizationRequestServer import AuthorizationRequestServer
 from curaDrivePlugin.authorization.AuthorizationRequestHandler import AuthorizationRequestHandler
+from curaDrivePlugin.authorization.models import AuthenticationResponse
 
 
 class AuthorizationService:
@@ -33,9 +34,9 @@ class AuthorizationService:
     onAuthenticationError = Signal()
 
     def __init__(self):
-        self._web_server = None  # type: HTTPServer
-        self._web_server_thread = None  # type: threading.Thread
-        self._auth_data = None  # type: AuthenticationResponse
+        self._web_server = None  # type: Optional[HTTPServer]
+        self._web_server_thread = None  # type: Optional[threading.Thread]
+        self._auth_data = None  # type: Optional[AuthenticationResponse]
         self._cura_preferences = Preferences.getInstance()
         self._loadAuthData()
 
