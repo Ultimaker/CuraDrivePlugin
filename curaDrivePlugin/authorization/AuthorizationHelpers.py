@@ -53,8 +53,6 @@ class AuthorizationHelpers:
     """Class containing several helpers to deal with the authorization flow."""
 
     TOKEN_URL = "{}/token".format(Settings.OAUTH_SERVER_URL)
-    OAUTH_GRANT_TYPE_AUTH_CODE = "authorization_code"
-    OAUTH_GRANT_TYPE_REFRESH = "refresh_token"
 
     @classmethod
     def getAccessTokenUsingAuthorizationCode(cls, authorization_code: str, verification_code: str)->\
@@ -68,7 +66,7 @@ class AuthorizationHelpers:
         return cls.parseTokenResponse(requests.post(cls.TOKEN_URL, data={
             "client_id": Settings.CLIENT_ID,
             "redirect_uri": Settings.CALLBACK_URL,
-            "grant_type": cls.OAUTH_GRANT_TYPE_AUTH_CODE,
+            "grant_type": "authorization_code",
             "code": authorization_code,
             "code_verifier": verification_code
         }))
@@ -83,7 +81,7 @@ class AuthorizationHelpers:
         return cls.parseTokenResponse(requests.post(cls.TOKEN_URL, data={
             "client_id": Settings.CLIENT_ID,
             "redirect_uri": Settings.CALLBACK_URL,
-            "grant_type": cls.OAUTH_GRANT_TYPE_REFRESH,
+            "grant_type": "refresh_token",
             "refresh_token": refresh_token
         }))
 
