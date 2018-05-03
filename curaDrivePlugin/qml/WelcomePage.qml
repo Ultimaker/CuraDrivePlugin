@@ -1,16 +1,14 @@
 // Copyright (c) 2018 Ultimaker B.V.
 import QtQuick 2.7
 import QtQuick.Controls 2.1
-import QtQuick.Controls.Styles 1.4
 import QtQuick.Window 2.2
 
 import UM 1.3 as UM
 
 Column
 {
-    id: welcomeView
+    id: welcomePage
     spacing: UM.Theme.getSize("default_margin").height * 2
-    visible: !CuraDrive.isLoggedIn
     width: parent.width
     topPadding: 150
 
@@ -39,7 +37,6 @@ Column
     {
         id: loginButton
         onClicked: CuraDrive.login()
-        visible: !CuraDrive.isLoggedIn
         text: "Login"
         anchors.horizontalCenter: parent.horizontalCenter
     }

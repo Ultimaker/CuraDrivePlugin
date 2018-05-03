@@ -1,8 +1,6 @@
 // Copyright (c) 2018 Ultimaker B.V.
 import QtQuick 2.7
 import QtQuick.Controls 2.1
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Window 2.2
 
 import UM 1.1 as UM
 

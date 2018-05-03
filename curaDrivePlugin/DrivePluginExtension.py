@@ -9,6 +9,7 @@ from UM.Extension import Extension
 from UM.Message import Message
 from UM.PluginRegistry import PluginRegistry
 from UM.i18n import i18nCatalog
+from curaDrivePlugin.models.BackupListModel import BackupListModel
 
 from .authorization.AuthorizationService import AuthorizationService
 from .DriveApiService import DriveApiService
@@ -22,13 +23,16 @@ class DrivePluginExtension(QObject, Extension):
     # Signal emitted when user logged in or out.
     loginStateChanged = pyqtSignal()
 
+    # Signal emitted when the list of backups changed.
+    backupsChanged = pyqtSignal()
+
     def __init__(self):
         super(DrivePluginExtension, self).__init__()
 
         # Local data caching for the UI.
         self._auth_error_message = ""
-        self._backups = []
         self._drive_window = None  # type: Optional[QObject]
+        self._backups_list_model = BackupListModel()
 
         # Initialize services.
         self._authorization_service = AuthorizationService()  # type: AuthorizationService
@@ -48,7 +52,11 @@ class DrivePluginExtension(QObject, Extension):
     def _run(self) -> None:
         """Populate initial values."""
         self._backups = self._drive_api_service.getBackups()
-        # self.showDriveWindow()
+        self.showDriveWindow()
+
+        # TODO: move these
+        self._backups_list_model.loadBackups(self._drive_api_service.getBackups())
+        self.backupsChanged.emit()
 
     def showDriveWindow(self) -> None:
         """Show the Drive UI popup window."""
@@ -101,3 +109,11 @@ class DrivePluginExtension(QObject, Extension):
         :return: The error message as string.
         """
         return self._auth_error_message
+
+    @pyqtProperty(QObject, notify = backupsChanged)
+    def backups(self) -> BackupListModel:
+        """
+        Get a list of the backups.
+        :return: The backups as Qt List Model.
+        """
+        return self._backups_list_model
