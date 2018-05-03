@@ -19,6 +19,12 @@ Rectangle
         width: parent.width
         height: 50
 
+        Image
+        {
+            height: parent.height
+            source: "folder.svg"
+        }
+
         Label
         {
             text: model["backup_id"]

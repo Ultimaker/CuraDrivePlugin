@@ -28,7 +28,7 @@ Window
     {
         id: icon
         anchors.fill: curaDriveDialog
-        y: 20
+        y: 50
         source: "background.svg"
         fillMode: Image.PreserveAspectCrop
         clip: true
