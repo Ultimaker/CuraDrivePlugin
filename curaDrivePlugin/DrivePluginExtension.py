@@ -10,8 +10,8 @@ from UM.Message import Message
 from UM.PluginRegistry import PluginRegistry
 from UM.i18n import i18nCatalog
 
-from curaDrivePlugin.authorization.AuthorizationService import AuthorizationService
-from curaDrivePlugin.DriveApiService import DriveApiService
+from .authorization.AuthorizationService import AuthorizationService
+from .DriveApiService import DriveApiService
 
 
 class DrivePluginExtension(QObject, Extension):
