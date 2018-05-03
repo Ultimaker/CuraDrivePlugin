@@ -61,6 +61,9 @@ class AuthorizationService:
         return self._auth_data.access_token
 
     def refreshAccessToken(self) -> None:
+        """
+        Refresh the access token when it expired.
+        """
         self._storeAuthData(AuthorizationHelpers.getAccessTokenUsingRefreshToken(self._auth_data.refresh_token))
         self.onAuthStateChanged.emit()
     
