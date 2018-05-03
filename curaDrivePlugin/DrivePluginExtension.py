@@ -35,7 +35,7 @@ class DrivePluginExtension(QObject, Extension):
         self._drive_api_service = DriveApiService()  # type: DriveApiService
 
         # Attach signals.
-        self._authorization_service.onAuthenticated.connect(self._onLoginStateChanged)
+        self._authorization_service.onAuthStateChanged.connect(self._onLoginStateChanged)
         self._authorization_service.onAuthenticationError.connect(self._onLoginStateChanged)
 
         # Register menu items.

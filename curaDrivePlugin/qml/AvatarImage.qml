@@ -17,6 +17,8 @@ Item
         id: profileImage
         source: avatar.source ? avatar.source : "avatar_default.png"
         sourceSize: Qt.size(parent.width, parent.height)
+        width: parent.width
+        height :parent.height
         fillMode: Image.PreserveAspectCrop
         visible: false
     }
@@ -26,6 +28,8 @@ Item
         id: profileImageMask
         source: "inverted_circle.png"
         sourceSize: Qt.size(parent.width, parent.height)
+        width: parent.width
+        height :parent.height
         visible: false
     }
 

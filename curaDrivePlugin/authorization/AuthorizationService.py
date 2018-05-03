@@ -30,7 +30,7 @@ class AuthorizationService:
     PORT = Settings.CALLBACK_PORT
 
     # Emit signal when authentication is completed.
-    onAuthenticated = Signal()
+    onAuthStateChanged = Signal()
     onAuthenticationError = Signal()
 
     def __init__(self):
@@ -59,11 +59,15 @@ class AuthorizationService:
         if not self._auth_data:
             return None
         return self._auth_data.access_token
+
+    def refreshAccessToken(self) -> None:
+        self._storeAuthData(AuthorizationHelpers.getAccessTokenUsingRefreshToken(self._auth_data.refresh_token))
+        self.onAuthStateChanged.emit()
     
     def deleteAuthData(self):
         """Delete authentication data from preferences and locally."""
         self._storeAuthData()
-        self.onAuthenticated.emit()
+        self.onAuthStateChanged.emit()
 
     def startAuthorizationFlow(self) -> None:
         """Start a new OAuth2 authorization flow."""
@@ -100,7 +104,7 @@ class AuthorizationService:
         
         # Create the server and inject the callback and code.
         self._web_server = AuthorizationRequestServer(("0.0.0.0", self.PORT), AuthorizationRequestHandler)
-        self._web_server.setAuthorizationCallback(self._onAuthenticated)
+        self._web_server.setAuthorizationCallback(self._onAuthStateChanged)
         self._web_server.setVerificationCode(verification_code)
         
         # Start the server on a new thread.
@@ -117,11 +121,11 @@ class AuthorizationService:
         self._web_server = None
         self._web_server_thread = None
 
-    def _onAuthenticated(self, auth_response: "AuthenticationResponse") -> None:
+    def _onAuthStateChanged(self, auth_response: "AuthenticationResponse") -> None:
         """Callback method for a successful authentication flow."""
         if auth_response.success:
             self._storeAuthData(auth_response)
-            self.onAuthenticated.emit()
+            self.onAuthStateChanged.emit()
         else:
             self.onAuthenticationError.emit(auth_response.err_message)
         self._stopWebServer()  # Stop the web server at all times.
@@ -133,7 +137,7 @@ class AuthorizationService:
             preferences_data = json.loads(self._cura_preferences.getValue(self.AUTH_DATA_PREFERENCE_KEY))
             if preferences_data:
                 self._auth_data = AuthenticationResponse(**preferences_data)
-                self.onAuthenticated.emit()
+                self.onAuthStateChanged.emit()
         except ValueError as err:
             Logger.log("w", "Could not load auth data from preferences: %s", err)
 
