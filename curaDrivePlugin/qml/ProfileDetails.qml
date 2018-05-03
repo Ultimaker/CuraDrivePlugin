@@ -1,6 +1,7 @@
 // Copyright (c) 2018 Ultimaker B.V.
 import QtQuick 2.7
 import QtQuick.Controls 2.1
+import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
 import UM 1.1 as UM
@@ -8,40 +9,33 @@ import UM 1.1 as UM
 Item
 {
     id: profileDetails
-
     property var profile
     property var logoutCallback
+    height: childrenRect.height
 
-    Row
+    RowLayout
     {
         id: profileDetailsRow
-
         spacing: UM.Theme.getSize("default_margin").width * 2
-
         width: parent.width
-
-        anchors.left: parent.left
-        anchors.leftMargin: UM.Theme.getSize("default_margin").width * 3
-        anchors.top: parent.top
-        anchors.topMargin: UM.Theme.getSize("default_margin").height * 3
 
         AvatarImage
         {
             id: profileImage
             width: 96
-            height: 96
-            source: profile.profile_image_url
+            height: width
+            source: profile["profile_image_url"]
+            Layout.alignment: Qt.AlignLeft
         }
 
         Label
         {
             id: usernameLabel
-            text: profile.username
+            text: profile["username"]
             height: 96
             font: UM.Theme.getFont("large")
             color: UM.Theme.getColor("text")
-            verticalAlignment: Text.AlignVCenter
-            anchors.verticalCenter: parent.verticalCenter
+            Layout.alignment: Qt.AlignLeft
         }
 
         ActionButton
@@ -50,6 +44,7 @@ Item
             onClicked: profileDetails.logoutCallback()
             text: "Logout"
             anchors.verticalCenter: parent.verticalCenter
+            Layout.alignment: Qt.AlignRight
         }
     }
 }

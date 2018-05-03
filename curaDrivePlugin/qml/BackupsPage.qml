@@ -5,39 +5,46 @@ import QtQuick.Layouts 1.3
 
 import UM 1.3 as UM
 
-ColumnLayout
+Item
 {
     id: backupsPage
-    spacing: UM.Theme.getSize("default_margin").height * 2
-    width: parent.width
-    height: parent.height
+    anchors.fill: parent
+    anchors.margins: UM.Theme.getSize("default_margin").width * 3
 
-    ProfileDetails
+    ColumnLayout
     {
-        id: profileDetails
-        profile: CuraDrive.profile
-        logoutCallback: CuraDrive.logout
-        Layout.fillWidth: true
-        Layout.preferredHeight: childrenRect.height + 40
-    }
+        spacing: UM.Theme.getSize("default_margin").height * 2
+        width: parent.width
 
-    Label
-    {
-        id: backupTitle
-        text: "My Backups"
-        font: UM.Theme.getFont("large")
-        color: UM.Theme.getColor("text")
-        Layout.fillWidth: true
-        Layout.preferredHeight: 40
-        padding: UM.Theme.getSize("default_margin").width * 2
-    }
+        ProfileDetails
+        {
+            id: profileDetails
+            profile: CuraDrive.profile
+            logoutCallback: CuraDrive.logout
+            Layout.fillWidth: true
+        }
 
-    BackupList
-    {
-        id: backupList
-        backups: CuraDrive.backups
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        Layout.preferredHeight: 300
+        Divider
+        {
+            width: parent.width
+            Layout.fillWidth: true
+        }
+
+        Label
+        {
+            id: backupTitle
+            text: "My Backups"
+            font: UM.Theme.getFont("large")
+            color: UM.Theme.getColor("text")
+            Layout.fillWidth: true
+        }
+
+        BackupList
+        {
+            id: backupList
+            backups: CuraDrive.backups
+            Layout.fillWidth: true
+            width: parent.width
+        }
     }
 }

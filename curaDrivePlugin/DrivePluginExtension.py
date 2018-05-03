@@ -9,10 +9,10 @@ from UM.Extension import Extension
 from UM.Message import Message
 from UM.PluginRegistry import PluginRegistry
 from UM.i18n import i18nCatalog
-from curaDrivePlugin.models.BackupListModel import BackupListModel
 
 from .authorization.AuthorizationService import AuthorizationService
 from .DriveApiService import DriveApiService
+from .models.BackupListModel import BackupListModel
 
 
 class DrivePluginExtension(QObject, Extension):

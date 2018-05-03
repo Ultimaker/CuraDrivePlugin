@@ -1,6 +1,7 @@
 // Copyright (c) 2018 Ultimaker B.V.
 import QtQuick 2.7
 import QtQuick.Controls 2.1
+import QtQuick.Layouts 1.3
 
 import UM 1.1 as UM
 
@@ -8,12 +9,11 @@ Item
 {
     id: backupList
     property var backups
-    anchors.fill: parent
+    height: childrenRect.height
 
-    Column
+    ColumnLayout
     {
-        id: backupListLayout
-        height: childrenRect.height * 2
+        spacing: UM.Theme.getSize("default_margin").height * 2
 
         Repeater
         {
