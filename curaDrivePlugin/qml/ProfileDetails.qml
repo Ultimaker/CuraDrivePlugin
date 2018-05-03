@@ -22,20 +22,21 @@ Item
         AvatarImage
         {
             id: profileImage
-            width: 96
+            width: 64
             height: width
             source: profile["profile_image_url"]
-            Layout.alignment: Qt.AlignLeft
         }
 
         Label
         {
             id: usernameLabel
             text: profile["username"]
-            height: 96
             font: UM.Theme.getFont("large")
             color: UM.Theme.getColor("text")
+            verticalAlignment: Text.AlignVCenter
             Layout.alignment: Qt.AlignLeft
+            Layout.fillWidth: true
+            Layout.fillHeight: true
         }
 
         ActionButton
@@ -43,7 +44,6 @@ Item
             id: logoutButton
             onClicked: profileDetails.logoutCallback()
             text: "Logout"
-            anchors.verticalCenter: parent.verticalCenter
             Layout.alignment: Qt.AlignRight
         }
     }

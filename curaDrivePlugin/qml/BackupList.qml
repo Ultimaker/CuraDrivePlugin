@@ -11,14 +11,11 @@ Item
     property var backups
     height: childrenRect.height
 
-    ColumnLayout
+    ListView
     {
-        spacing: UM.Theme.getSize("default_margin").height * 2
-
-        Repeater
-        {
-            model: backupList.backups
-            delegate: BackupListItem {}
-        }
+        width: parent.width
+        height: childrenRect.height
+        model: backupList.backups
+        delegate: BackupListItem {}
     }
 }

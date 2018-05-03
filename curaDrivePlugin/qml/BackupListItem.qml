@@ -9,12 +9,15 @@ Rectangle
 {
     id: backupListItem
     height: childrenRect.height
-    width: childrenRect.width
-    anchors.margins: UM.Theme.getSize("default_margin").width
+    width: parent.width
+    color: mouseArea.containsMouse ? "#f2f2f2" : "transparent"
 
     RowLayout
     {
+        id: dataRow
         spacing: UM.Theme.getSize("default_margin").width * 2
+        width: parent.width
+        height: 50
 
         Label
         {
@@ -39,5 +42,13 @@ Rectangle
     {
         anchors.bottom: parent.bottom
         width: parent.width
+    }
+
+    MouseArea
+    {
+        id: mouseArea
+        anchors.fill: parent
+        onPressed: mouse.accepted = false
+        hoverEnabled: true
     }
 }

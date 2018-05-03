@@ -6,6 +6,6 @@ class Settings:
     Keeps the application settings.
     """
     OAUTH_SERVER_URL = "https://api-staging.ultimaker.com/auth/v1"
-    CALLBACK_URL = "http://localhost:1337/callback"
-    CLIENT_ID = "um---------------ultimaker_cura_drive_plugin"
     CALLBACK_PORT = 1337
+    CALLBACK_URL = "http://localhost:{}/callback".format(1337)
+    CLIENT_ID = "um---------------ultimaker_cura_drive_plugin"

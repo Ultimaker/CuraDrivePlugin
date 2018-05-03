@@ -24,6 +24,16 @@ Window
         name: "cura"
     }
 
+    Image
+    {
+        id: icon
+        anchors.fill: curaDriveDialog
+        y: 20
+        source: "background.svg"
+        fillMode: Image.PreserveAspectCrop
+        clip: true
+    }
+
     WelcomePage
     {
         id: welcomePage

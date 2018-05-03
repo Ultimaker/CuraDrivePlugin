@@ -44,7 +44,6 @@ Item
             id: backupList
             backups: CuraDrive.backups
             Layout.fillWidth: true
-            width: parent.width
         }
     }
 }

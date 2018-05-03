@@ -9,14 +9,16 @@ Button
     id: button
     property alias cursorShape: mouseArea.cursorShape
 
-    contentItem: Text {
+    contentItem: Text
+    {
         id: buttonText
         text: button.text
         color: button.hovered ? UM.Theme.getColor("button_text_hover") : UM.Theme.getColor("button_text")
         font: UM.Theme.getFont("action_button")
     }
 
-    background: Rectangle {
+    background: Rectangle
+    {
         color: button.hovered ? UM.Theme.getColor("primary_hover") : UM.Theme.getColor("primary")
         border.color: button.hovered ? UM.Theme.getColor("button_text_hover") : UM.Theme.getColor("button_text")
     }
@@ -26,6 +28,7 @@ Button
         id: mouseArea
         anchors.fill: parent
         onPressed: mouse.accepted = false
+        hoverEnabled: true
         cursorShape: hovered ? Qt.PointingHandCursor : Qt.ArrowCursor
     }
 }

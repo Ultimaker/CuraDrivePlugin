@@ -16,7 +16,7 @@ Column
     {
         id: profileImage
         fillMode: Image.PreserveAspectFit
-        source: "cura_logo.jpg"
+        source: "cura_logo.png"
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width / 3
     }
