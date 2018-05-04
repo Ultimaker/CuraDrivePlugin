@@ -14,7 +14,7 @@ Rectangle
     // Backup details toggle animation.
     Behavior on height {
         PropertyAnimation {
-            duration: 50
+            duration: 70
         }
     }
 
