@@ -3,14 +3,20 @@ import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 
-import UM 1.1 as UM
-
 Rectangle
 {
     id: backupListItem
-    height: childrenRect.height
     width: parent.width
+    height: showDetails ? dataRow.height + backupDetails.height : dataRow.height
     color: mouseArea.containsMouse ? "#f2f2f2" : "transparent"
+    property bool showDetails: false
+
+    // Backup details toggle animation.
+    Behavior on height {
+        PropertyAnimation {
+            duration: 50
+        }
+    }
 
     MouseArea
     {
@@ -29,7 +35,6 @@ Rectangle
 
         Icon
         {
-            width: parent.height
             source: "../images/folder.svg"
         }
 
@@ -45,6 +50,7 @@ Rectangle
         Label
         {
             text: model["generated_time"]
+            color: "grey"
             elide: Text.ElideRight
             Layout.minimumWidth: 50
             Layout.maximumWidth: 300
@@ -55,26 +61,23 @@ Rectangle
         {
             text: "Details"
             iconSource: "../images/folder.svg"
-            onClicked: backupDetails.toggle()
+            onClicked: backupListItem.showDetails = !backupListItem.showDetails
+        }
+
+        ActionButton
+        {
+            text: "Restore"
+            iconSource: ""
+            onClicked: CuraDrive.restoreBackup(backupDetails["backup_id"])
         }
     }
 
-    RowLayout
+    BackupListItemDetails
     {
         id: backupDetails
+        backupDetailsData: model
         width: parent.width
-        height: visible ? 300 : 0
-        visible: false
-
-        function toggle () {
-            visible = !visible
-            height = visible ? 300 : 0
-        }
-    }
-
-    Divider
-    {
-        anchors.bottom: parent.bottom
-        width: parent.width
+        visible: parent.showDetails
+        anchors.top: dataRow.bottom
     }
 }

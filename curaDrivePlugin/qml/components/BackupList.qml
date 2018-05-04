@@ -12,6 +12,22 @@ ListView
     width: parent.width
     model: backups
     clip: true
-    delegate: BackupListItem {}
+    delegate: Item
+    {
+        width: parent.width
+        height: childrenRect.height
+
+        BackupListItem
+        {
+            id: backupListItem
+            width: parent.width
+        }
+
+        Divider
+        {
+            width: parent.width
+            anchors.top: backupListItem.bottom
+        }
+    }
     ScrollBar.vertical: RightSideScrollBar {}
 }

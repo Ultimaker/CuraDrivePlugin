@@ -117,3 +117,12 @@ class DrivePluginExtension(QObject, Extension):
         :return: The backups as Qt List Model.
         """
         return self._backups_list_model
+
+    @pyqtSlot(str, name = "restoreBackup")
+    def restoreBackup(self, backup_id: str) -> None:
+        """
+        Download and restore a backup by ID.
+        :param backup_id:
+        """
+        backup = self._backups_list_model.find("backup_id", backup_id)
+        print("backup", backup_id, backup)
