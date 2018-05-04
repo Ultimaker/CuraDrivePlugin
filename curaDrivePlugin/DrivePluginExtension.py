@@ -45,6 +45,7 @@ class DrivePluginExtension(QObject, Extension):
         # Attach signals.
         self._authorization_service.onAuthStateChanged.connect(self._onLoginStateChanged)
         self._authorization_service.onAuthenticationError.connect(self._onLoginStateChanged)
+        self._drive_api_service.onRestoringStateChanged.connect(self._onRestoringStateChanged)
 
         # Register menu items.
         catalog = i18nCatalog("cura")
@@ -82,6 +83,11 @@ class DrivePluginExtension(QObject, Extension):
         if error_message:
             Message(error_message, lifetime=30, title="Cura Drive login").show()
         self.loginStateChanged.emit()
+
+    def _onRestoringStateChanged(self, is_restoring: bool = False):
+        """Callback handler for changes in the restoring state."""
+        self._is_restoring_backup = is_restoring
+        self.restoringStateChanged.emit()
 
     @pyqtProperty(bool, notify = loginStateChanged)
     def isLoggedIn(self) -> bool:
@@ -136,8 +142,6 @@ class DrivePluginExtension(QObject, Extension):
         Download and restore a backup by ID.
         :param backup_id:
         """
-        self._is_restoring_backup = True
-        self.restoringStateChanged.emit()
         index = self._backups_list_model.find("backup_id", backup_id)
         backup = self._backups_list_model.getItem(index)
-        self._drive_api_service.downloadBackup(backup)
+        self._drive_api_service.restoreBackup(backup)

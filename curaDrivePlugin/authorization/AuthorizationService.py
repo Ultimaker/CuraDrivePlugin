@@ -31,6 +31,8 @@ class AuthorizationService:
 
     # Emit signal when authentication is completed.
     onAuthStateChanged = Signal()
+
+    # Emit signal when authentication failed.
     onAuthenticationError = Signal()
 
     def __init__(self):
