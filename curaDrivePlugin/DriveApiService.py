@@ -10,7 +10,7 @@ class DriveApiService:
         # TODO: actually get data from server when that's ready.
         return [{
             "backup_id": "CxTAWARWV6EtlLk3953oQr0EgWZImWgTpwV3UlJkOs8e",
-            "download_url": "",
+            "download_url": "https://download.my.backup.com",
             "generated_time": "2018-05-03T12:15:07.787Z",
             "data": {
                 "machine_count": 10,
@@ -22,7 +22,7 @@ class DriveApiService:
             }
         }, {
             "backup_id": "CxTAWARWV6EtlLk3953oQr0EgWZImWgTpwV3UlJkOs8e",
-            "download_url": "",
+            "download_url": "https://download.my.backup.com",
             "generated_time": "2018-05-03T12:15:07.787Z",
             "data": {
                 "machine_count": 10,
@@ -34,7 +34,7 @@ class DriveApiService:
             }
         }, {
             "backup_id": "CxTAWARWV6EtlLk3953oQr0EgWZImWgTpwV3UlJkOs8e",
-            "download_url": "",
+            "download_url": "https://download.my.backup.com",
             "generated_time": "2018-05-03T12:15:07.787Z",
             "data": {
                 "machine_count": 10,
@@ -46,7 +46,7 @@ class DriveApiService:
             }
         }, {
             "backup_id": "CxTAWARWV6EtlLk3953oQr0EgWZImWgTpwV3UlJkOs8e",
-            "download_url": "",
+            "download_url": "https://download.my.backup.com",
             "generated_time": "2018-05-03T12:15:07.787Z",
             "data": {
                 "machine_count": 10,
@@ -61,5 +61,6 @@ class DriveApiService:
     def uploadBackup(self, backup_zip, metadata):
         pass
 
-    def downloadBackup(self, backup):
-        pass
+    def downloadBackup(self, backup: dict):
+        download_url = backup.get("download_url")
+        print("download_url", download_url)

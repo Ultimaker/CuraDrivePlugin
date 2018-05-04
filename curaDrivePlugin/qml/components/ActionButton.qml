@@ -11,6 +11,7 @@ Button
     property var iconSource
     property var color: UM.Theme.getColor("primary")
     property var hoverColor: UM.Theme.getColor("primary_hover")
+    property bool clickable: true
 
     contentItem: Text
     {
@@ -22,7 +23,7 @@ Button
 
     background: Rectangle
     {
-        color: button.hovered ? button.hoverColor : button.color
+        color: button.enabled ? (button.hovered ? button.hoverColor : button.color) : "lightgrey"
     }
 
     MouseArea
@@ -31,6 +32,6 @@ Button
         anchors.fill: parent
         onPressed: mouse.accepted = false
         hoverEnabled: true
-        cursorShape: hovered ? Qt.PointingHandCursor : Qt.ArrowCursor
+        cursorShape: button.enabled ? (hovered ? Qt.PointingHandCursor : Qt.ArrowCursor) : Qt.ForbiddenCursor
     }
 }

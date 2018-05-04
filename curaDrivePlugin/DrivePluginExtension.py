@@ -26,6 +26,9 @@ class DrivePluginExtension(QObject, Extension):
     # Signal emitted when the list of backups changed.
     backupsChanged = pyqtSignal()
 
+    # Signal emitted when restoring has started. Needed to prevent parallel restoring.
+    restoringStateChanged = pyqtSignal()
+
     def __init__(self):
         super(DrivePluginExtension, self).__init__()
 
@@ -33,6 +36,7 @@ class DrivePluginExtension(QObject, Extension):
         self._auth_error_message = ""
         self._drive_window = None  # type: Optional[QObject]
         self._backups_list_model = BackupListModel()
+        self._is_restoring_backup = False
 
         # Initialize services.
         self._authorization_service = AuthorizationService()  # type: AuthorizationService
@@ -118,12 +122,22 @@ class DrivePluginExtension(QObject, Extension):
         """
         return self._backups_list_model
 
+    @pyqtProperty(bool, notify = restoringStateChanged)
+    def isRestoringBackup(self) -> bool:
+        """
+        Get the current restoring state.
+        :return: Boolean if we are restoring or not.
+        """
+        return self._is_restoring_backup
+
     @pyqtSlot(str, name = "restoreBackup")
     def restoreBackup(self, backup_id: str) -> None:
         """
         Download and restore a backup by ID.
         :param backup_id:
         """
+        self._is_restoring_backup = True
+        self.restoringStateChanged.emit()
         index = self._backups_list_model.find("backup_id", backup_id)
         backup = self._backups_list_model.getItem(index)
-        print("backup", backup_id, backup)
+        self._drive_api_service.downloadBackup(backup)
