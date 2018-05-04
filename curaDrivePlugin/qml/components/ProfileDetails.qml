@@ -21,7 +21,6 @@ Item
 
         AvatarImage
         {
-            id: profileImage
             width: 64
             height: width
             source: profile["profile_image_url"]
@@ -29,7 +28,6 @@ Item
 
         Label
         {
-            id: usernameLabel
             text: profile["username"]
             font: UM.Theme.getFont("large")
             color: UM.Theme.getColor("text")
@@ -41,7 +39,15 @@ Item
 
         ActionButton
         {
-            id: logoutButton
+            onClicked: Qt.openUrlExternally("https://api-staging.ultimaker.com/account/v1/app")
+            text: "Manage Profile"
+            color: "grey"
+            iconSource: "../images/home.svg"
+            Layout.alignment: Qt.AlignRight
+        }
+
+        ActionButton
+        {
             onClicked: profileDetails.logoutCallback()
             text: "Logout"
             Layout.alignment: Qt.AlignRight
