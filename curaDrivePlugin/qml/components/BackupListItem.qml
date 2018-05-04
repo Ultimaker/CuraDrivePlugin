@@ -35,7 +35,7 @@ Rectangle
 
         Icon
         {
-            width: 32
+            width: 24
             source: "../images/folder.svg"
         }
 

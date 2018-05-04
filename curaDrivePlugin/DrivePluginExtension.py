@@ -61,12 +61,7 @@ class DrivePluginExtension(QObject, Extension):
 
     def _run(self) -> None:
         """Populate initial values."""
-        self._backups = self._drive_api_service.getBackups()
-        self.showDriveWindow()
-
-        # TODO: move these
         self._backups_list_model.loadBackups(self._drive_api_service.getBackups())
-        self.backupsChanged.emit()
 
     def showDriveWindow(self) -> None:
         """Show the Drive UI popup window."""
