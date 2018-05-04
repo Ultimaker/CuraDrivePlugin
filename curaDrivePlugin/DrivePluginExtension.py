@@ -124,5 +124,6 @@ class DrivePluginExtension(QObject, Extension):
         Download and restore a backup by ID.
         :param backup_id:
         """
-        backup = self._backups_list_model.find("backup_id", backup_id)
+        index = self._backups_list_model.find("backup_id", backup_id)
+        backup = self._backups_list_model.getItem(index)
         print("backup", backup_id, backup)

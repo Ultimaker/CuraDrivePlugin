@@ -35,6 +35,7 @@ Rectangle
 
         Icon
         {
+            width: 32
             source: "../images/folder.svg"
         }
 
@@ -68,7 +69,8 @@ Rectangle
         {
             text: "Restore"
             iconSource: ""
-            onClicked: CuraDrive.restoreBackup(backupDetails["backup_id"])
+            color: "red"
+            onClicked: CuraDrive.restoreBackup(model["backup_id"])
         }
     }
 

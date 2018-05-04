@@ -12,6 +12,14 @@ ColumnLayout
     spacing: 10
     property var backupDetailsData
 
+    // Cura version
+    BackupListItemDetailsRow
+    {
+        iconSource: "../images/cura.svg"
+        label: "Cura Version"
+        value: "v" + backupDetailsData["data"]["cura_release"]
+    }
+
     // Machine count.
     BackupListItemDetailsRow
     {

@@ -6,7 +6,6 @@ import QtQuick.Layouts 1.3
 RowLayout
 {
     id: detailsRow
-    spacing: UM.Theme.getSize("default_margin").width * 2
     width: parent.width
     height: 40
 
@@ -16,6 +15,7 @@ RowLayout
 
     Icon
     {
+        width: 24
         source: detailsRow.iconSource
     }
 

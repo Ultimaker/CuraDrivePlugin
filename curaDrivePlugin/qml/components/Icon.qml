@@ -5,6 +5,9 @@ import QtQuick.Layouts 1.3
 
 Image
 {
-    height: width
     width: parent.height
+    height: width
+    smooth: true
+    sourceSize.width: width
+    sourceSize.height: height
 }
