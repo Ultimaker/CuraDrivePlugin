@@ -62,6 +62,7 @@ Rectangle
         {
             text: "Details"
             iconSource: "../images/folder.svg"
+            color: "grey"
             onClicked: backupListItem.showDetails = !backupListItem.showDetails
         }
 
@@ -69,7 +70,6 @@ Rectangle
         {
             text: "Restore"
             iconSource: ""
-            color: "red"
             onClicked: CuraDrive.restoreBackup(model["backup_id"])
         }
     }

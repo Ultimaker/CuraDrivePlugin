@@ -9,6 +9,8 @@ Button
     id: button
     property alias cursorShape: mouseArea.cursorShape
     property var iconSource
+    property var color: UM.Theme.getColor("primary")
+    property var hoverColor: UM.Theme.getColor("primary_hover")
 
     contentItem: Text
     {
@@ -20,8 +22,7 @@ Button
 
     background: Rectangle
     {
-        color: button.hovered ? UM.Theme.getColor("primary_hover") : UM.Theme.getColor("primary")
-        border.color: button.hovered ? UM.Theme.getColor("button_text_hover") : UM.Theme.getColor("button_text")
+        color: button.hovered ? button.hoverColor : button.color
     }
 
     MouseArea
