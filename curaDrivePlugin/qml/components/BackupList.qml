@@ -5,17 +5,13 @@ import QtQuick.Layouts 1.3
 
 import UM 1.1 as UM
 
-Item
+ListView
 {
     id: backupList
     property var backups
-    height: childrenRect.height
-
-    ListView
-    {
-        width: parent.width
-        height: childrenRect.height
-        model: backupList.backups
-        delegate: BackupListItem {}
-    }
+    width: parent.width
+    model: backups
+    clip: true
+    delegate: BackupListItem {}
+    ScrollBar.vertical: RightSideScrollBar {}
 }

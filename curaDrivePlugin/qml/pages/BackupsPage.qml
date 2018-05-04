@@ -17,6 +17,7 @@ Item
     {
         spacing: UM.Theme.getSize("default_margin").height * 2
         width: parent.width
+        anchors.fill: parent
 
         ProfileDetails
         {
@@ -46,6 +47,7 @@ Item
             id: backupList
             backups: CuraDrive.backups
             Layout.fillWidth: true
+            Layout.fillHeight: true
         }
     }
 }

@@ -12,6 +12,14 @@ Rectangle
     width: parent.width
     color: mouseArea.containsMouse ? "#f2f2f2" : "transparent"
 
+    MouseArea
+    {
+        id: mouseArea
+        anchors.fill: parent
+        onPressed: mouse.accepted = false
+        hoverEnabled: true
+    }
+
     RowLayout
     {
         id: dataRow
@@ -27,7 +35,7 @@ Rectangle
 
         Label
         {
-            text: model["backup_id"]
+            text: model["data"]["description"]
             elide: Text.ElideRight
             Layout.minimumWidth: 50
             Layout.maximumWidth: 300
@@ -42,19 +50,31 @@ Rectangle
             Layout.maximumWidth: 300
             Layout.fillWidth: true
         }
+
+        ActionButton
+        {
+            text: "Details"
+            iconSource: "../images/folder.svg"
+            onClicked: backupDetails.toggle()
+        }
+    }
+
+    RowLayout
+    {
+        id: backupDetails
+        width: parent.width
+        height: visible ? 300 : 0
+        visible: false
+
+        function toggle () {
+            visible = !visible
+            height = visible ? 300 : 0
+        }
     }
 
     Divider
     {
         anchors.bottom: parent.bottom
         width: parent.width
-    }
-
-    MouseArea
-    {
-        id: mouseArea
-        anchors.fill: parent
-        onPressed: mouse.accepted = false
-        hoverEnabled: true
     }
 }

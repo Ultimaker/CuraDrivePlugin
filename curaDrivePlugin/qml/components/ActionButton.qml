@@ -8,6 +8,7 @@ Button
 {
     id: button
     property alias cursorShape: mouseArea.cursorShape
+    property var iconSource
 
     contentItem: Text
     {
