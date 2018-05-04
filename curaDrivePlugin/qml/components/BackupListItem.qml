@@ -19,10 +19,10 @@ Rectangle
         width: parent.width
         height: 50
 
-        Image
+        Icon
         {
-            height: parent.height
-            source: "folder.svg"
+            width: parent.height
+            source: "../images/folder.svg"
         }
 
         Label

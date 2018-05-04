@@ -5,6 +5,8 @@ import QtQuick.Layouts 1.3
 
 import UM 1.3 as UM
 
+import "../components"
+
 Item
 {
     id: backupsPage

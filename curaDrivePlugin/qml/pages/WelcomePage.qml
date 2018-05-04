@@ -5,6 +5,8 @@ import QtQuick.Window 2.2
 
 import UM 1.3 as UM
 
+import "../components"
+
 Column
 {
     id: welcomePage
@@ -16,7 +18,7 @@ Column
     {
         id: profileImage
         fillMode: Image.PreserveAspectFit
-        source: "cura_logo.png"
+        source: "../images/cura_logo.png"
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width / 3
     }

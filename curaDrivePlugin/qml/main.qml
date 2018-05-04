@@ -5,6 +5,9 @@ import QtQuick.Window 2.2
 
 import UM 1.3 as UM
 
+import "components"
+import "pages"
+
 Window
 {
     id: curaDriveDialog
@@ -29,7 +32,7 @@ Window
         id: icon
         anchors.fill: curaDriveDialog
         y: 50
-        source: "background.svg"
+        source: "images/background.svg"
         fillMode: Image.PreserveAspectCrop
         clip: true
     }
