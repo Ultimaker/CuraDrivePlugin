@@ -1,11 +1,16 @@
 # Copyright (c) 2017 Ultimaker B.V.
+from time import sleep
+
 from UM.Signal import Signal
 
 
 class DriveApiService:
 
-    # Emit signal when restoring started or finished.
+    # Emit signal when restoring backup started or finished.
     onRestoringStateChanged = Signal()
+
+    # Emit signal when creating backup started or finished.
+    onCreatingStateChanged = Signal()
 
     def __init__(self):
         pass
@@ -62,8 +67,10 @@ class DriveApiService:
             }
         }]
 
-    def uploadBackup(self, backup_zip, metadata):
-        pass
+    def createBackup(self):
+        self.onCreatingStateChanged.emit(True)
+        # TODO: actually create backup and upload it.
+        self.onCreatingStateChanged.emit(False)
 
     def restoreBackup(self, backup: dict) -> None:
         self.onRestoringStateChanged.emit(True)

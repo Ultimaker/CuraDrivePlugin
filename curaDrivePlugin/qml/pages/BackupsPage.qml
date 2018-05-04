@@ -49,5 +49,14 @@ Item
             Layout.fillWidth: true
             Layout.fillHeight: true
         }
+
+        ActionButton
+        {
+            id: createBackupButton
+            text: "Backup now"
+            iconSource: "../images/backup.svg"
+            enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
+            onClicked: CuraDrive.createBackup()
+        }
     }
 }

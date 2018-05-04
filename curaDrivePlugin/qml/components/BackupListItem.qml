@@ -60,15 +60,17 @@ Rectangle
 
         ActionButton
         {
-            text: "Details"
-            color: "grey"
+            color: "transparent"
+            hoverColor: "lightgrey"
+            iconSource: "../images/info.svg"
             onClicked: backupListItem.showDetails = !backupListItem.showDetails
         }
 
         ActionButton
         {
             text: "Restore"
-            enabled: !CuraDrive.isRestoringBackup
+            iconSource: "../images/restore.svg"
+            enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
             onClicked: CuraDrive.restoreBackup(model["backup_id"])
         }
     }

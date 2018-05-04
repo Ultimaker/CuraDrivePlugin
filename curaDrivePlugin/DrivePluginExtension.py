@@ -29,6 +29,9 @@ class DrivePluginExtension(QObject, Extension):
     # Signal emitted when restoring has started. Needed to prevent parallel restoring.
     restoringStateChanged = pyqtSignal()
 
+    # Signal emitted when creating has started. Needed to prevent parallel creation of backups.
+    creatingStateChanged = pyqtSignal()
+
     def __init__(self):
         super(DrivePluginExtension, self).__init__()
 
@@ -37,6 +40,7 @@ class DrivePluginExtension(QObject, Extension):
         self._drive_window = None  # type: Optional[QObject]
         self._backups_list_model = BackupListModel()
         self._is_restoring_backup = False
+        self._is_creating_backup = False
 
         # Initialize services.
         self._authorization_service = AuthorizationService()  # type: AuthorizationService
@@ -46,6 +50,7 @@ class DrivePluginExtension(QObject, Extension):
         self._authorization_service.onAuthStateChanged.connect(self._onLoginStateChanged)
         self._authorization_service.onAuthenticationError.connect(self._onLoginStateChanged)
         self._drive_api_service.onRestoringStateChanged.connect(self._onRestoringStateChanged)
+        self._drive_api_service.onCreatingStateChanged.connect(self._onCreatingStateChanged)
 
         # Register menu items.
         catalog = i18nCatalog("cura")
@@ -88,6 +93,11 @@ class DrivePluginExtension(QObject, Extension):
         """Callback handler for changes in the restoring state."""
         self._is_restoring_backup = is_restoring
         self.restoringStateChanged.emit()
+
+    def _onCreatingStateChanged(self, is_creating: bool = False):
+        """Callback handler for changes in the creation state."""
+        self._is_creating_backup = is_creating
+        self.creatingStateChanged.emit()
 
     @pyqtProperty(bool, notify = loginStateChanged)
     def isLoggedIn(self) -> bool:
@@ -136,6 +146,14 @@ class DrivePluginExtension(QObject, Extension):
         """
         return self._is_restoring_backup
 
+    @pyqtProperty(bool, notify = creatingStateChanged)
+    def isCreatingBackup(self) -> bool:
+        """
+        Get the current creating state.
+        :return: Boolean if we are creating or not.
+        """
+        return self._is_creating_backup
+
     @pyqtSlot(str, name = "restoreBackup")
     def restoreBackup(self, backup_id: str) -> None:
         """
@@ -145,3 +163,10 @@ class DrivePluginExtension(QObject, Extension):
         index = self._backups_list_model.find("backup_id", backup_id)
         backup = self._backups_list_model.getItem(index)
         self._drive_api_service.restoreBackup(backup)
+
+    @pyqtSlot(name = "createBackup")
+    def createBackup(self) -> None:
+        """
+        Create a new backup.
+        """
+        self._drive_api_service.createBackup()
