@@ -29,7 +29,7 @@ class ResponseStatus(BaseModel):
 class ResponseData(BaseModel):
     status = None  # type: Optional[ResponseStatus]
     data_stream = None  # type: bytes
-    content_type = "text_html"  # type: str
+    content_type = "text/html"  # type: str
 
 
 # Possible HTTP responses.

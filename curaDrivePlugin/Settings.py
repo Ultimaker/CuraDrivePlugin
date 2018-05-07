@@ -7,5 +7,5 @@ class Settings:
     """
     OAUTH_SERVER_URL = "https://api-staging.ultimaker.com/auth/v1"
     CALLBACK_PORT = 1337
-    CALLBACK_URL = "http://localhost:{}/callback".format(1337)
+    CALLBACK_URL = "http://localhost:{}/callback".format(CALLBACK_PORT)
     CLIENT_ID = "um---------------ultimaker_cura_drive_plugin"
