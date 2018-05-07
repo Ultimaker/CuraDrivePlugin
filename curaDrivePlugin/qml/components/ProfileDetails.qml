@@ -40,8 +40,9 @@ Item
         ActionButton
         {
             onClicked: Qt.openUrlExternally("https://api-staging.ultimaker.com/account/v1/app")
-            text: "Manage Profile"
-            color: "grey"
+            text: catalog.i18nc("@button", "Manage Profile")
+            color: UM.Theme.getColor("button")
+            hoverColor: UM.Theme.getColor("button_hover")
             iconSource: "../images/home.svg"
             Layout.alignment: Qt.AlignRight
         }
@@ -49,7 +50,9 @@ Item
         ActionButton
         {
             onClicked: profileDetails.logoutCallback()
-            text: "Logout"
+            text: catalog.i18nc("@button", "Sign Out")
+            color: UM.Theme.getColor("button")
+            hoverColor: UM.Theme.getColor("button_hover")
             Layout.alignment: Qt.AlignRight
         }
     }

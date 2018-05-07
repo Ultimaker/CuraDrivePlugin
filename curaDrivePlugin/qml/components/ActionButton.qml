@@ -35,7 +35,7 @@ Button
 
     background: Rectangle
     {
-        color: button.enabled ? (button.hovered ? button.hoverColor : button.color) : "lightgrey"
+        color: button.enabled ? (button.hovered ? button.hoverColor : button.color) : UM.Theme.getColor("secondary")
     }
 
     MouseArea

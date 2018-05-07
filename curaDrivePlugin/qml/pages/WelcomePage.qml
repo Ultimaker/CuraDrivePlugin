@@ -26,7 +26,7 @@ Column
     Label
     {
         id: welcomeTextLabel
-        text: "Welcome to Cura Drive. If you log in using your Ultimaker account, you can backup and restore your Cura configurations!"
+        text: catalog.i18nc("@description", "Cura Drive let's you backup and restore your Cura configuration.")
         width: parent.width / 2
         font: UM.Theme.getFont("default")
         color: UM.Theme.getColor("text")
@@ -39,7 +39,7 @@ Column
     {
         id: loginButton
         onClicked: CuraDrive.login()
-        text: "Login"
+        text: catalog.i18nc("@button", "Sign In")
         anchors.horizontalCenter: parent.horizontalCenter
     }
 }

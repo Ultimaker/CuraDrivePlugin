@@ -3,12 +3,14 @@ import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 
+import UM 1.1 as UM
+
 Rectangle
 {
     id: backupListItem
     width: parent.width
     height: showDetails ? dataRow.height + backupDetails.height : dataRow.height
-    color: mouseArea.containsMouse ? "#f2f2f2" : "transparent"
+    color: mouseArea.containsMouse ? UM.Theme.getColor("secondary") : "transparent"
     property bool showDetails: false
 
     // Backup details toggle animation.
@@ -63,7 +65,7 @@ Rectangle
         ActionButton
         {
             color: "transparent"
-            hoverColor: "lightgrey"
+            hoverColor: UM.Theme.getColor("secondary")
             iconSource: "../images/info.svg"
             onClicked: backupListItem.showDetails = !backupListItem.showDetails
         }

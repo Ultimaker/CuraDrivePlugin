@@ -4,6 +4,9 @@ from cura.Api import CuraApi
 
 
 class DriveApiService:
+    """
+    The DriveApiService is responsible for interacting with the CuraDrive API and Cura's backup handling.
+    """
 
     # Emit signal when restoring backup started or finished.
     onRestoringStateChanged = Signal()
@@ -13,9 +16,6 @@ class DriveApiService:
 
     # Re-used instance of the Cura plugin API.
     api = CuraApi()
-
-    def __init__(self):
-        pass
 
     def getBackups(self):
         # TODO: actually get data from server when that's ready.

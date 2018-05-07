@@ -16,7 +16,7 @@ ColumnLayout
     BackupListItemDetailsRow
     {
         iconSource: "../images/cura.svg"
-        label: "Cura Version"
+        label: catalog.i18nc("@backuplist:label", "Cura Version")
         value: "v" + backupDetailsData["data"]["cura_release"]
     }
 
@@ -24,7 +24,7 @@ ColumnLayout
     BackupListItemDetailsRow
     {
         iconSource: "../images/printer.svg"
-        label: "Machines"
+        label: catalog.i18nc("@backuplist:label", "Machines")
         value: backupDetailsData["data"]["machine_count"]
     }
 
@@ -32,7 +32,7 @@ ColumnLayout
     BackupListItemDetailsRow
     {
         iconSource: "../images/material.svg"
-        label: "Materials"
+        label: catalog.i18nc("@backuplist:label", "Materials")
         value: backupDetailsData["data"]["material_count"]
     }
 
@@ -40,7 +40,7 @@ ColumnLayout
     BackupListItemDetailsRow
     {
         iconSource: "../images/profile.svg"
-        label: "Profiles"
+        label: catalog.i18nc("@backuplist:label", "Profiles")
         value: backupDetailsData["data"]["profile_count"]
     }
 
@@ -48,7 +48,7 @@ ColumnLayout
     BackupListItemDetailsRow
     {
         iconSource: "../images/plugin.svg"
-        label: "Plugins"
+        label: catalog.i18nc("@backuplist:label", "Plugins")
         value: backupDetailsData["data"]["plugin_count"]
     }
 

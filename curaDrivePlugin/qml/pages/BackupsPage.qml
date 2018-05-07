@@ -36,7 +36,7 @@ Item
         Label
         {
             id: backupTitle
-            text: "My Backups"
+            text: catalog.i18nc("@title", "My Backups")
             font: UM.Theme.getFont("large")
             color: UM.Theme.getColor("text")
             Layout.fillWidth: true
@@ -53,7 +53,7 @@ Item
         ActionButton
         {
             id: createBackupButton
-            text: "Backup now"
+            text: catalog.i18nc("@button", "Backup Now")
             iconSource: "../images/backup.svg"
             enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
             onClicked: CuraDrive.createBackup()

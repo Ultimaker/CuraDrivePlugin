@@ -11,20 +11,18 @@ import "pages"
 Window
 {
     id: curaDriveDialog
-
     minimumWidth: Math.round(UM.Theme.getSize("modal_window_minimum").width)
     minimumHeight: Math.round(UM.Theme.getSize("modal_window_minimum").height)
     width: minimumWidth
     height: minimumHeight
-
+    color: "white"
     title: catalog.i18nc("@title:window", "Cura Drive")
 
-    color: "white"
-
+    // Globally available.
     UM.I18nCatalog
     {
         id: catalog
-        name: "cura"
+        name: "cura_drive"
     }
 
     Image
