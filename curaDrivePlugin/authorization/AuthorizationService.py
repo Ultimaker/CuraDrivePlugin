@@ -89,7 +89,7 @@ class AuthorizationService:
         query_string = urlencode({
             "client_id": Settings.CLIENT_ID,
             "redirect_uri": Settings.CALLBACK_URL,
-            "scope": "user.read",
+            "scope": Settings.CLIENT_SCOPES,
             "response_type": "code",
             "state": "CuraDriveIsAwesome",
             "code_challenge": challenge_code,

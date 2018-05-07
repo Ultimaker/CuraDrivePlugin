@@ -33,7 +33,8 @@ class AuthorizationHelpers:
             "redirect_uri": Settings.CALLBACK_URL,
             "grant_type": "authorization_code",
             "code": authorization_code,
-            "code_verifier": verification_code
+            "code_verifier": verification_code,
+            "scope": Settings.CLIENT_SCOPES
         }))
 
     @classmethod
@@ -47,7 +48,8 @@ class AuthorizationHelpers:
             "client_id": Settings.CLIENT_ID,
             "redirect_uri": Settings.CALLBACK_URL,
             "grant_type": "refresh_token",
-            "refresh_token": refresh_token
+            "refresh_token": refresh_token,
+            "scope": Settings.CLIENT_SCOPES
         }))
 
     @staticmethod

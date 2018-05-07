@@ -44,7 +44,7 @@ class DrivePluginExtension(QObject, Extension):
 
         # Initialize services.
         self._authorization_service = AuthorizationService()  # type: AuthorizationService
-        self._drive_api_service = DriveApiService()  # type: DriveApiService
+        self._drive_api_service = DriveApiService(self._authorization_service)  # type: DriveApiService
 
         # Attach signals.
         self._authorization_service.onAuthStateChanged.connect(self._onLoginStateChanged)
