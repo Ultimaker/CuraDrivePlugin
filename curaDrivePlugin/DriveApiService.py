@@ -8,14 +8,14 @@ class DriveApiService:
     The DriveApiService is responsible for interacting with the CuraDrive API and Cura's backup handling.
     """
 
+    # Re-used instance of the Cura plugin API.
+    api = CuraApi()
+
     # Emit signal when restoring backup started or finished.
     onRestoringStateChanged = Signal()
 
     # Emit signal when creating backup started or finished.
     onCreatingStateChanged = Signal()
-
-    # Re-used instance of the Cura plugin API.
-    api = CuraApi()
 
     def getBackups(self):
         # TODO: actually get data from server when that's ready.
@@ -61,8 +61,13 @@ class DriveApiService:
         self.onCreatingStateChanged.emit(True)
 
         backup_zip_file, backup_meta_data = self.api.backups.createBackup()
-        # TODO: upload the content.
 
+        if not backup_zip_file or not backup_meta_data:
+            # TODO: fetch error from Cura.
+            self.onCreatingStateChanged.emit(False, "Could not create backup.")
+            return
+
+        # TODO: upload the content.
         self.onCreatingStateChanged.emit(False)
 
     def restoreBackup(self, backup: dict) -> None:

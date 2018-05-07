@@ -80,16 +80,20 @@ class DrivePluginExtension(QObject, Extension):
     def _onLoginStateChanged(self, error_message: str = None):
         """Callback handler for changes in the login state."""
         if error_message:
-            Message(error_message, lifetime=30, title="Cura Drive login").show()
+            Message(error_message, lifetime=30).show()
         self.loginStateChanged.emit()
 
-    def _onRestoringStateChanged(self, is_restoring: bool = False):
+    def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None):
         """Callback handler for changes in the restoring state."""
+        if error_message:
+            Message(error_message, lifetime=10).show()
         self._is_restoring_backup = is_restoring
         self.restoringStateChanged.emit()
 
-    def _onCreatingStateChanged(self, is_creating: bool = False):
+    def _onCreatingStateChanged(self, is_creating: bool = False, error_message: str = None):
         """Callback handler for changes in the creation state."""
+        if error_message:
+            Message(error_message, lifetime=10).show()
         self._is_creating_backup = is_creating
         self.creatingStateChanged.emit()
 
