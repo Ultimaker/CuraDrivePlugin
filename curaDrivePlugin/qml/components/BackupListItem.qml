@@ -12,8 +12,10 @@ Rectangle
     property bool showDetails: false
 
     // Backup details toggle animation.
-    Behavior on height {
-        PropertyAnimation {
+    Behavior on height
+    {
+        PropertyAnimation
+        {
             duration: 70
         }
     }

@@ -5,6 +5,10 @@ from typing import Optional, Callable
 from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs
 
+from UM import i18nCatalog
+
+# Plugin imports need to be relative to work in final builds.
+from ..Settings import Settings
 from .AuthorizationHelpers import AuthorizationHelpers
 from .models import AuthenticationResponse, ResponseData, HTTP_STATUS, ResponseStatus
 
@@ -14,6 +18,14 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
     This handler handles all HTTP requests on the local web server.
     It also requests the access token for the 2nd stage of the OAuth flow.
     """
+
+    catalog = i18nCatalog(Settings.I18N_CATALOG_ID)
+
+    # Translatable messages for this handler.
+    translatable_messages = {
+        "login_failed_permission": catalog.i18nc("@info:login_status", "Please allow Cura Drive to access your data."),
+        "login_failed_unknown": catalog.i18nc("@info:login_status", "An unknown error occurred, check the logs."),
+    }
 
     def __init__(self, request, client_address, server):
         super().__init__(request, client_address, server)
@@ -58,10 +70,11 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
         elif self._queryGet(query, "error_code") == "user_denied":
             # Otherwise we show an error message (probably the user clicked "Deny" in the auth dialog).
             token_response = AuthenticationResponse(success = False,
-                                                    err_message = "Please allow Cura Drive to access your data.")
+                                                    err_message = self.translatable_messages["login_failed_permission"])
         else:
+            # We don't know what went wrong here, so instruct the user to check the logs.
             token_response = AuthenticationResponse(success = False,
-                                                    error_message = "Unknown error occurred, please check the logs.")
+                                                    error_message = self.translatable_messages["login_failed_unknown"])
 
         with open(os.path.join(os.path.dirname(__file__), "html", "callback.html"), "rb") as data:
             return ResponseData(status = HTTP_STATUS["OK"], content_type = "text/html", data_stream = data.read()),\

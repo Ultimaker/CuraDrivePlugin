@@ -9,3 +9,5 @@ class Settings:
     CALLBACK_PORT = 1337
     CALLBACK_URL = "http://localhost:{}/callback".format(CALLBACK_PORT)
     CLIENT_ID = "um---------------ultimaker_cura_drive_plugin"
+
+    I18N_CATALOG_ID = "cura_drive"
