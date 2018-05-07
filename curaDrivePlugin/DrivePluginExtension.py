@@ -8,8 +8,8 @@ from UM.Application import Application
 from UM.Extension import Extension
 from UM.Message import Message
 from UM.PluginRegistry import PluginRegistry
-from UM.i18n import i18nCatalog
 
+from .Settings import Settings
 from .authorization.AuthorizationService import AuthorizationService
 from .DriveApiService import DriveApiService
 from .models.BackupListModel import BackupListModel
@@ -53,8 +53,7 @@ class DrivePluginExtension(QObject, Extension):
         self._drive_api_service.onCreatingStateChanged.connect(self._onCreatingStateChanged)
 
         # Register menu items.
-        catalog = i18nCatalog("cura")
-        self.addMenuItem(catalog.i18nc("@item:inmenu", "Cura Drive"), self.showDriveWindow)
+        self.addMenuItem(Settings.translatable_messages["extension_menu_entry"], self.showDriveWindow)
 
         # Initialize data after Cura has started.
         Application.getInstance().applicationRunning.connect(self._run)
