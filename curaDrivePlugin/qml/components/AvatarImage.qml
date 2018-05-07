@@ -18,7 +18,7 @@ Item
         source: avatar.source ? avatar.source : "../images/avatar_default.png"
         sourceSize: Qt.size(parent.width, parent.height)
         width: parent.width
-        height :parent.height
+        height: parent.height
         fillMode: Image.PreserveAspectCrop
         visible: false
     }

@@ -12,7 +12,6 @@ Button
     property var iconSource: ""
     property var color: UM.Theme.getColor("primary")
     property var hoverColor: UM.Theme.getColor("primary_hover")
-    property bool clickable: true
 
     contentItem: RowLayout
     {
@@ -24,7 +23,7 @@ Button
             visible: button.iconSource != ""
         }
 
-        Text
+        Label
         {
             id: buttonText
             text: button.text
