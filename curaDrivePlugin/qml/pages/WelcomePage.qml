@@ -10,7 +10,7 @@ import "../components"
 Column
 {
     id: welcomePage
-    spacing: UM.Theme.getSize("default_margin").height * 2
+    spacing: UM.Theme.getSize("wide_margin").height
     width: parent.width
     topPadding: 150
 
