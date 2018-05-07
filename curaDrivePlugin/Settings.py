@@ -22,4 +22,5 @@ class Settings:
                                                       "Please allow Cura Drive to access your data."),
         "login_failed_unknown": I18N_CATALOG.i18nc("@info:login_status",
                                                    "An unknown error occurred, check the logs."),
+        "backup_failed": I18N_CATALOG.i18nc("@info:backup_status", "Creating the backup failed.")
     }
