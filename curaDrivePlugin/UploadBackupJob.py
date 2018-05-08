@@ -21,7 +21,7 @@ class UploadBackupJob(Job):
         self.backup_upload_error_message = ""
 
     def run(self):
-        Message(Settings.translatable_messages["uploading_backup"]).show()
+        Message(Settings.translatable_messages["uploading_backup"], lifetime=10).show()
 
         backup_upload = requests.put(self._signed_upload_url, data = self._backup_zip)
         if backup_upload.status_code != 200:

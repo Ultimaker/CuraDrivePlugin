@@ -96,8 +96,9 @@ class DrivePluginExtension(QObject, Extension):
         if error_message:
             Message(error_message, lifetime=10).show()
         self._is_creating_backup = is_creating
-        self.creatingStateChanged.emit()
-        self.backupsChanged.emit()  # After uploading, we have a new entry in the list, so we should refresh it.
+        if not is_creating:
+            # We've finished creating a new backup, to the list has to be updated.
+            self.refreshBackups()
 
     @pyqtProperty(bool, notify = loginStateChanged)
     def isLoggedIn(self) -> bool:
