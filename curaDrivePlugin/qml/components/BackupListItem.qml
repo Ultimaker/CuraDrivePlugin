@@ -5,12 +5,11 @@ import QtQuick.Layouts 1.3
 
 import UM 1.1 as UM
 
-Rectangle
+Item
 {
     id: backupListItem
     width: parent.width
     height: showDetails ? dataRow.height + backupDetails.height : dataRow.height
-    color: mouseArea.containsMouse ? UM.Theme.getColor("secondary") : "transparent"
     property bool showDetails: false
 
     // Backup details toggle animation.
@@ -20,14 +19,6 @@ Rectangle
         {
             duration: 70
         }
-    }
-
-    MouseArea
-    {
-        id: mouseArea
-        anchors.fill: parent
-        onPressed: mouse.accepted = false
-        hoverEnabled: true
     }
 
     RowLayout
@@ -40,7 +31,9 @@ Rectangle
         ActionButton
         {
             color: "transparent"
-            hoverColor: UM.Theme.getColor("secondary")
+            hoverColor: "transparent"
+            textColor: UM.Theme.getColor("text")
+            textHoverColor: UM.Theme.getColor("primary")
             iconSource: "../images/info.svg"
             onClicked: backupListItem.showDetails = !backupListItem.showDetails
         }
@@ -56,9 +49,11 @@ Rectangle
 
         ActionButton
         {
+            text: catalog.i18nc("@button", "Restore")
             color: "transparent"
-            hoverColor: UM.Theme.getColor("secondary")
-            iconSource: "../images/restore.svg"
+            hoverColor: "transparent"
+            textColor: UM.Theme.getColor("text")
+            textHoverColor: UM.Theme.getColor("text_hover")
             enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
             onClicked: CuraDrive.restoreBackup(model["backup_id"])
         }
@@ -66,7 +61,9 @@ Rectangle
         ActionButton
         {
             color: "transparent"
-            hoverColor: UM.Theme.getColor("secondary")
+            hoverColor: "transparent"
+            textColor: UM.Theme.getColor("setting_validation_error_background")
+            textHoverColor: UM.Theme.getColor("setting_validation_error_background")
             iconSource: "../images/delete.svg"
             onClicked: CuraDrive.deleteBackup(model["backup_id"])
         }

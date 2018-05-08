@@ -8,7 +8,7 @@ from UM.Logger import Logger
 from UM.Message import Message
 from UM.Signal import Signal
 from cura.Api import CuraApi
-from curaDrivePlugin.UploadBackupJob import UploadBackupJob
+from .UploadBackupJob import UploadBackupJob
 from .authorization.AuthorizationService import AuthorizationService
 from .Settings import Settings
 
@@ -46,7 +46,8 @@ class DriveApiService:
         })
         if backup_list_request.status_code not in (200, 201):
             Logger.log("w", "Could not get backups list from remote: %s", backup_list_request.text)
-            Message(Settings.translatable_messages["get_backups_error"]).show()
+            Message(Settings.translatable_messages["get_backups_error"], title = Settings.MESSAGE_TITLE,
+                    lifetime = 10).show()
             return []
         return backup_list_request.json()["data"]
 

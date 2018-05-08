@@ -13,9 +13,15 @@ RowLayout
     property var label
     property var value
 
+    // Spacing.
+    Item
+    {
+        width: 40
+    }
+
     Icon
     {
-        width: 24
+        width: 18
         iconSource: detailsRow.iconSource
     }
 

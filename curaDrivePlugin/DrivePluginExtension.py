@@ -74,7 +74,7 @@ class DrivePluginExtension(QObject, Extension):
     def _onLoginStateChanged(self, logged_in: bool = False, error_message: str = None):
         """Callback handler for changes in the login state."""
         if error_message:
-            Message(error_message, lifetime=30).show()
+            Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 30).show()
         if logged_in:
             self.refreshBackups()
         self.loginStateChanged.emit()
@@ -82,14 +82,14 @@ class DrivePluginExtension(QObject, Extension):
     def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None):
         """Callback handler for changes in the restoring state."""
         if error_message:
-            Message(error_message, lifetime=10).show()
+            Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 10).show()
         self._is_restoring_backup = is_restoring
         self.restoringStateChanged.emit()
 
     def _onCreatingStateChanged(self, is_creating: bool = False, error_message: str = None):
         """Callback handler for changes in the creation state."""
         if error_message:
-            Message(error_message, lifetime=10).show()
+            Message(error_message, title = Settings.MESSAGE_TITLE, lifetime=10).show()
         self._is_creating_backup = is_creating
         if not is_creating:
             # We've finished creating a new backup, to the list has to be updated.

@@ -17,6 +17,8 @@ class Settings:
 
     I18N_CATALOG_ID = "cura_drive"
     I18N_CATALOG = i18nCatalog(I18N_CATALOG_ID)
+    
+    MESSAGE_TITLE = "Cura Drive"
 
     # Translatable messages for the entire plugin.
     translatable_messages = {

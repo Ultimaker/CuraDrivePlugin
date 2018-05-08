@@ -20,6 +20,8 @@ Item
         source: icon.iconSource
         sourceSize.width: width
         sourceSize.height: height
+        antialiasing: true
+        visible: false
     }
 
     ColorOverlay
@@ -27,5 +29,6 @@ Item
         anchors.fill: iconImage
         source: iconImage
         color: icon.color
+        antialiasing: true
     }
 }

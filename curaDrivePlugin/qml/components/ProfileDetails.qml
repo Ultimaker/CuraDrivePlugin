@@ -39,21 +39,25 @@ Item
 
         ActionButton
         {
-            onClicked: Qt.openUrlExternally("https://api-staging.ultimaker.com/account/v1/app")
             text: catalog.i18nc("@button", "Manage Profile")
             color: "transparent"
+            hoverColor: "transparent"
             textColor: UM.Theme.getColor("text")
+            textHoverColor: UM.Theme.getColor("text_link")
             iconSource: "../images/home.svg"
             Layout.alignment: Qt.AlignRight
+            onClicked: Qt.openUrlExternally("https://api-staging.ultimaker.com/account/v1/app")
         }
 
         ActionButton
         {
-            onClicked: profileDetails.logoutCallback()
             text: catalog.i18nc("@button", "Sign Out")
             color: "transparent"
+            hoverColor: "transparent"
             textColor: UM.Theme.getColor("text")
+            textHoverColor: UM.Theme.getColor("text_link")
             Layout.alignment: Qt.AlignRight
+            onClicked: profileDetails.logoutCallback()
         }
     }
 }
