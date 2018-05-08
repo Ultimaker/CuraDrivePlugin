@@ -69,7 +69,7 @@ class AuthorizationHelpers:
         if not token_data:
             return AuthenticationResponse(success=False, err_message="Could not read response.")
 
-        if token_response.status_code != 200:
+        if token_response.status_code not in (200, 201):
             return AuthenticationResponse(success=False, err_message=token_data["error_description"])
 
         return AuthenticationResponse(success=True,
@@ -86,7 +86,7 @@ class AuthorizationHelpers:
         :return: The public key as string.
         """
         key_request = requests.get("{}/public-key".format(Settings.OAUTH_SERVER_URL))
-        if key_request.status_code != 200:
+        if key_request.status_code not in (200, 201):
             Logger.log("w", "Could not retrieve public key from authorization server: %s", key_request.text)
             return None
         return key_request.text

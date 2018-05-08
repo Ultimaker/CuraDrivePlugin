@@ -62,6 +62,14 @@ Rectangle
 
         ActionButton
         {
+            color: "transparent"
+            hoverColor: UM.Theme.getColor("secondary")
+            iconSource: "../images/delete.svg"
+            onClicked: CuraDrive.deleteBackup(model["backup_id"])
+        }
+
+        ActionButton
+        {
             text: "Restore"
             iconSource: "../images/restore.svg"
             enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup

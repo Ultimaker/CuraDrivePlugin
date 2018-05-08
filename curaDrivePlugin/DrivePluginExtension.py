@@ -168,7 +168,7 @@ class DrivePluginExtension(QObject, Extension):
     def restoreBackup(self, backup_id: str) -> None:
         """
         Download and restore a backup by ID.
-        :param backup_id:
+        :param backup_id: The ID of the backup.
         """
         index = self._backups_list_model.find("backup_id", backup_id)
         backup = self._backups_list_model.getItem(index)
@@ -180,3 +180,12 @@ class DrivePluginExtension(QObject, Extension):
         Create a new backup.
         """
         self._drive_api_service.createBackup()
+
+    @pyqtSlot(str, name = "deleteBackup")
+    def deleteBackup(self, backup_id: str) -> None:
+        """
+        Delete a backup by ID.
+        :param backup_id: The ID of the backup.
+        """
+        self._drive_api_service.deleteBackup(backup_id)
+        self.refreshBackups()

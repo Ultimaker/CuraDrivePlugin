@@ -24,7 +24,7 @@ class UploadBackupJob(Job):
         Message(Settings.translatable_messages["uploading_backup"], lifetime=10).show()
 
         backup_upload = requests.put(self._signed_upload_url, data = self._backup_zip)
-        if backup_upload.status_code != 200:
+        if backup_upload.status_code not in (200, 201):
             self.backup_upload_error_message = backup_upload.text
             Logger.log("w", "Could not upload backup file: %s", backup_upload.text)
             Message(Settings.translatable_messages["uploading_backup_error"]).show()

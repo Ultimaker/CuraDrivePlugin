@@ -20,6 +20,7 @@ class DriveApiService:
 
     GET_BACKUPS_URL = "{}/backups".format(Settings.DRIVE_API_URL)
     PUT_BACKUP_URL = "{}/backups".format(Settings.DRIVE_API_URL)
+    DELETE_BACKUP_URL = "{}/backups".format(Settings.DRIVE_API_URL)
 
     # Re-used instance of the Cura plugin API.
     api = CuraApi()
@@ -38,7 +39,7 @@ class DriveApiService:
         backup_list_request = requests.get(self.GET_BACKUPS_URL, headers={
             "Authorization": "Bearer {}".format(self._authorization_service.getAccessToken())
         })
-        if backup_list_request.status_code != 200:
+        if backup_list_request.status_code not in (200, 201):
             Logger.log("w", "Could not get backups list from remote: %s", backup_list_request.text)
             Message(Settings.translatable_messages["get_backups_error"]).show()
             return []
@@ -91,6 +92,20 @@ class DriveApiService:
         # self.api.backups.restoreBackup()
         # TODO: download backup file and offer to Cura.
 
+    def deleteBackup(self, backup_id: str) -> bool:
+        """
+        Delete a backup from the server by ID.
+        :param backup_id: The ID of the backup to delete.
+        :return: Success bool.
+        """
+        delete_backup = requests.delete("{}/{}".format(self.DELETE_BACKUP_URL, backup_id), headers = {
+            "Authorization": "Bearer {}".format(self._authorization_service.getAccessToken())
+        })
+        if delete_backup.status_code not in (200, 201):
+            Logger.log("w", "Could not delete backup: %s", delete_backup.text)
+            return False
+        return True
+
     def _requestBackupUpload(self, backup_metadata: dict, backup_size: int) -> Optional[str]:
         """
         Request a backup upload slot from the API.
@@ -106,7 +121,7 @@ class DriveApiService:
         }, headers={
             "Authorization": "Bearer {}".format(self._authorization_service.getAccessToken())
         })
-        if backup_upload_request.status_code != 200:
+        if backup_upload_request.status_code not in (200, 201):
             Logger.log("w", "Could not request backup upload: %s", backup_upload_request.text)
             return None
         return backup_upload_request.json()["data"]["upload_url"]
