@@ -55,19 +55,12 @@ class DrivePluginExtension(QObject, Extension):
         # Register menu items.
         self.addMenuItem(Settings.translatable_messages["extension_menu_entry"], self.showDriveWindow)
 
-        # Initialize data after Cura has started.
-        Application.getInstance().applicationRunning.connect(self._run)
-
-    def _run(self) -> None:
-        """Populate initial values."""
-        self._backups_list_model.loadBackups(self._drive_api_service.getBackups())
-        self.backupsChanged.emit()
-
     def showDriveWindow(self) -> None:
         """Show the Drive UI popup window."""
         if not self._drive_window:
             self._drive_window = self.createDriveWindow()
         self._drive_window.show()
+        self.refreshBackups()
 
     def createDriveWindow(self) -> Optional["QObject"]:
         """
@@ -78,10 +71,12 @@ class DrivePluginExtension(QObject, Extension):
                             "curaDrivePlugin/qml/main.qml")
         return Application.getInstance().createQmlComponent(path, {"CuraDrive": self})
 
-    def _onLoginStateChanged(self, error_message: str = None):
+    def _onLoginStateChanged(self, logged_in: bool = False, error_message: str = None):
         """Callback handler for changes in the login state."""
         if error_message:
             Message(error_message, lifetime=30).show()
+        if logged_in:
+            self.refreshBackups()
         self.loginStateChanged.emit()
 
     def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None):

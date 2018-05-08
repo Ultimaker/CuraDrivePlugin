@@ -36,8 +36,13 @@ class DriveApiService:
 
     def getBackups(self) -> list:
         """Get all backups from the API."""
+        access_token = self._getAccessToken()
+        if not access_token:
+            Logger.log("w", "Could not get access token.")
+            return []
+
         backup_list_request = requests.get(self.GET_BACKUPS_URL, headers={
-            "Authorization": "Bearer {}".format(self._authorization_service.getAccessToken())
+            "Authorization": "Bearer {}".format(access_token)
         })
         if backup_list_request.status_code not in (200, 201):
             Logger.log("w", "Could not get backups list from remote: %s", backup_list_request.text)
@@ -98,8 +103,13 @@ class DriveApiService:
         :param backup_id: The ID of the backup to delete.
         :return: Success bool.
         """
+        access_token = self._getAccessToken()
+        if not access_token:
+            Logger.log("w", "Could not get access token.")
+            return False
+
         delete_backup = requests.delete("{}/{}".format(self.DELETE_BACKUP_URL, backup_id), headers = {
-            "Authorization": "Bearer {}".format(self._authorization_service.getAccessToken())
+            "Authorization": "Bearer {}".format(access_token)
         })
         if delete_backup.status_code not in (200, 201):
             Logger.log("w", "Could not delete backup: %s", delete_backup.text)
@@ -131,3 +141,6 @@ class DriveApiService:
 
     def _passBackupToCura(self):
         pass
+
+    def _getAccessToken(self) -> Optional[str]:
+        return self._authorization_service.getAccessToken()

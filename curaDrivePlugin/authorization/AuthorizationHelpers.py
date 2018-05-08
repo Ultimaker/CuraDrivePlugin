@@ -99,7 +99,13 @@ class AuthorizationHelpers:
         :param public_key: The public key to decode with.
         :return: Dict containing some profile data.
         """
-        return jwt.decode(token, public_key, algorithms=["RS512"])
+        try:
+            return jwt.decode(token, public_key, algorithms=["RS512"])
+        except jwt.exceptions.ExpiredSignatureError:
+            Logger.log("d", "JWT token was expired, it should be refreshed.")
+        except jwt.exceptions.InvalidTokenError as error:
+            Logger.log("d", "JWT token was invalid: %s", error)
+        return None
 
     @staticmethod
     def generateVerificationCode(code_length: int = 16) -> str:
