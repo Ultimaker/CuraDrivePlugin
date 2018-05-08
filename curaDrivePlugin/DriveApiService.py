@@ -1,5 +1,6 @@
 # Copyright (c) 2017 Ultimaker B.V.
 from datetime import datetime
+from threading import Thread
 from typing import Optional
 
 import requests
@@ -7,6 +8,7 @@ import requests
 from UM.Logger import Logger
 from UM.Signal import Signal
 from cura.Api import CuraApi
+from curaDrivePlugin.UploadBackupJob import UploadBackupJob
 from .authorization.AuthorizationService import AuthorizationService
 from .Settings import Settings
 
@@ -32,6 +34,7 @@ class DriveApiService:
         self._authorization_service = authorization_service
 
     def getBackups(self) -> list:
+        """Get all backups from the API."""
         backup_list_request = requests.get(self.GET_BACKUPS_URL, headers={
             "Authorization": "Bearer {}".format(self._authorization_service.getAccessToken())
         })
@@ -59,17 +62,25 @@ class DriveApiService:
             return
 
         # Upload the backup to storage.
-        uploaded = self._uploadBackupFile(backup_upload_url, backup_zip_file)
-        if not uploaded:
-            self.onCreatingStateChanged.emit(False, "Could not upload backup.")
-            return
+        upload_backup_job = UploadBackupJob(backup_upload_url, backup_zip_file)
+        upload_backup_job.finished.connect(self._onUploadFinished)
+        upload_backup_job.start()
 
-        self.onCreatingStateChanged.emit(False)
+    def _onUploadFinished(self, job: "UploadBackupJob") -> None:
+        """
+        Callback handler for the upload job.
+        :param job: The executed job.
+        """
+        if job.backup_upload_error_message != "":
+            # If the job contains an error message we pass it along so the UI can display it.
+            self.onCreatingStateChanged.emit(False, job.backup_upload_error_message)
+        else:
+            self.onCreatingStateChanged.emit(False)
 
     def restoreBackup(self, backup: dict) -> None:
         """
         Restore a previously exported backup from cloud storage.
-        :param backup:
+        :param backup: A dict containing an entry from the API list response.
         """
         self.onRestoringStateChanged.emit(True)
         download_url = backup.get("download_url")
@@ -95,12 +106,9 @@ class DriveApiService:
             "Authorization": "Bearer {}".format(self._authorization_service.getAccessToken())
         })
         if backup_upload_request.status_code != 200:
-            Logger.log("w", "Could not upload backup file: %s", backup_upload_request.text)
+            Logger.log("w", "Could not request backup upload: %s", backup_upload_request.text)
             return None
         return backup_upload_request.json()["data"]["upload_url"]
-
-    def _uploadBackupFile(self, signed_upload_url: str, backup_zip: bytes) -> bool:
-        pass
 
     def _downloadBackupFile(self):
         pass
