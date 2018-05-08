@@ -17,7 +17,7 @@ ColumnLayout
     {
         iconSource: "../images/cura.svg"
         label: catalog.i18nc("@backuplist:label", "Cura Version")
-        value: "v" + backupDetailsData["data"]["cura_release"]
+        value: backupDetailsData["data"]["cura_release"]
     }
 
     // Machine count.

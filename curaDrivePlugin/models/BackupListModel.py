@@ -27,7 +27,7 @@ class BackupListModel(ListModel):
             items.append({
                 "backup_id": backup["backup_id"],
                 "download_url": backup["download_url"],
-                "generated_time": "",  # TODO: not implemented on server yet: backup["generated_time"],
+                "generated_time": backup["generated_time"],
                 "data": backup["metadata"]
             })
         self.setItems(items)

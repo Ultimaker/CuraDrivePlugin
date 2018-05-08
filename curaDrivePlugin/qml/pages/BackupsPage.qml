@@ -50,13 +50,9 @@ Item
             Layout.fillHeight: true
         }
 
-        ActionButton
+        BackupListFooter
         {
-            id: createBackupButton
-            text: catalog.i18nc("@button", "Backup Now")
-            iconSource: "../images/backup.svg"
-            enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
-            onClicked: CuraDrive.createBackup()
+            id: backupListFooter
         }
     }
 }

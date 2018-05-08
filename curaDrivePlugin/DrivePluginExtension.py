@@ -61,6 +61,7 @@ class DrivePluginExtension(QObject, Extension):
     def _run(self) -> None:
         """Populate initial values."""
         self._backups_list_model.loadBackups(self._drive_api_service.getBackups())
+        self.backupsChanged.emit()
 
     def showDriveWindow(self) -> None:
         """Show the Drive UI popup window."""
@@ -96,6 +97,7 @@ class DrivePluginExtension(QObject, Extension):
             Message(error_message, lifetime=10).show()
         self._is_creating_backup = is_creating
         self.creatingStateChanged.emit()
+        self.backupsChanged.emit()  # After uploading, we have a new entry in the list, so we should refresh it.
 
     @pyqtProperty(bool, notify = loginStateChanged)
     def isLoggedIn(self) -> bool:
@@ -135,6 +137,15 @@ class DrivePluginExtension(QObject, Extension):
         :return: The backups as Qt List Model.
         """
         return self._backups_list_model
+
+    @pyqtSlot(name = "refreshBackups")
+    def refreshBackups(self) -> None:
+        """
+        Forcefully refresh the backups list.
+        :return:
+        """
+        self._backups_list_model.loadBackups(self._drive_api_service.getBackups())
+        self.backupsChanged.emit()  # Trigger a fake event to trigger refreshing the UI list.
 
     @pyqtProperty(bool, notify = restoringStateChanged)
     def isRestoringBackup(self) -> bool:

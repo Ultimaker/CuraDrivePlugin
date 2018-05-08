@@ -1,11 +1,11 @@
 # Copyright (c) 2017 Ultimaker B.V.
 from datetime import datetime
-from threading import Thread
 from typing import Optional
 
 import requests
 
 from UM.Logger import Logger
+from UM.Message import Message
 from UM.Signal import Signal
 from cura.Api import CuraApi
 from curaDrivePlugin.UploadBackupJob import UploadBackupJob
@@ -40,6 +40,7 @@ class DriveApiService:
         })
         if backup_list_request.status_code != 200:
             Logger.log("w", "Could not get backups list from remote: %s", backup_list_request.text)
+            Message(Settings.translatable_messages["get_backups_error"]).show()
             return []
         return backup_list_request.json()["data"]
 
