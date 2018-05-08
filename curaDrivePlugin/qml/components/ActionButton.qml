@@ -12,14 +12,19 @@ Button
     property var iconSource: ""
     property var color: UM.Theme.getColor("primary")
     property var hoverColor: UM.Theme.getColor("primary_hover")
+    property var disabledColor: UM.Theme.getColor("button_disabled")
+    property var textColor: UM.Theme.getColor("button_text")
+    property var textHoverColor: UM.Theme.getColor("button_text_hover")
+    property var textFont: UM.Theme.getFont("action_button")
 
     contentItem: RowLayout
     {
         Icon
         {
             id: buttonIcon
-            source: button.iconSource
+            iconSource: button.iconSource
             width: 16
+            color: button.hovered ? button.textHoverColor : button.textColor
             visible: button.iconSource != ""
         }
 
@@ -27,15 +32,15 @@ Button
         {
             id: buttonText
             text: button.text
-            color: button.hovered ? UM.Theme.getColor("button_text_hover") : UM.Theme.getColor("button_text")
-            font: UM.Theme.getFont("action_button")
+            color: button.hovered ? button.textHoverColor : button.textColor
+            font: button.textFont
             visible: button.text != ""
         }
     }
 
     background: Rectangle
     {
-        color: button.enabled ? (button.hovered ? button.hoverColor : button.color) : UM.Theme.getColor("button_disabled")
+        color: button.enabled ? (button.hovered ? button.hoverColor : button.color) : button.disabledColor
     }
 
     MouseArea

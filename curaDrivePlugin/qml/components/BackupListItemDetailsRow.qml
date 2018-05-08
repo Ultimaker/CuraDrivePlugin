@@ -16,7 +16,7 @@ RowLayout
     Icon
     {
         width: 24
-        source: detailsRow.iconSource
+        iconSource: detailsRow.iconSource
     }
 
     Label

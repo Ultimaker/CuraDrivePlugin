@@ -1,13 +1,31 @@
 // Copyright (c) 2018 Ultimaker B.V.
 import QtQuick 2.7
 import QtQuick.Controls 2.1
-import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 
-Image
+Item
 {
+    id: icon
     width: parent.height
     height: width
-    smooth: true
-    sourceSize.width: width
-    sourceSize.height: height
+    property var color: "transparent"
+    property var iconSource
+
+    Image
+    {
+        id: iconImage
+        width: parent.height
+        height: width
+        smooth: true
+        source: icon.iconSource
+        sourceSize.width: width
+        sourceSize.height: height
+    }
+
+    ColorOverlay
+    {
+        anchors.fill: iconImage
+        source: iconImage
+        color: icon.color
+    }
 }

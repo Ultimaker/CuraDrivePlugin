@@ -41,8 +41,8 @@ Item
         {
             onClicked: Qt.openUrlExternally("https://api-staging.ultimaker.com/account/v1/app")
             text: catalog.i18nc("@button", "Manage Profile")
-            color: UM.Theme.getColor("button")
-            hoverColor: UM.Theme.getColor("button_hover")
+            color: "transparent"
+            textColor: UM.Theme.getColor("text")
             iconSource: "../images/home.svg"
             Layout.alignment: Qt.AlignRight
         }
@@ -51,8 +51,8 @@ Item
         {
             onClicked: profileDetails.logoutCallback()
             text: catalog.i18nc("@button", "Sign Out")
-            color: UM.Theme.getColor("button")
-            hoverColor: UM.Theme.getColor("button_hover")
+            color: "transparent"
+            textColor: UM.Theme.getColor("text")
             Layout.alignment: Qt.AlignRight
         }
     }

@@ -25,6 +25,8 @@ RowLayout
     {
         id: refreshBackupListButton
         text: catalog.i18nc("@button", "Refresh Backups")
+        color: "transparent"
+        textColor: UM.Theme.getColor("text")
         enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
         onClicked: CuraDrive.refreshBackups()
     }
