@@ -13,6 +13,8 @@ Window
     id: curaDriveDialog
     minimumWidth: Math.round(UM.Theme.getSize("modal_window_minimum").width)
     minimumHeight: Math.round(UM.Theme.getSize("modal_window_minimum").height)
+    maximumWidth: minimumWidth * 1.2
+    maximumHeight: minimumHeight * 1.2
     width: minimumWidth
     height: minimumHeight
     color: "white"

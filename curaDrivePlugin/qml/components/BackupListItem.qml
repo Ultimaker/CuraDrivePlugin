@@ -47,18 +47,8 @@ Rectangle
         {
             text: model["data"]["description"]
             elide: Text.ElideRight
-            Layout.minimumWidth: 50
-            Layout.maximumWidth: 300
-            Layout.fillWidth: true
-        }
-
-        Label
-        {
-            text: model["generated_time"]
-            color: "grey"
-            elide: Text.ElideRight
-            Layout.minimumWidth: 50
-            Layout.maximumWidth: 300
+            Layout.minimumWidth: 100
+            Layout.maximumWidth: 500
             Layout.fillWidth: true
         }
 
