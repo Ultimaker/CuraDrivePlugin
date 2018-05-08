@@ -146,7 +146,7 @@ class DrivePluginExtension(QObject, Extension):
         :return:
         """
         self._backups_list_model.loadBackups(self._drive_api_service.getBackups())
-        self.backupsChanged.emit()  # Trigger a fake event to trigger refreshing the UI list.
+        self.backupsChanged.emit()
 
     @pyqtProperty(bool, notify = restoringStateChanged)
     def isRestoringBackup(self) -> bool:
