@@ -2,6 +2,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
+import QtQuick.Dialogs 1.1
 
 import UM 1.1 as UM
 
@@ -65,7 +66,7 @@ Item
             textColor: UM.Theme.getColor("setting_validation_error_background")
             textHoverColor: UM.Theme.getColor("setting_validation_error_background")
             iconSource: "../images/delete.svg"
-            onClicked: CuraDrive.deleteBackup(model["backup_id"])
+            onClicked: confirmDeleteDialog.visible = true
         }
     }
 
@@ -76,5 +77,12 @@ Item
         width: parent.width
         visible: parent.showDetails
         anchors.top: dataRow.bottom
+    }
+
+    MessageDialog
+    {
+        id: confirmDeleteDialog
+        text: catalog.i18nc("@dialog:info", "Are you sure you want to delete this backup? This cannot be undone.")
+        onAccepted: CuraDrive.deleteBackup(model["backup_id"])
     }
 }

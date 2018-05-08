@@ -42,10 +42,23 @@ Item
             Layout.fillWidth: true
         }
 
+        Label
+        {
+            text: catalog.i18nc("@empty_state",
+                "You don't have any backups currently. Use the 'Backup Now' button to create one")
+            width: parent.width
+            font: UM.Theme.getFont("default")
+            color: UM.Theme.getColor("text")
+            wrapMode: Label.WordWrap
+            visible: backupList.count == 0
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
+
         BackupList
         {
             id: backupList
-            backups: CuraDrive.backups
+            model: CuraDrive.backups
             Layout.fillWidth: true
             Layout.fillHeight: true
         }

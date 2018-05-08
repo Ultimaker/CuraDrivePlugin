@@ -8,9 +8,7 @@ import UM 1.1 as UM
 ListView
 {
     id: backupList
-    property var backups
     width: parent.width
-    model: backups
     clip: true
     delegate: Item
     {
