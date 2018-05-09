@@ -116,7 +116,7 @@ class DrivePluginExtension(QObject, Extension):
         Get the profile of the authenticated user.
         :return: A dict containing the profile information.
         """
-        return self._authorization_service.getUserProfile()
+        return self._authorization_service.getUserProfile().__dict__
 
     @pyqtProperty(str, notify = loginStateChanged)
     def authError(self) -> str:
