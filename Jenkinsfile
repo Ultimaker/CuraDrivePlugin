@@ -24,6 +24,12 @@ node(defaultNode)
         {
             sh "./build.sh ${imageTag}"
         }
+
+        // Build the .curapackage to ensure it still works.
+        stage("Package")
+        {
+            sh "./build_plugin.sh"
+        }
     }
     catch(e)
     {

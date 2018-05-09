@@ -1,3 +1,3 @@
-[submodule "lib/CuraPluginOAuth2Module"]
-	path = lib/CuraPluginOAuth2Module
+[submodule "CuraDrive/lib/CuraPluginOAuth2Module"]
+	path = CuraDrive/lib/CuraPluginOAuth2Module
 	url = git@github.com:Ultimaker/CuraPluginOAuth2Module.git

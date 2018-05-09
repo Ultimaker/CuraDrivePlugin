@@ -2,4 +2,3 @@ pytest
 coverage
 requests
 PyJWT
-https://github.com/Ultimaker/CuraPluginOAuth2Module
