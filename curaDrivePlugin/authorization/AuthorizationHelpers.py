@@ -11,7 +11,7 @@ import jwt
 
 from UM.Logger import Logger
 from ..Settings import Settings
-from .models import AuthenticationResponse
+from .models import AuthenticationResponse, UserProfile
 
 
 class AuthorizationHelpers:
@@ -92,7 +92,7 @@ class AuthorizationHelpers:
         return key_request.text
 
     @staticmethod
-    def parseJWT(token: str, public_key: str) -> Optional[dict]:
+    def parseJWT(token: str, public_key: str) -> Optional["UserProfile"]:
         """
         Decode the JWT token to get the profile info.
         :param token: The encoded JWT token.

@@ -14,7 +14,7 @@ from ..Settings import Settings
 from .AuthorizationHelpers import AuthorizationHelpers
 from .AuthorizationRequestServer import AuthorizationRequestServer
 from .AuthorizationRequestHandler import AuthorizationRequestHandler
-from .models import AuthenticationResponse
+from .models import AuthenticationResponse, UserProfile
 
 
 class AuthorizationService:
@@ -39,26 +39,45 @@ class AuthorizationService:
         self._web_server = None  # type: Optional[HTTPServer]
         self._web_server_thread = None  # type: Optional[threading.Thread]
         self._auth_data = None  # type: Optional[AuthenticationResponse]
+        self._user_profile = None  # type: Optional[UserProfile]
         self._cura_preferences = Preferences.getInstance()
         self._loadAuthData()
 
-    def getUserProfile(self) -> Optional[dict]:
+    def getUserProfile(self) -> Optional["UserProfile"]:
         """
         Get the user data that is stored in the JWT token.
         :return: Dict containing some user data.
         """
+        if not self._user_profile:
+            # If no user profile was stored locally, we try to get it from JWT.
+            self._user_profile = self._parseJWT()
+
+        if not self._user_profile:
+            # If there is still no user profile from the JWT, we have to log in again.
+            return None
+
+        return self._user_profile
+
+    def _parseJWT(self) -> Optional["UserProfile"]:
+        """
+        Tries to parse the JWT if all the needed data exists.
+        :return: UserProfile if found, otherwise None.
+        """
         if not self._auth_data:
+            # If no auth data exists, we should always log in again.
             return None
 
         public_key = AuthorizationHelpers.getPublicKeyJWT()
         if not public_key:
+            # If the public key wasn't found (e.g. not online), we cannot parse the JWT.
             return None
 
         user_data = AuthorizationHelpers.parseJWT(self._auth_data.access_token, public_key)
         if user_data:
+            # If the profile was found, we return it immediately.
             return user_data
 
-        # We assume here that the JWT was expired and we should request a new one.
+        # The JWT was expired or invalid and we should request a new one.
         self._auth_data = AuthorizationHelpers.getAccessTokenUsingRefreshToken(self._auth_data.refresh_token)
         user_data = AuthorizationHelpers.parseJWT(self._auth_data.access_token, public_key)
         return user_data
@@ -68,10 +87,9 @@ class AuthorizationService:
         Get the access token response data.
         :return: Dict containing token data.
         """
-        if not self._auth_data:
-            return None
         if not self.getUserProfile():
-            # This means both the access token and refresh token were invalid.
+            # We check if we can get the user profile.
+            # If we can't get it, that means the access token (JWT) was invalid or expired.
             return None
         return self._auth_data.access_token
 
@@ -163,6 +181,8 @@ class AuthorizationService:
         """Store authentication data in preferences and locally."""
         self._auth_data = auth_data
         if auth_data:
+            self._user_profile = self.getUserProfile()
             self._cura_preferences.setValue(self.AUTH_DATA_PREFERENCE_KEY, json.dumps(vars(auth_data)))
         else:
+            self._user_profile = None
             self._cura_preferences.resetPreference(self.AUTH_DATA_PREFERENCE_KEY)

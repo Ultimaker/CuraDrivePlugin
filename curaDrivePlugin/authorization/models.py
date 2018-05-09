@@ -7,6 +7,13 @@ class BaseModel:
         self.__dict__.update(kwargs)
 
 
+# User profile data template.
+class UserProfile(BaseModel):
+    user_id = None  # type: Optional[str]
+    username = None  # type: Optional[str]
+    profile_image_url = None  # type: Optional[str]
+
+
 # Authentication data template.
 class AuthenticationResponse(BaseModel):
     """Data comes from the token response with success flag and error message added."""

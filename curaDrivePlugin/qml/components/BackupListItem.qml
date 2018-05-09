@@ -82,7 +82,7 @@ Item
     MessageDialog
     {
         id: confirmDeleteDialog
-        title: cata.log.i18nc("@dialog:title", "Delete Backup")
+        title: catalog.i18nc("@dialog:title", "Delete Backup")
         text: catalog.i18nc("@dialog:info", "Are you sure you want to delete this backup? This cannot be undone.")
         standardButtons: StandardButton.Yes | StandardButton.No
         onYes: CuraDrive.deleteBackup(model["backup_id"])
