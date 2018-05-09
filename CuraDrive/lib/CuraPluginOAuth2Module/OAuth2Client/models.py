@@ -14,7 +14,6 @@ class OAuth2Settings(BaseModel):
     CLIENT_ID = None  # type: Optional[str]
     CLIENT_SCOPES = None  # type: Optional[str]
     CALLBACK_URL = None  # type: Optional[str]
-    AUTH_URL = None  # type: Optional[str]
 
 
 # User profile data template.

@@ -68,8 +68,7 @@ class DrivePluginExtension(QObject, Extension):
         Create an instance of the Drive UI popup window.
         :return: The popup window object.
         """
-        path = os.path.join(PluginRegistry.getInstance().getPluginPath(self.getPluginId()),
-                            "curaDrivePlugin/qml/main.qml")
+        path = os.path.join(os.path.dirname(__file__), "qml", "main.qml")
         return Application.getInstance().createQmlComponent(path, {"CuraDrive": self})
 
     def _onLoginStateChanged(self, logged_in: bool = False, error_message: str = None):
@@ -112,12 +111,15 @@ class DrivePluginExtension(QObject, Extension):
         self._authorization_service.deleteAuthData()
 
     @pyqtProperty("QVariantMap", notify = loginStateChanged)
-    def profile(self) -> dict:
+    def profile(self) -> Optional[dict]:
         """
         Get the profile of the authenticated user.
         :return: A dict containing the profile information.
         """
-        return self._authorization_service.getUserProfile().__dict__
+        user_profile = self._authorization_service.getUserProfile()
+        if not user_profile:
+            return None
+        return user_profile.__dict__
 
     @pyqtProperty(str, notify = loginStateChanged)
     def authError(self) -> str:

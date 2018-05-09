@@ -33,12 +33,12 @@ class AuthorizationService:
     onAuthenticationError = Signal()
 
     def __init__(self, settings: "OAuth2Settings"):
-        self._OAuth2Settings = OAuth2Settings
+        self._settings = settings
         self._auth_helpers = AuthorizationHelpers(settings)
         self._web_server = None  # type: Optional[HTTPServer]
         self._web_server_thread = None  # type: Optional[threading.Thread]
-        self._web_server_port = self._OAuth2Settings.CALLBACK_PORT  # type: str
-        self._auth_url = "{}/authorize".format(self._OAuth2Settings.OAUTH_SERVER_URL)
+        self._web_server_port = self._settings.CALLBACK_PORT  # type: str
+        self._auth_url = "{}/authorize".format(self._settings.OAUTH_SERVER_URL)
         self._auth_data = None  # type: Optional[AuthenticationResponse]
         self._user_profile = None  # type: Optional[UserProfile]
         self._cura_preferences = Preferences.getInstance()
@@ -119,9 +119,9 @@ class AuthorizationService:
         
         # Create the query string needed for the OAuth2 flow.
         query_string = urlencode({
-            "client_id": OAuth2Settings.CLIENT_ID,
-            "redirect_uri": OAuth2Settings.CALLBACK_URL,
-            "scope": OAuth2Settings.CLIENT_SCOPES,
+            "client_id": self._settings.CLIENT_ID,
+            "redirect_uri": self._settings.CALLBACK_URL,
+            "scope": self._settings.CLIENT_SCOPES,
             "response_type": "code",
             "state": "CuraDriveIsAwesome",
             "code_challenge": challenge_code,
@@ -129,7 +129,7 @@ class AuthorizationService:
         })
         
         # Open the authorization page in a new browser window.
-        webbrowser.open_new("{}?{}".format(self._OAuth2Settings.AUTH_URL, query_string))
+        webbrowser.open_new("{}?{}".format(self._auth_url, query_string))
         
         # Start a local web server to receive the callback URL on.
         self._startWebServer(verification_code)
