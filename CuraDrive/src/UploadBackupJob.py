@@ -4,6 +4,7 @@ import requests
 from UM.Job import Job
 from UM.Logger import Logger
 from UM.Message import Message
+
 from .Settings import Settings
 
 

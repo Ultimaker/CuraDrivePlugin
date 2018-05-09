@@ -6,15 +6,16 @@ from http.server import HTTPServer
 from typing import Optional
 from urllib.parse import urlencode
 
+# As this module is specific for Cura plugins, we can rely on these imports.
 from UM.Logger import Logger
 from UM.Preferences import Preferences
 from UM.Signal import Signal
 
-from ..Settings import Settings
+# Plugin imports need to be relative to work in final builds.
 from .AuthorizationHelpers import AuthorizationHelpers
 from .AuthorizationRequestServer import AuthorizationRequestServer
 from .AuthorizationRequestHandler import AuthorizationRequestHandler
-from .models import AuthenticationResponse, UserProfile
+from .models import OAuth2Settings, AuthenticationResponse, UserProfile
 
 
 class AuthorizationService:
@@ -25,19 +26,19 @@ class AuthorizationService:
     
     AUTH_DATA_PREFERENCE_KEY = "cura_drive_plugin/auth_data"
 
-    AUTH_URL = "{}/authorize".format(Settings.OAUTH_SERVER_URL)
-
-    PORT = Settings.CALLBACK_PORT
-
     # Emit signal when authentication is completed.
     onAuthStateChanged = Signal()
 
     # Emit signal when authentication failed.
     onAuthenticationError = Signal()
 
-    def __init__(self):
+    def __init__(self, settings: "OAuth2Settings"):
+        self._OAuth2Settings = OAuth2Settings
+        self._auth_helpers = AuthorizationHelpers(settings)
         self._web_server = None  # type: Optional[HTTPServer]
         self._web_server_thread = None  # type: Optional[threading.Thread]
+        self._web_server_port = self._OAuth2Settings.CALLBACK_PORT  # type: str
+        self._auth_url = "{}/authorize".format(self._OAuth2Settings.OAUTH_SERVER_URL)
         self._auth_data = None  # type: Optional[AuthenticationResponse]
         self._user_profile = None  # type: Optional[UserProfile]
         self._cura_preferences = Preferences.getInstance()
@@ -67,19 +68,19 @@ class AuthorizationService:
             # If no auth data exists, we should always log in again.
             return None
 
-        public_key = AuthorizationHelpers.getPublicKeyJWT()
+        public_key = self._auth_helpers.getPublicKeyJWT()
         if not public_key:
             # If the public key wasn't found (e.g. not online), we cannot parse the JWT.
             return None
 
-        user_data = AuthorizationHelpers.parseJWT(self._auth_data.access_token, public_key)
+        user_data = self._auth_helpers.parseJWT(self._auth_data.access_token, public_key)
         if user_data:
             # If the profile was found, we return it immediately.
             return user_data
 
         # The JWT was expired or invalid and we should request a new one.
-        self._auth_data = AuthorizationHelpers.getAccessTokenUsingRefreshToken(self._auth_data.refresh_token)
-        user_data = AuthorizationHelpers.parseJWT(self._auth_data.access_token, public_key)
+        self._auth_data = self._auth_helpers.getAccessTokenUsingRefreshToken(self._auth_data.refresh_token)
+        user_data = self._auth_helpers.parseJWT(self._auth_data.access_token, public_key)
         return user_data
 
     def getAccessToken(self) -> Optional[str]:
@@ -97,7 +98,7 @@ class AuthorizationService:
         """
         Refresh the access token when it expired.
         """
-        self._storeAuthData(AuthorizationHelpers.getAccessTokenUsingRefreshToken(self._auth_data.refresh_token))
+        self._storeAuthData(self._auth_helpers.getAccessTokenUsingRefreshToken(self._auth_data.refresh_token))
         self.onAuthStateChanged.emit(True)
     
     def deleteAuthData(self):
@@ -113,14 +114,14 @@ class AuthorizationService:
         # Create the tokens needed for the code challenge (PKCE) extension for OAuth2.
         # This is needed because the CuraDrivePlugin is a untrusted (open source) client.
         # More details can be found at https://tools.ietf.org/html/rfc7636.
-        verification_code = AuthorizationHelpers.generateVerificationCode()
-        challenge_code = AuthorizationHelpers.generateVerificationCodeChallenge(verification_code)
+        verification_code = self._auth_helpers.generateVerificationCode()
+        challenge_code = self._auth_helpers.generateVerificationCodeChallenge(verification_code)
         
         # Create the query string needed for the OAuth2 flow.
         query_string = urlencode({
-            "client_id": Settings.CLIENT_ID,
-            "redirect_uri": Settings.CALLBACK_URL,
-            "scope": Settings.CLIENT_SCOPES,
+            "client_id": OAuth2Settings.CLIENT_ID,
+            "redirect_uri": OAuth2Settings.CALLBACK_URL,
+            "scope": OAuth2Settings.CLIENT_SCOPES,
             "response_type": "code",
             "state": "CuraDriveIsAwesome",
             "code_challenge": challenge_code,
@@ -128,7 +129,7 @@ class AuthorizationService:
         })
         
         # Open the authorization page in a new browser window.
-        webbrowser.open_new("{}?{}".format(self.AUTH_URL, query_string))
+        webbrowser.open_new("{}?{}".format(self._OAuth2Settings.AUTH_URL, query_string))
         
         # Start a local web server to receive the callback URL on.
         self._startWebServer(verification_code)
@@ -136,10 +137,11 @@ class AuthorizationService:
     def _startWebServer(self, verification_code: str) -> None:
         """Start the local web server to handle the authorization callback."""
 
-        Logger.log("d", "Starting local web server to handle authorization callback on port %s", self.PORT)
+        Logger.log("d", "Starting local web server to handle authorization callback on port %s", self._web_server_port)
         
         # Create the server and inject the callback and code.
-        self._web_server = AuthorizationRequestServer(("0.0.0.0", self.PORT), AuthorizationRequestHandler)
+        self._web_server = AuthorizationRequestServer(("0.0.0.0", self._web_server_port), AuthorizationRequestHandler)
+        self._web_server.setAuthorizationHelpers(self._auth_helpers)
         self._web_server.setAuthorizationCallback(self._onAuthStateChanged)
         self._web_server.setVerificationCode(verification_code)
         

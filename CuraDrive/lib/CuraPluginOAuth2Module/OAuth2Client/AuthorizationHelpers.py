@@ -5,22 +5,24 @@ from _sha512 import sha512
 from base64 import b64encode
 from typing import Optional
 
-# Note: these modules are available in Cura 4.0 and higher.
 import requests
 import jwt
 
+# As this module is specific for Cura plugins, we can rely on these imports.
 from UM.Logger import Logger
-from ..Settings import Settings
-from .models import AuthenticationResponse, UserProfile
+
+# Plugin imports need to be relative to work in final builds.
+from .models import AuthenticationResponse, UserProfile, OAuth2Settings
 
 
 class AuthorizationHelpers:
     """Class containing several helpers to deal with the authorization flow."""
 
-    TOKEN_URL = "{}/token".format(Settings.OAUTH_SERVER_URL)
+    def __init__(self, settings: "OAuth2Settings"):
+        self._settings = settings
+        self._token_url = "{}/token".format(self._settings.OAUTH_SERVER_URL)
 
-    @classmethod
-    def getAccessTokenUsingAuthorizationCode(cls, authorization_code: str, verification_code: str)->\
+    def getAccessTokenUsingAuthorizationCode(self, authorization_code: str, verification_code: str)->\
             Optional["AuthenticationResponse"]:
         """
         Request the access token from the authorization server.
@@ -28,28 +30,27 @@ class AuthorizationHelpers:
         :param verification_code: The verification code needed for the PKCE extension.
         :return: An AuthenticationResponse object.
         """
-        return cls.parseTokenResponse(requests.post(cls.TOKEN_URL, data={
-            "client_id": Settings.CLIENT_ID,
-            "redirect_uri": Settings.CALLBACK_URL,
+        return self.parseTokenResponse(requests.post(self._token_url, data={
+            "client_id": self._settings.CLIENT_ID,
+            "redirect_uri": self._settings.CALLBACK_URL,
             "grant_type": "authorization_code",
             "code": authorization_code,
             "code_verifier": verification_code,
-            "scope": Settings.CLIENT_SCOPES
+            "scope": self._settings.CLIENT_SCOPES
         }))
 
-    @classmethod
-    def getAccessTokenUsingRefreshToken(cls, refresh_token: str) -> Optional["AuthenticationResponse"]:
+    def getAccessTokenUsingRefreshToken(self, refresh_token: str) -> Optional["AuthenticationResponse"]:
         """
         Request the access token from the authorization server using a refresh token.
         :param refresh_token:
         :return: An AuthenticationResponse object.
         """
-        return cls.parseTokenResponse(requests.post(cls.TOKEN_URL, data={
-            "client_id": Settings.CLIENT_ID,
-            "redirect_uri": Settings.CALLBACK_URL,
+        return self.parseTokenResponse(requests.post(self._token_url, data={
+            "client_id": self._settings.CLIENT_ID,
+            "redirect_uri": self._settings.CALLBACK_URL,
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
-            "scope": Settings.CLIENT_SCOPES
+            "scope": self._settings.CLIENT_SCOPES
         }))
 
     @staticmethod
@@ -79,15 +80,14 @@ class AuthorizationHelpers:
                                       expires_in=token_data["expires_in"],
                                       scope=token_data["scope"])
 
-    @staticmethod
-    def getPublicKeyJWT() -> Optional[str]:
+    def getPublicKeyJWT(self) -> Optional[str]:
         """
         Get the public key to decode the JWT.
         :return: The public key as string.
         """
-        key_request = requests.get("{}/public-key".format(Settings.OAUTH_SERVER_URL))
+        key_request = requests.get("{}/public-key".format(self._settings.OAUTH_SERVER_URL))
         if key_request.status_code not in (200, 201):
-            Logger.log("w", "Could not retrieve public key from authorization server: %s", key_request.text)
+            Logger.log("w", "Could not retrieve public key from auth server: %s", key_request.text)
             return None
         return key_request.text
 
@@ -107,7 +107,7 @@ class AuthorizationHelpers:
         except jwt.exceptions.ExpiredSignatureError:
             Logger.log("d", "JWT token was expired, it should be refreshed.")
         except jwt.exceptions.InvalidTokenError as error:
-            Logger.log("d", "JWT token was invalid: %s", error)
+            Logger.log("w", "JWT token was invalid: %s", error)
         return None
 
     @staticmethod

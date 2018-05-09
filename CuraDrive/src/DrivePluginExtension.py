@@ -9,8 +9,9 @@ from UM.Extension import Extension
 from UM.Message import Message
 from UM.PluginRegistry import PluginRegistry
 
+from ..lib.CuraPluginOAuth2Module.OAuth2Client.AuthorizationService import AuthorizationService
+
 from .Settings import Settings
-from .authorization.AuthorizationService import AuthorizationService
 from .DriveApiService import DriveApiService
 from .models.BackupListModel import BackupListModel
 
@@ -43,7 +44,7 @@ class DrivePluginExtension(QObject, Extension):
         self._is_creating_backup = False
 
         # Initialize services.
-        self._authorization_service = AuthorizationService()  # type: AuthorizationService
+        self._authorization_service = AuthorizationService(Settings.OAUTH_SETTINGS)  # type: AuthorizationService
         self._drive_api_service = DriveApiService(self._authorization_service)  # type: DriveApiService
 
         # Attach signals.

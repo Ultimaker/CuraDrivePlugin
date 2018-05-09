@@ -1,4 +1,5 @@
 {
+    "id": "CuraDrive",
     "name": "Cura Drive",
     "author": "Ultimaker B.V.",
     "description": "Backup and restore your configuration using Ultimaker Web Services (preview).",

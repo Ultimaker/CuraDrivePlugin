@@ -1,0 +1,20 @@
+{
+    "package_id": "CuraDrive",
+    "package_type": "plugin",
+    "display_name": "Cura Drive",
+    "description": "Backup and restore your configuration using Ultimaker Web Services (preview).",
+    "package_version": "1.0.0",
+    "cura_version": 4,
+    "website": "https://github.com/Ultimaker/CuraDrivePlugin",
+    "author": {
+        "author_id": "Ultimaker",
+        "display_name": "Ultimaker",
+        "email": "plugins@ultimaker.com",
+        "website": "https://ultimaker.com"
+    },
+    "tags": [
+        "plugin",
+        "backups",
+        "drive"
+    ]
+}

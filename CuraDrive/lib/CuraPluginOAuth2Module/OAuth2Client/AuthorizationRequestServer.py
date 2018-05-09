@@ -1,6 +1,8 @@
 # Copyright (c) 2017 Ultimaker B.V.
 from http.server import HTTPServer
 
+from .AuthorizationHelpers import AuthorizationHelpers
+
 
 class AuthorizationRequestServer(HTTPServer):
     """
@@ -8,6 +10,10 @@ class AuthorizationRequestServer(HTTPServer):
     This subclass is needed to be able to pass some data to the request handler.
     This cannot be done on the request handler directly as the HTTPServer creates an instance of the handler after init.
     """
+
+    def setAuthorizationHelpers(self, authorization_helpers: "AuthorizationHelpers") -> None:
+        """Set the authorization helpers instance on the request handler."""
+        self.RequestHandlerClass.authorization_helpers = authorization_helpers
 
     def setAuthorizationCallback(self, authorization_callback) -> None:
         """Set the authorization callback on the request handler."""

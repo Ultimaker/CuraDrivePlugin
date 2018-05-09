@@ -6,7 +6,6 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs
 
 # Plugin imports need to be relative to work in final builds.
-from ..Settings import Settings
 from .AuthorizationHelpers import AuthorizationHelpers
 from .models import AuthenticationResponse, ResponseData, HTTP_STATUS, ResponseStatus
 
@@ -21,6 +20,7 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
         super().__init__(request, client_address, server)
         
         # These values will be injected by the HTTPServer that this handler belongs to.
+        self.authorization_helpers = None  # type: AuthorizationHelpers
         self.authorization_callback = None  # type: Callable[[AuthenticationResponse], None]
         self.verification_code = None  # type: str
 
@@ -55,20 +55,21 @@ class AuthorizationRequestHandler(BaseHTTPRequestHandler):
         """
         if self._queryGet(query, "code"):
             # If the code was returned we get the access token.
-            token_response = AuthorizationHelpers.getAccessTokenUsingAuthorizationCode(self._queryGet(query, "code"),
-                                                                                       self.verification_code)
+            token_response = self.authorization_helpers.getAccessTokenUsingAuthorizationCode(
+                self._queryGet(query, "code"), self.verification_code)
+
         elif self._queryGet(query, "error_code") == "user_denied":
             # Otherwise we show an error message (probably the user clicked "Deny" in the auth dialog).
             token_response = AuthenticationResponse(
                 success = False,
-                err_message = Settings.translatable_messages["login_failed_permission"]
+                err_message = "Please give the required permissions when authorizing this application."
             )
 
         else:
             # We don't know what went wrong here, so instruct the user to check the logs.
             token_response = AuthenticationResponse(
                 success = False,
-                error_message = Settings.translatable_messages["login_failed_unknown"]
+                error_message = "Something unexpected happened when trying to log in, please try again."
             )
 
         with open(os.path.join(os.path.dirname(__file__), "html", "callback.html"), "rb") as data:

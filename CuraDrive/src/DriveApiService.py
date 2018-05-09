@@ -7,9 +7,12 @@ import requests
 from UM.Logger import Logger
 from UM.Message import Message
 from UM.Signal import Signal
+
 from cura.Api import CuraApi
+
+from ..lib.CuraPluginOAuth2Module.OAuth2Client.AuthorizationService import AuthorizationService
+
 from .UploadBackupJob import UploadBackupJob
-from .authorization.AuthorizationService import AuthorizationService
 from .Settings import Settings
 
 
