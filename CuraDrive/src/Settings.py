@@ -34,5 +34,7 @@ class Settings:
         "uploading_backup_success": I18N_CATALOG.i18nc("@info:backup_status", "Your backup has finished uploading."),
         "uploading_backup_error": I18N_CATALOG.i18nc("@info:backup_status",
                                                      "There was an error while uploading your backup."),
-        "get_backups_error": I18N_CATALOG.i18nc("@info:backup_status", "There was an error listing your backups.")
+        "get_backups_error": I18N_CATALOG.i18nc("@info:backup_status", "There was an error listing your backups."),
+        "backup_restore_error_message": I18N_CATALOG.i18nc("@info:backup_status",
+                                                           "There was an error trying to restore your backup.")
     }

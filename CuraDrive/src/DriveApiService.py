@@ -93,13 +93,29 @@ class DriveApiService:
         Restore a previously exported backup from cloud storage.
         :param backup: A dict containing an entry from the API list response.
         """
+        # TODO: validate dict (or make it a model?)
         self.onRestoringStateChanged.emit(True)
         download_url = backup.get("download_url")
         if not download_url or download_url == "":
-            self.onRestoringStateChanged.emit(False)
+            # If there is no download URL, we can't restore the backup.
+            self.onRestoringStateChanged.emit(False, Settings.translatable_messages["backup_restore_error_message"])
 
-        # self.api.backups.restoreBackup()
-        # TODO: download backup file and offer to Cura.
+        download_package = requests.get(download_url, stream=True)
+        if download_package.status_code != 200:
+            # Something went wrong when attempting to download the backup.
+            Logger.log("w", "Could not download backup from url %s: %s", download_url, download_package.text)
+            return
+
+        # We store the file in a temporary path fist to ensure integrity.
+        temporary_backup_path = "/tmp/cura-backup-{}".format(backup.get("backup_id"))
+        with open(temporary_backup_path, "wb") as f:
+            for chunk in download_package:
+                f.write(chunk)
+
+        # TODO: check md5 hash of downloaded file
+
+        with open(temporary_backup_path, "rb") as f:
+            self.api.backups.restoreBackup(f.read(), backup.get("data"))
 
     def deleteBackup(self, backup_id: str) -> bool:
         """
