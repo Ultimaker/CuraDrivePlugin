@@ -1,6 +1,6 @@
 # Copyright (c) 2017 Ultimaker B.V.
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List, Dict
 
 import requests
 
@@ -37,7 +37,7 @@ class DriveApiService:
     def __init__(self, authorization_service: "AuthorizationService"):
         self._authorization_service = authorization_service
 
-    def getBackups(self) -> list:
+    def getBackups(self) -> List[Dict[str, any]]:
         """Get all backups from the API."""
         access_token = self._getAccessToken()
         if not access_token:
@@ -88,7 +88,7 @@ class DriveApiService:
         else:
             self.onCreatingStateChanged.emit(False)
 
-    def restoreBackup(self, backup: dict) -> None:
+    def restoreBackup(self, backup: Dict[str, any]) -> None:
         """
         Restore a previously exported backup from cloud storage.
         :param backup: A dict containing an entry from the API list response.
@@ -120,7 +120,7 @@ class DriveApiService:
             return False
         return True
 
-    def _requestBackupUpload(self, backup_metadata: dict, backup_size: int) -> Optional[str]:
+    def _requestBackupUpload(self, backup_metadata: Dict[str, any], backup_size: int) -> Optional[str]:
         """
         Request a backup upload slot from the API.
         :param backup_metadata: A dict containing some meta data about the backup.
