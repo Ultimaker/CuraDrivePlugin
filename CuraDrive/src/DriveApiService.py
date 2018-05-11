@@ -115,7 +115,11 @@ class DriveApiService:
         # TODO: check md5 hash of downloaded file
 
         with open(temporary_backup_path, "rb") as f:
+            # Tell Cura to place the backup back in the user data folder.
             self.api.backups.restoreBackup(f.read(), backup.get("data"))
+
+        # We're done!
+        self.onRestoringStateChanged.emit(False)
 
     def deleteBackup(self, backup_id: str) -> bool:
         """
@@ -155,12 +159,6 @@ class DriveApiService:
             Logger.log("w", "Could not request backup upload: %s", backup_upload_request.text)
             return None
         return backup_upload_request.json()["data"]["upload_url"]
-
-    def _downloadBackupFile(self):
-        pass
-
-    def _passBackupToCura(self):
-        pass
 
     def _getAccessToken(self) -> Optional[str]:
         return self._authorization_service.getAccessToken()

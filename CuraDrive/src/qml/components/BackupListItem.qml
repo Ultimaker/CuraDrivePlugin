@@ -56,7 +56,7 @@ Item
             textColor: UM.Theme.getColor("text")
             textHoverColor: UM.Theme.getColor("text_hover")
             enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
-            onClicked: CuraDrive.restoreBackup(model["backup_id"])
+            onClicked: confirmRestoreDialog.visible = true
         }
 
         ActionButton
@@ -86,5 +86,14 @@ Item
         text: catalog.i18nc("@dialog:info", "Are you sure you want to delete this backup? This cannot be undone.")
         standardButtons: StandardButton.Yes | StandardButton.No
         onYes: CuraDrive.deleteBackup(model["backup_id"])
+    }
+
+    MessageDialog
+    {
+        id: confirmRestoreDialog
+        title: catalog.i18nc("@dialog:title", "Restore Backup")
+        text: catalog.i18nc("@dialog:info", "Cura will restart after your backup has been restored. Continue?")
+        standardButtons: StandardButton.Yes | StandardButton.No
+        onYes: CuraDrive.restoreBackup(model["backup_id"])
     }
 }
