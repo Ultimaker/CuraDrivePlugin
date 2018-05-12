@@ -25,8 +25,13 @@ RowLayout
     {
         id: autoBackupEnabled
         checked: CuraDrive.autoBackupEnabled
-        text: catalog.i18nc("@checkbox:description", "Auto Backup on boot")
+        text: catalog.i18nc("@checkbox:description", "Auto Backup")
         onClicked: CuraDrive.toggleAutoBackup(autoBackupEnabled.checked)
+
+        hoverEnabled: true
+        ToolTip.visible: hovered
+        ToolTip.text: catalog.i18nc("@checkbox:description",
+            "Automatically create a backup each day that Cura is started.")
     }
 
 //    ActionButton

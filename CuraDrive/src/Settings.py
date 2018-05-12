@@ -21,7 +21,8 @@ class Settings:
 
     DRIVE_API_URL = "https://api-staging.ultimaker.com/cura-drive/v1"
     
-    AUTO_BACKUP_PREFERENCE_KEY = "cura_drive/auto_backup_enabled"
+    AUTO_BACKUP_ENABLED_PREFERENCE_KEY = "cura_drive/auto_backup_enabled"
+    AUTO_BACKUP_LAST_DATE_PREFERENCE_KEY = "cura_drive/auto_backup_date"
 
     I18N_CATALOG_ID = "cura_drive"
     I18N_CATALOG = i18nCatalog(I18N_CATALOG_ID)

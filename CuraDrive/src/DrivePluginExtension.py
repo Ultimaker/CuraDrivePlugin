@@ -1,5 +1,6 @@
 # Copyright (c) 2017 Ultimaker B.V.
 import os
+from datetime import datetime
 from typing import Optional
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
@@ -35,6 +36,8 @@ class DrivePluginExtension(QObject, Extension):
 
     # Signal emitted when preferences changed (like auto-backup).
     preferencesChanged = pyqtSignal()
+    
+    DATE_FORMAT = "%d/%m/%Y %H:%M:%S"
 
     def __init__(self):
         super(DrivePluginExtension, self).__init__()
@@ -58,7 +61,9 @@ class DrivePluginExtension(QObject, Extension):
         self._drive_api_service.onCreatingStateChanged.connect(self._onCreatingStateChanged)
 
         # Register preferences.
-        self._preferences.addPreference(Settings.AUTO_BACKUP_PREFERENCE_KEY, False)
+        self._preferences.addPreference(Settings.AUTO_BACKUP_ENABLED_PREFERENCE_KEY, False)
+        self._preferences.addPreference(Settings.AUTO_BACKUP_LAST_DATE_PREFERENCE_KEY, datetime.now()
+                                        .strftime(self.DATE_FORMAT))
         
         # Register menu items.
         self._updateMenuItems()
@@ -89,8 +94,25 @@ class DrivePluginExtension(QObject, Extension):
 
     def _autoBackup(self) -> None:
         """Automatically make a backup on boot if enabled."""
-        if self._preferences.getValue(Settings.AUTO_BACKUP_PREFERENCE_KEY):
+        if self._preferences.getValue(Settings.AUTO_BACKUP_ENABLED_PREFERENCE_KEY) and self._lastBackupTooLongAgo():
             self.createBackup()
+            
+    def _lastBackupTooLongAgo(self) -> bool:
+        """Check if the last backup was longer than 1 day ago."""
+        current_date = datetime.now()
+        last_backup_date = self._getLastBackupDate()
+        date_diff = current_date - last_backup_date
+        return date_diff.days > 1
+
+    def _getLastBackupDate(self) -> "datetime":
+        """Get the last backup date as datetime object."""
+        last_backup_date = self._preferences.getValue(Settings.AUTO_BACKUP_LAST_DATE_PREFERENCE_KEY)
+        return datetime.strptime(last_backup_date, self.DATE_FORMAT)
+
+    def _storeBackupDate(self) -> None:
+        """Store the current date as last backup date."""
+        backup_date = datetime.now().strftime(self.DATE_FORMAT)
+        self._preferences.setValue(Settings.AUTO_BACKUP_LAST_DATE_PREFERENCE_KEY, backup_date)
 
     def _onLoginStateChanged(self, logged_in: bool = False, error_message: str = None):
         """Callback handler for changes in the login state."""
@@ -110,9 +132,12 @@ class DrivePluginExtension(QObject, Extension):
 
     def _onCreatingStateChanged(self, is_creating: bool = False, error_message: str = None):
         """Callback handler for changes in the creation state."""
+        self._is_creating_backup = is_creating
         if error_message:
             Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 5).show()
-        self._is_creating_backup = is_creating
+            return
+        else:
+            self._storeBackupDate()
         if not is_creating:
             # We've finished creating a new backup, to the list has to be updated.
             self.refreshBackups()
@@ -120,14 +145,13 @@ class DrivePluginExtension(QObject, Extension):
     @pyqtSlot(bool, name = "toggleAutoBackup")
     def toggleAutoBackup(self, enabled: bool) -> None:
         """Enable or disable the auto-backup feature."""
-        print("toggle auto backup", enabled)
-        self._preferences.setValue(Settings.AUTO_BACKUP_PREFERENCE_KEY, enabled)
+        self._preferences.setValue(Settings.AUTO_BACKUP_ENABLED_PREFERENCE_KEY, enabled)
         self.preferencesChanged.emit()
 
     @pyqtProperty(bool, notify = preferencesChanged)
     def autoBackupEnabled(self) -> bool:
         """Check if auto-backup is enabled or not."""
-        return bool(self._preferences.getValue(Settings.AUTO_BACKUP_PREFERENCE_KEY))
+        return bool(self._preferences.getValue(Settings.AUTO_BACKUP_ENABLED_PREFERENCE_KEY))
 
     @pyqtProperty(bool, notify = loginStateChanged)
     def isLoggedIn(self) -> bool:
