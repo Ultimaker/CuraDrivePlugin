@@ -7,7 +7,7 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 from UM.Application import Application
 from UM.Extension import Extension
 from UM.Message import Message
-from UM.PluginRegistry import PluginRegistry
+from UM.Preferences import Preferences
 
 from ..lib.CuraPluginOAuth2Module.OAuth2Client.AuthorizationService import AuthorizationService
 
@@ -33,6 +33,9 @@ class DrivePluginExtension(QObject, Extension):
     # Signal emitted when creating has started. Needed to prevent parallel creation of backups.
     creatingStateChanged = pyqtSignal()
 
+    # Signal emitted when preferences changed (like auto-backup).
+    preferencesChanged = pyqtSignal()
+
     def __init__(self):
         super(DrivePluginExtension, self).__init__()
 
@@ -44,6 +47,7 @@ class DrivePluginExtension(QObject, Extension):
         self._is_creating_backup = False
 
         # Initialize services.
+        self._preferences = Preferences.getInstance()
         self._authorization_service = AuthorizationService(Settings.OAUTH_SETTINGS)  # type: AuthorizationService
         self._drive_api_service = DriveApiService(self._authorization_service)  # type: DriveApiService
 
@@ -53,8 +57,14 @@ class DrivePluginExtension(QObject, Extension):
         self._drive_api_service.onRestoringStateChanged.connect(self._onRestoringStateChanged)
         self._drive_api_service.onCreatingStateChanged.connect(self._onCreatingStateChanged)
 
+        # Register preferences.
+        self._preferences.addPreference(Settings.AUTO_BACKUP_PREFERENCE_KEY, False)
+        
         # Register menu items.
         self._updateMenuItems()
+
+        # Make auto-backup on boot and quit.
+        Application.getInstance().engineCreatedSignal.connect(self._autoBackup)
 
     def showDriveWindow(self) -> None:
         """Show the Drive UI popup window."""
@@ -77,6 +87,11 @@ class DrivePluginExtension(QObject, Extension):
         if self.isLoggedIn:
             self.addMenuItem(Settings.translatable_messages["extension_menu_entry_backup_now"], self.createBackup)
 
+    def _autoBackup(self) -> None:
+        """Automatically make a backup on boot if enabled."""
+        if self._preferences.getValue(Settings.AUTO_BACKUP_PREFERENCE_KEY):
+            self.createBackup()
+
     def _onLoginStateChanged(self, logged_in: bool = False, error_message: str = None):
         """Callback handler for changes in the login state."""
         if error_message:
@@ -89,18 +104,30 @@ class DrivePluginExtension(QObject, Extension):
     def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None):
         """Callback handler for changes in the restoring state."""
         if error_message:
-            Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 10).show()
+            Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 5).show()
         self._is_restoring_backup = is_restoring
         self.restoringStateChanged.emit()
 
     def _onCreatingStateChanged(self, is_creating: bool = False, error_message: str = None):
         """Callback handler for changes in the creation state."""
         if error_message:
-            Message(error_message, title = Settings.MESSAGE_TITLE, lifetime=10).show()
+            Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 5).show()
         self._is_creating_backup = is_creating
         if not is_creating:
             # We've finished creating a new backup, to the list has to be updated.
             self.refreshBackups()
+
+    @pyqtSlot(bool, name = "toggleAutoBackup")
+    def toggleAutoBackup(self, enabled: bool) -> None:
+        """Enable or disable the auto-backup feature."""
+        print("toggle auto backup", enabled)
+        self._preferences.setValue(Settings.AUTO_BACKUP_PREFERENCE_KEY, enabled)
+        self.preferencesChanged.emit()
+
+    @pyqtProperty(bool, notify = preferencesChanged)
+    def autoBackupEnabled(self) -> bool:
+        """Check if auto-backup is enabled or not."""
+        return bool(self._preferences.getValue(Settings.AUTO_BACKUP_PREFERENCE_KEY))
 
     @pyqtProperty(bool, notify = loginStateChanged)
     def isLoggedIn(self) -> bool:

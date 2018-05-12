@@ -21,16 +21,24 @@ RowLayout
         onClicked: CuraDrive.createBackup()
     }
 
-    ActionButton
+    CheckBox
     {
-        id: refreshBackupListButton
-        text: catalog.i18nc("@button", "Refresh Backups")
-        iconSource: "../images/restore.svg"
-        color: "transparent"
-        hoverColor: "transparent"
-        textColor: UM.Theme.getColor("text")
-        textHoverColor: UM.Theme.getColor("text_link")
-        enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
-        onClicked: CuraDrive.refreshBackups()
+        id: autoBackupEnabled
+        checked: CuraDrive.autoBackupEnabled
+        text: catalog.i18nc("@checkbox:description", "Auto Backup on boot")
+        onClicked: CuraDrive.toggleAutoBackup(autoBackupEnabled.checked)
     }
+
+//    ActionButton
+//    {
+//        id: refreshBackupListButton
+//        text: catalog.i18nc("@button", "Refresh Backups")
+//        iconSource: "../images/restore.svg"
+//        color: "transparent"
+//        hoverColor: "transparent"
+//        textColor: UM.Theme.getColor("text")
+//        textHoverColor: UM.Theme.getColor("text_link")
+//        enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
+//        onClicked: CuraDrive.refreshBackups()
+//    }
 }
