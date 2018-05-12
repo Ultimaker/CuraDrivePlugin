@@ -54,7 +54,7 @@ class DrivePluginExtension(QObject, Extension):
         self._drive_api_service.onCreatingStateChanged.connect(self._onCreatingStateChanged)
 
         # Register menu items.
-        self.addMenuItem(Settings.translatable_messages["extension_menu_entry"], self.showDriveWindow)
+        self._updateMenuItems()
 
     def showDriveWindow(self) -> None:
         """Show the Drive UI popup window."""
@@ -70,6 +70,12 @@ class DrivePluginExtension(QObject, Extension):
         """
         path = os.path.join(os.path.dirname(__file__), "qml", "main.qml")
         return Application.getInstance().createQmlComponent(path, {"CuraDrive": self})
+    
+    def _updateMenuItems(self) -> None:
+        """Update the menu items."""
+        self.addMenuItem(Settings.translatable_messages["extension_menu_entry"], self.showDriveWindow)
+        if self.isLoggedIn:
+            self.addMenuItem(Settings.translatable_messages["extension_menu_entry_backup_now"], self.createBackup)
 
     def _onLoginStateChanged(self, logged_in: bool = False, error_message: str = None):
         """Callback handler for changes in the login state."""
@@ -77,6 +83,7 @@ class DrivePluginExtension(QObject, Extension):
             Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 30).show()
         if logged_in:
             self.refreshBackups()
+        self._updateMenuItems()
         self.loginStateChanged.emit()
 
     def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None):

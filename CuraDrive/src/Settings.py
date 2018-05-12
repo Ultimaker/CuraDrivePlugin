@@ -28,7 +28,12 @@ class Settings:
 
     # Translatable messages for the entire plugin.
     translatable_messages = {
-        "extension_menu_entry": I18N_CATALOG.i18nc("@item:inmenu", "Cura Drive"),
+        
+        # Menu items.
+        "extension_menu_entry": I18N_CATALOG.i18nc("@item:inmenu", "Open Cura Drive"),
+        "extension_menu_entry_backup_now": I18N_CATALOG.i18nc("@item:inmenu", "Backup Now"),
+        
+        # Notification messages.
         "backup_failed": I18N_CATALOG.i18nc("@info:backup_status", "There was an error while creating your backup."),
         "uploading_backup": I18N_CATALOG.i18nc("@info:backup_status", "Uploading your backup..."),
         "uploading_backup_success": I18N_CATALOG.i18nc("@info:backup_status", "Your backup has finished uploading."),
