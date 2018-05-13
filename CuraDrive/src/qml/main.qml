@@ -37,6 +37,16 @@ Window
         clip: true
     }
 
+    Image
+    {
+        id: previewBanner
+        source: "images/preview_banner.png"
+        width: 96
+        height: width
+        x: curaDriveDialog.width - width
+        y: 0
+    }
+
     WelcomePage
     {
         id: welcomePage
