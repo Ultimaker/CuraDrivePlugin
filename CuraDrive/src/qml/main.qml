@@ -27,15 +27,15 @@ Window
         name: "cura_drive"
     }
 
-    Image
-    {
-        id: icon
-        anchors.fill: curaDriveDialog
-        y: 50
-        source: "images/background.svg"
-        fillMode: Image.PreserveAspectCrop
-        clip: true
-    }
+//    Image
+//    {
+//        id: icon
+//        anchors.fill: curaDriveDialog
+//        y: 50
+//        source: "images/background.svg"
+//        fillMode: Image.PreserveAspectCrop
+//        clip: true
+//    }
 
     Image
     {

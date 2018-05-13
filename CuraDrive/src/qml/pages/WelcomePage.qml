@@ -26,7 +26,7 @@ Column
     Label
     {
         id: welcomeTextLabel
-        text: catalog.i18nc("@description", "Cura Drive let's you backup and restore your Cura configuration.")
+        text: catalog.i18nc("@description", "Backup and synchronize your Cura settings.")
         width: parent.width / 2
         font: UM.Theme.getFont("default")
         color: UM.Theme.getColor("text")
