@@ -18,9 +18,9 @@ Column
     {
         id: profileImage
         fillMode: Image.PreserveAspectFit
-        source: "../images/cura_logo.png"
+        source: "../images/icon.png"
         anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width / 3
+        width: parent.width / 4
     }
 
     Label
@@ -31,6 +31,7 @@ Column
         font: UM.Theme.getFont("default")
         color: UM.Theme.getColor("text")
         verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter
         wrapMode: Label.WordWrap
     }
