@@ -52,4 +52,5 @@ if __name__ == "__main__":
         plugin_zip.writestr(subdirectory, "",
                             compress_type=zipfile.ZIP_STORED)  # Writing an empty string creates the directory.
         zipDirectory(full_plugin_path, plugin_zip)
+        plugin_zip.write("package.json", "package.json")
     print("Done!")
