@@ -1,7 +1,7 @@
 # Copyright (c) 2017 Ultimaker B.V.
 from datetime import datetime
 from tempfile import NamedTemporaryFile
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Callable
 
 import requests
 
@@ -112,7 +112,8 @@ class DriveApiService:
             for chunk in download_package:
                 write_backup.write(chunk)
 
-        # TODO: check md5 hash of downloaded file
+        # TODO: check md5 hash of downloaded file.
+        # TODO: make a new backup before restoring.
 
         # Tell Cura to place the backup back in the user data folder.
         with open(temporary_backup_file.name, "rb") as read_backup:
