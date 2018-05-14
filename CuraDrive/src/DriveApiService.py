@@ -1,5 +1,6 @@
 # Copyright (c) 2017 Ultimaker B.V.
 from datetime import datetime
+from tempfile import NamedTemporaryFile
 from typing import Optional, List, Dict
 
 import requests
@@ -107,16 +108,16 @@ class DriveApiService:
             return
 
         # We store the file in a temporary path fist to ensure integrity.
-        temporary_backup_path = "/tmp/cura-backup-{}".format(backup.get("backup_id"))
-        with open(temporary_backup_path, "wb") as f:
+        temporary_backup_file = NamedTemporaryFile(delete=False)
+        with open(temporary_backup_file.name, "wb") as write_backup:
             for chunk in download_package:
-                f.write(chunk)
+                write_backup.write(chunk)
 
         # TODO: check md5 hash of downloaded file
 
-        with open(temporary_backup_path, "rb") as f:
-            # Tell Cura to place the backup back in the user data folder.
-            self.api.backups.restoreBackup(f.read(), backup.get("data"))
+        # Tell Cura to place the backup back in the user data folder.
+        with open(temporary_backup_file.name, "rb") as read_backup:
+            self.api.backups.restoreBackup(read_backup.read(), backup.get("data"))
 
         # We're done!
         self.onRestoringStateChanged.emit(False)
