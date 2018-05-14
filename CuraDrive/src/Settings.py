@@ -17,7 +17,8 @@ class Settings:
         CALLBACK_URL = "http://localhost:{}/callback".format(CALLBACK_PORT),
         CLIENT_ID = "um---------------ultimaker_cura_drive_plugin",
         CLIENT_SCOPES = "user.read drive.backups.read drive.backups.write",
-        AUTH_SUCCESS_REDIRECT = "https://api-staging.ultimaker.com/cura-drive/v1/auth-success"
+        AUTH_SUCCESS_REDIRECT = "https://api-staging.ultimaker.com/cura-drive/v1/auth-success",
+        AUTH_FAILED_REDIRECT = "https://api-staging.ultimaker.com/cura-drive/v1/auth-error"
     )
 
     DRIVE_API_URL = "https://api-staging.ultimaker.com/cura-drive/v1"

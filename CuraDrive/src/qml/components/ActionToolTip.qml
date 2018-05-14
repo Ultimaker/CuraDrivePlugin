@@ -14,13 +14,14 @@ ToolTip
 
     background: Rectangle
     {
-        color: UM.Theme.getColor("primary")
+        border.color: UM.Theme.getColor("primary")
+        border.width: 1
     }
 
     contentItem: Label
     {
         text: tooltip.text
-        color: UM.Theme.getColor("button_text_hover")
+        color: UM.Theme.getColor("text")
         font: UM.Theme.getFont("very_small")
     }
 }
