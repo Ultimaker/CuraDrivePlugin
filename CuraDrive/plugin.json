@@ -4,6 +4,6 @@
     "author": "Ultimaker B.V.",
     "description": "Backup and restore your configuration using Ultimaker Web Services (preview).",
     "version": "1.0.0-alpha.3",
-    "api": 5,
+    "api": 4,
     "i18n-catalog": "cura_drive"
 }
