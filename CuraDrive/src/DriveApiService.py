@@ -96,7 +96,7 @@ class DriveApiService:
         """
         self.onRestoringStateChanged.emit(is_restoring=True)
         download_url = backup.get("download_url")
-        if not download_url or len(download_url) == 0:
+        if not download_url:
             # If there is no download URL, we can't restore the backup.
             self.onRestoringStateChanged.emit(
                 is_restoring=False,
