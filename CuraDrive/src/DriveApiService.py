@@ -57,12 +57,12 @@ class DriveApiService:
 
     def createBackup(self) -> None:
         """Create a backup and upload it to CuraDrive cloud storage."""
-        self.onCreatingStateChanged.emit(True)
+        self.onCreatingStateChanged.emit(is_creating=True)
 
         # Create the backup.
         backup_zip_file, backup_meta_data = self.api.backups.createBackup()
         if not backup_zip_file or not backup_meta_data:
-            self.onCreatingStateChanged.emit(False, "Could not create backup.")
+            self.onCreatingStateChanged.emit(is_creating=False, error_message="Could not create backup.")
             return
 
         # Create an upload entry for the backup.
@@ -70,7 +70,7 @@ class DriveApiService:
         backup_meta_data["description"] = "{}.backup.{}.cura.zip".format(timestamp, backup_meta_data["cura_release"])
         backup_upload_url = self._requestBackupUpload(backup_meta_data, len(backup_zip_file))
         if not backup_upload_url:
-            self.onCreatingStateChanged.emit(False, "Could not upload backup.")
+            self.onCreatingStateChanged.emit(is_creating=False, error_message="Could not upload backup.")
             return
 
         # Upload the backup to storage.
@@ -85,20 +85,23 @@ class DriveApiService:
         """
         if job.backup_upload_error_message != "":
             # If the job contains an error message we pass it along so the UI can display it.
-            self.onCreatingStateChanged.emit(False, job.backup_upload_error_message)
+            self.onCreatingStateChanged.emit(is_creating=False, error_message=job.backup_upload_error_message)
         else:
-            self.onCreatingStateChanged.emit(False)
+            self.onCreatingStateChanged.emit(is_creating=False)
 
     def restoreBackup(self, backup: Dict[str, any]) -> None:
         """
         Restore a previously exported backup from cloud storage.
         :param backup: A dict containing an entry from the API list response.
         """
-        self.onRestoringStateChanged.emit(True)
+        self.onRestoringStateChanged.emit(is_restoring=True)
         download_url = backup.get("download_url")
         if not download_url or download_url == "":
             # If there is no download URL, we can't restore the backup.
-            self.onRestoringStateChanged.emit(False, Settings.translatable_messages["backup_restore_error_message"])
+            self.onRestoringStateChanged.emit(
+                is_restoring=False,
+                error_message=Settings.translatable_messages["backup_restore_error_message"]
+            )
 
         download_package = requests.get(download_url, stream=True)
         if download_package.status_code != 200:
@@ -120,7 +123,7 @@ class DriveApiService:
             self.api.backups.restoreBackup(read_backup.read(), backup.get("data"))
 
         # We're done!
-        self.onRestoringStateChanged.emit(False)
+        self.onRestoringStateChanged.emit(is_restoring=False)
 
     def deleteBackup(self, backup_id: str) -> bool:
         """
