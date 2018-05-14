@@ -94,7 +94,6 @@ class DriveApiService:
         Restore a previously exported backup from cloud storage.
         :param backup: A dict containing an entry from the API list response.
         """
-        # TODO: validate dict (or make it a model?)
         self.onRestoringStateChanged.emit(True)
         download_url = backup.get("download_url")
         if not download_url or download_url == "":
