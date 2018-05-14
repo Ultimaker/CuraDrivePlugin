@@ -36,7 +36,6 @@ class Settings:
         
         # Menu items.
         "extension_menu_entry": I18N_CATALOG.i18nc("@item:inmenu", "Open Cura Drive"),
-        "extension_menu_entry_backup_now": I18N_CATALOG.i18nc("@item:inmenu", "Backup Now"),
         
         # Notification messages.
         "backup_failed": I18N_CATALOG.i18nc("@info:backup_status", "There was an error while creating your backup."),
