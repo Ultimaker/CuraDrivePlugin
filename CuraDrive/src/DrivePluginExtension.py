@@ -89,8 +89,6 @@ class DrivePluginExtension(QObject, Extension):
     def _updateMenuItems(self) -> None:
         """Update the menu items."""
         self.addMenuItem(Settings.translatable_messages["extension_menu_entry"], self.showDriveWindow)
-        if self.isLoggedIn:
-            self.addMenuItem(Settings.translatable_messages["extension_menu_entry_backup_now"], self.createBackup)
 
     def _autoBackup(self) -> None:
         """Automatically make a backup on boot if enabled."""
