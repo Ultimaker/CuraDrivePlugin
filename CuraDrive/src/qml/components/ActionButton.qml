@@ -30,14 +30,14 @@ Button
             visible: button.iconSource != "" && !loader.visible
         }
 
-        AnimatedImage
+        Icon
         {
             id: loader
-            source: "../images/loading.gif"
+            iconSource: "../images/loading.gif"
             width: 16
-            height: 16
-            antialiasing: true
+            color: button.hovered ? button.textHoverColor : button.textColor
             visible: button.busy
+            animated: true
         }
 
         Label

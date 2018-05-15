@@ -114,12 +114,11 @@ class DrivePluginExtension(QObject, Extension):
 
     def _onLoginStateChanged(self, logged_in: bool = False, error_message: str = None):
         """Callback handler for changes in the login state."""
+        self.loginStateChanged.emit()
         if error_message:
             Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 30).show()
         if logged_in:
             self.refreshBackups()
-        self._updateMenuItems()
-        self.loginStateChanged.emit()
 
     def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None):
         """Callback handler for changes in the restoring state."""

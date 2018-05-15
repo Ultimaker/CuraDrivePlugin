@@ -12,6 +12,7 @@ Item
     width: parent.width
     height: showDetails ? dataRow.height + backupDetails.height : dataRow.height
     property bool showDetails: false
+    property bool isRestoring: false
 
     // Backup details toggle animation.
     Behavior on height
@@ -57,6 +58,7 @@ Item
             textHoverColor: UM.Theme.getColor("text_hover")
             enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
             onClicked: confirmRestoreDialog.visible = true
+            busy: CuraDrive.isRestoringBackup && backupListItem.isRestoring
         }
 
         ActionButton
@@ -85,7 +87,10 @@ Item
         title: catalog.i18nc("@dialog:title", "Delete Backup")
         text: catalog.i18nc("@dialog:info", "Are you sure you want to delete this backup? This cannot be undone.")
         standardButtons: StandardButton.Yes | StandardButton.No
-        onYes: CuraDrive.deleteBackup(model["backup_id"])
+        onYes: {
+            backupListItem.isRestoring = true
+            CuraDrive.deleteBackup(model["backup_id"])
+        }
     }
 
     MessageDialog
