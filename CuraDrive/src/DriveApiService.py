@@ -165,4 +165,8 @@ class DriveApiService:
         return backup_upload_request.json()["data"]["upload_url"]
 
     def _getAccessToken(self) -> Optional[str]:
+        """
+        Get the access token.
+        :return: The access token as string.
+        """
         return self._authorization_service.getAccessToken()
