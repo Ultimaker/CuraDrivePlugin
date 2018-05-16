@@ -10,6 +10,7 @@ Item
     height: width
     property var color: "transparent"
     property var iconSource
+    property bool animated: false
 
     Image
     {
@@ -21,7 +22,18 @@ Item
         sourceSize.width: width
         sourceSize.height: height
         antialiasing: true
-        visible: false
+        visible: !icon.animated
+    }
+
+    AnimatedImage
+    {
+        id: animatedIconImage
+        width: parent.height
+        height: width
+        smooth: true
+        antialiasing: true
+        source: "../images/loading.gif"
+        visible: icon.animated
     }
 
     ColorOverlay
@@ -30,5 +42,15 @@ Item
         source: iconImage
         color: icon.color
         antialiasing: true
+        visible: !icon.animated
+    }
+
+    ColorOverlay
+    {
+        anchors.fill: animatedIconImage
+        source: animatedIconImage
+        color: icon.color
+        antialiasing: true
+        visible: icon.animated
     }
 }

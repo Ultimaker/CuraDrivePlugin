@@ -10,11 +10,13 @@ Button
     id: button
     property alias cursorShape: mouseArea.cursorShape
     property var iconSource: ""
+    property var busy: false
     property var color: UM.Theme.getColor("primary")
     property var hoverColor: UM.Theme.getColor("primary_hover")
-    property var disabledColor: UM.Theme.getColor("button_disabled")
+    property var disabledColor: color
     property var textColor: UM.Theme.getColor("button_text")
     property var textHoverColor: UM.Theme.getColor("button_text_hover")
+    property var textDisabledColor: textColor
     property var textFont: UM.Theme.getFont("action_button")
 
     contentItem: RowLayout
@@ -25,14 +27,24 @@ Button
             iconSource: button.iconSource
             width: 16
             color: button.hovered ? button.textHoverColor : button.textColor
-            visible: button.iconSource != ""
+            visible: button.iconSource != "" && !loader.visible
+        }
+
+        Icon
+        {
+            id: loader
+            iconSource: "../images/loading.gif"
+            width: 16
+            color: button.hovered ? button.textHoverColor : button.textColor
+            visible: button.busy
+            animated: true
         }
 
         Label
         {
             id: buttonText
             text: button.text
-            color: button.hovered ? button.textHoverColor : button.textColor
+            color: button.enabled ? (button.hovered ? button.textHoverColor : button.textColor): button.textDisabledColor
             font: button.textFont
             visible: button.text != ""
         }

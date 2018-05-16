@@ -19,6 +19,7 @@ RowLayout
         iconSource: "../images/backup.svg"
         enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
         onClicked: CuraDrive.createBackup()
+        busy: CuraDrive.isCreatingBackup
     }
 
     CheckBox

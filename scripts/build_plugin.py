@@ -28,7 +28,7 @@ def zipDirectory(path, zip_handle):
                 _, extension = os.path.splitext(filename)
                 if extension not in excluded_extentions:
                     zip_handle.write(os.path.join(root, file),
-                                     os.path.relpath(os.path.join(root, file), os.path.join(path, '..')))
+                                     os.path.join("files", "plugins", os.path.relpath(os.path.join(root, file), os.path.join(path, '..'))))
 
 
 excluded_extentions = [".pyc"]
@@ -52,4 +52,5 @@ if __name__ == "__main__":
         plugin_zip.writestr(subdirectory, "",
                             compress_type=zipfile.ZIP_STORED)  # Writing an empty string creates the directory.
         zipDirectory(full_plugin_path, plugin_zip)
+        plugin_zip.write("package.json", "package.json")
     print("Done!")
