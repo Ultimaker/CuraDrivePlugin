@@ -45,7 +45,7 @@ Item
         Label
         {
             text: catalog.i18nc("@empty_state",
-                "You don't have any backups currently. Use the 'Backup Now' button to create one")
+                "You don't have any backups currently. Use the 'Backup Now' button to create one.")
             width: parent.width
             font: UM.Theme.getFont("default")
             color: UM.Theme.getColor("text")
@@ -61,6 +61,17 @@ Item
             model: CuraDrive.backups
             Layout.fillWidth: true
             Layout.fillHeight: true
+        }
+
+        Label
+        {
+            text: catalog.i18nc("@backup_limit_info",
+                "During the preview phase, you'll be limited to 5 visible backups. Remove a backup to see older ones.")
+            width: parent.width
+            font: UM.Theme.getFont("default")
+            color: UM.Theme.getColor("text")
+            wrapMode: Label.WordWrap
+            visible: backupList.count > 4
         }
 
         BackupListFooter

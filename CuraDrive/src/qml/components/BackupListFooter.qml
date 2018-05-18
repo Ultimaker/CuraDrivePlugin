@@ -18,7 +18,7 @@ RowLayout
         id: infoButton
         text: catalog.i18nc("@button", "Want more?")
         iconSource: "../images/info.svg"
-        onClicked: Qt.openUrlExternally("https://ultimaker.com")
+        onClicked: Qt.openUrlExternally("https://goo.gl/forms/QACEP8pP3RV60QYG2")
         visible: backupListFooter.showInfoButton
     }
 
