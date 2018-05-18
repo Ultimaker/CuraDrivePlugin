@@ -66,6 +66,7 @@ Item
         BackupListFooter
         {
             id: backupListFooter
+            showInfoButton: backupList.count > 4
         }
     }
 }

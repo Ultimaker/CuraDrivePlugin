@@ -11,6 +11,16 @@ RowLayout
 {
     id: backupListFooter
     width: parent.width
+    property bool showInfoButton: false
+
+    ActionButton
+    {
+        id: infoButton
+        text: catalog.i18nc("@button", "Want more?")
+        iconSource: "../images/info.svg"
+        onClicked: Qt.openUrlExternally("https://ultimaker.com")
+        visible: backupListFooter.showInfoButton
+    }
 
     ActionButton
     {
