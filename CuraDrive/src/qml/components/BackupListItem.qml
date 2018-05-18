@@ -41,6 +41,15 @@ Item
 
         Label
         {
+            text: new Date(model["generated_time"]).toLocaleString(UM.Preferences.getValue("general/language"))
+            elide: Text.ElideRight
+            Layout.minimumWidth: 100
+            Layout.maximumWidth: 500
+            Layout.fillWidth: true
+        }
+
+        Label
+        {
             text: model["data"]["description"]
             elide: Text.ElideRight
             Layout.minimumWidth: 100

@@ -11,6 +11,16 @@ RowLayout
 {
     id: backupListFooter
     width: parent.width
+    property bool showInfoButton: false
+
+    ActionButton
+    {
+        id: infoButton
+        text: catalog.i18nc("@button", "Want more?")
+        iconSource: "../images/info.svg"
+        onClicked: Qt.openUrlExternally("https://goo.gl/forms/QACEP8pP3RV60QYG2")
+        visible: backupListFooter.showInfoButton
+    }
 
     ActionButton
     {
@@ -36,17 +46,4 @@ RowLayout
             "Automatically create a backup each day that Cura is started.")
         }
     }
-
-//    ActionButton
-//    {
-//        id: refreshBackupListButton
-//        text: catalog.i18nc("@button", "Refresh Backups")
-//        iconSource: "../images/restore.svg"
-//        color: "transparent"
-//        hoverColor: "transparent"
-//        textColor: UM.Theme.getColor("text")
-//        textHoverColor: UM.Theme.getColor("text_link")
-//        enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
-//        onClicked: CuraDrive.refreshBackups()
-//    }
 }
