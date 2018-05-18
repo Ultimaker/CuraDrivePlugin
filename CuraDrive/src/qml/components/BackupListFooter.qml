@@ -46,17 +46,4 @@ RowLayout
             "Automatically create a backup each day that Cura is started.")
         }
     }
-
-//    ActionButton
-//    {
-//        id: refreshBackupListButton
-//        text: catalog.i18nc("@button", "Refresh Backups")
-//        iconSource: "../images/restore.svg"
-//        color: "transparent"
-//        hoverColor: "transparent"
-//        textColor: UM.Theme.getColor("text")
-//        textHoverColor: UM.Theme.getColor("text_link")
-//        enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
-//        onClicked: CuraDrive.refreshBackups()
-//    }
 }
