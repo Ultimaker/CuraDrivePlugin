@@ -1,7 +1,7 @@
 # Copyright (c) 2017 Ultimaker B.V.
 from datetime import datetime
 from tempfile import NamedTemporaryFile
-from typing import Optional, List, Dict, Callable
+from typing import Optional, List, Dict
 
 import requests
 
@@ -9,7 +9,7 @@ from UM.Logger import Logger
 from UM.Message import Message
 from UM.Signal import Signal
 
-from cura.Api import CuraApi
+from cura.API import CuraAPI
 
 from ..lib.CuraPluginOAuth2Module.OAuth2Client.AuthorizationService import AuthorizationService
 
@@ -27,7 +27,7 @@ class DriveApiService:
     DELETE_BACKUP_URL = "{}/backups".format(Settings.DRIVE_API_URL)
 
     # Re-used instance of the Cura plugin API.
-    api = CuraApi()
+    api = CuraAPI()
 
     # Emit signal when restoring backup started or finished.
     onRestoringStateChanged = Signal()
