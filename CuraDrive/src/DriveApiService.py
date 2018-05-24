@@ -1,4 +1,5 @@
 # Copyright (c) 2017 Ultimaker B.V.
+import hashlib
 from datetime import datetime
 from tempfile import NamedTemporaryFile
 from typing import Optional, List, Dict
@@ -102,11 +103,16 @@ class DriveApiService:
                 is_restoring=False,
                 error_message=Settings.translatable_messages["backup_restore_error_message"]
             )
+            return
 
         download_package = requests.get(download_url, stream=True)
         if download_package.status_code != 200:
             # Something went wrong when attempting to download the backup.
             Logger.log("w", "Could not download backup from url %s: %s", download_url, download_package.text)
+            self.onRestoringStateChanged.emit(
+                is_restoring=False,
+                error_message=Settings.translatable_messages["backup_restore_error_message"]
+            )
             return
 
         # We store the file in a temporary path fist to ensure integrity.
@@ -115,15 +121,24 @@ class DriveApiService:
             for chunk in download_package:
                 write_backup.write(chunk)
 
-        # TODO: check md5 hash of downloaded file.
-        # TODO: make a new backup before restoring.
+        # Don't restore the backup if the MD5 hashes do not match.
+        # This can happen if the download was interrupted.
+        with open(temporary_backup_file.name, "rb") as read_backup:
+            remote_md5_hash = backup.get("md5_hash")
+            local_md5_hash = hashlib.md5()
+            local_md5_hash.update(read_backup.read())
+            if remote_md5_hash and remote_md5_hash != local_md5_hash.hexdigest():
+                Logger.log("w", "Remote and local MD5 hashes do not match, not restoring backup.")
+                self.onRestoringStateChanged.emit(
+                    is_restoring=False,
+                    error_message=Settings.translatable_messages["backup_restore_error_message"]
+                )
+                return
 
         # Tell Cura to place the backup back in the user data folder.
         with open(temporary_backup_file.name, "rb") as read_backup:
             self.api.backups.restoreBackup(read_backup.read(), backup.get("data"))
-
-        # We're done!
-        self.onRestoringStateChanged.emit(is_restoring=False)
+            self.onRestoringStateChanged.emit(is_restoring=False)
 
     def deleteBackup(self, backup_id: str) -> bool:
         """
