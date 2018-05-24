@@ -1,4 +1,5 @@
 # Copyright (c) 2017 Ultimaker B.V.
+import base64
 import hashlib
 from datetime import datetime
 from tempfile import NamedTemporaryFile
@@ -125,9 +126,8 @@ class DriveApiService:
         # This can happen if the download was interrupted.
         with open(temporary_backup_file.name, "rb") as read_backup:
             remote_md5_hash = backup.get("md5_hash")
-            local_md5_hash = hashlib.md5()
-            local_md5_hash.update(read_backup.read())
-            if remote_md5_hash and remote_md5_hash != local_md5_hash.hexdigest():
+            local_md5_hash = base64.b64encode(hashlib.md5(read_backup.read()).digest(), altchars=b"_-").decode("utf-8")
+            if remote_md5_hash and remote_md5_hash != local_md5_hash:
                 Logger.log("w", "Remote and local MD5 hashes do not match, not restoring backup.")
                 self.onRestoringStateChanged.emit(
                     is_restoring=False,

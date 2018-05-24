@@ -14,13 +14,13 @@ class BackupListModel(ListModel):
         self.addRoleName(Qt.UserRole + 1, "backup_id")
         self.addRoleName(Qt.UserRole + 2, "download_url")
         self.addRoleName(Qt.UserRole + 3, "generated_time")
-        self.addRoleName(Qt.UserRole + 4, "data")
+        self.addRoleName(Qt.UserRole + 4, "md5_hash")
+        self.addRoleName(Qt.UserRole + 5, "data")
 
     def loadBackups(self, data: list) -> None:
         """
         Populate the model with server data.
         :param data:
-        :return: The instance of the ListModel itself.
         """
         items = []
         for backup in data:
@@ -28,6 +28,7 @@ class BackupListModel(ListModel):
                 "backup_id": backup["backup_id"],
                 "download_url": backup["download_url"],
                 "generated_time": backup["generated_time"],
+                "md5_hash": backup["md5_hash"],
                 "data": backup["metadata"]
             })
         self.setItems(items)
