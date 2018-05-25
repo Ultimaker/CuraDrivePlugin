@@ -100,21 +100,13 @@ class DriveApiService:
         download_url = backup.get("download_url")
         if not download_url:
             # If there is no download URL, we can't restore the backup.
-            self.onRestoringStateChanged.emit(
-                is_restoring=False,
-                error_message=Settings.translatable_messages["backup_restore_error_message"]
-            )
-            return
+            return self._emitRestoreError()
 
         download_package = requests.get(download_url, stream=True)
         if download_package.status_code != 200:
             # Something went wrong when attempting to download the backup.
             Logger.log("w", "Could not download backup from url %s: %s", download_url, download_package.text)
-            self.onRestoringStateChanged.emit(
-                is_restoring=False,
-                error_message=Settings.translatable_messages["backup_restore_error_message"]
-            )
-            return
+            return self._emitRestoreError()
 
         # We store the file in a temporary path fist to ensure integrity.
         temporary_backup_file = NamedTemporaryFile(delete=False)
@@ -122,23 +114,35 @@ class DriveApiService:
             for chunk in download_package:
                 write_backup.write(chunk)
 
-        # Don't restore the backup if the MD5 hashes do not match.
-        # This can happen if the download was interrupted.
-        with open(temporary_backup_file.name, "rb") as read_backup:
-            remote_md5_hash = backup.get("md5_hash")
-            local_md5_hash = base64.b64encode(hashlib.md5(read_backup.read()).digest(), altchars=b"_-").decode("utf-8")
-            if remote_md5_hash and remote_md5_hash != local_md5_hash:
-                Logger.log("w", "Remote and local MD5 hashes do not match, not restoring backup.")
-                self.onRestoringStateChanged.emit(
-                    is_restoring=False,
-                    error_message=Settings.translatable_messages["backup_restore_error_message"]
-                )
-                return
+        if not self._verifyMd5Hash(temporary_backup_file.name, backup.get("md5_hash")):
+            # Don't restore the backup if the MD5 hashes do not match.
+            # This can happen if the download was interrupted.
+            Logger.log("w", "Remote and local MD5 hashes do not match, not restoring backup.")
+            return self._emitRestoreError()
 
         # Tell Cura to place the backup back in the user data folder.
         with open(temporary_backup_file.name, "rb") as read_backup:
             self.api.backups.restoreBackup(read_backup.read(), backup.get("data"))
             self.onRestoringStateChanged.emit(is_restoring=False)
+
+    def _emitRestoreError(self, error_message: str = Settings.translatable_messages["backup_restore_error_message"]):
+        """Helper method for emitting a signal when restoring failed."""
+        self.onRestoringStateChanged.emit(
+            is_restoring=False,
+            error_message=error_message
+        )
+
+    @staticmethod
+    def _verifyMd5Hash(file_path: str, known_hash: str) -> bool:
+        """
+        Verify the MD5 hash of a file.
+        :param file_path: Full path to the file.
+        :param known_hash: The known MD5 hash of the file.
+        :return: Success or not.
+        """
+        with open(file_path, "rb") as read_backup:
+            local_md5_hash = base64.b64encode(hashlib.md5(read_backup.read()).digest(), altchars=b"_-").decode("utf-8")
+            return known_hash == local_md5_hash
 
     def deleteBackup(self, backup_id: str) -> bool:
         """
