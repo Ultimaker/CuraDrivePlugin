@@ -133,7 +133,6 @@ class DrivePluginExtension(QObject, Extension):
         self.creatingStateChanged.emit()
         if error_message:
             Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 5).show()
-            return
         else:
             self._storeBackupDate()
         if not is_creating:
