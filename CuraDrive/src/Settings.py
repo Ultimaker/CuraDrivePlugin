@@ -29,13 +29,13 @@ class Settings:
     I18N_CATALOG_ID = "cura_drive"
     I18N_CATALOG = i18nCatalog(I18N_CATALOG_ID)
     
-    MESSAGE_TITLE = "Cura Drive"
+    MESSAGE_TITLE = I18N_CATALOG.i18nc("@info:title", "Backups"),
 
     # Translatable messages for the entire plugin.
     translatable_messages = {
         
         # Menu items.
-        "extension_menu_entry": I18N_CATALOG.i18nc("@item:inmenu", "Open Cura Drive"),
+        "extension_menu_entry": I18N_CATALOG.i18nc("@item:inmenu", "Manage backups"),
         
         # Notification messages.
         "backup_failed": I18N_CATALOG.i18nc("@info:backup_status", "There was an error while creating your backup."),

@@ -18,7 +18,7 @@ Window
     width: minimumWidth
     height: minimumHeight
     color: "white"
-    title: catalog.i18nc("@title:window", "Cura Drive")
+    title: catalog.i18nc("@title:window", "Cura Backups")
 
     // Globally available.
     UM.I18nCatalog
@@ -37,15 +37,15 @@ Window
 //        clip: true
 //    }
 
-    Image
-    {
-        id: previewBanner
-        source: "images/preview_banner.png"
-        width: 96
-        height: width
-        x: curaDriveDialog.width - width
-        y: 0
-    }
+//    Image
+//    {
+//        id: previewBanner
+//        source: "images/preview_banner.png"
+//        width: 96
+//        height: width
+//        x: curaDriveDialog.width - width
+//        y: 0
+//    }
 
     WelcomePage
     {
