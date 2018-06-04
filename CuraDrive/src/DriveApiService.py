@@ -1,10 +1,7 @@
 # Copyright (c) 2017 Ultimaker B.V.
 import base64
 import hashlib
-import json
-import urllib.request
 from datetime import datetime
-from http.client import HTTPResponse
 from tempfile import NamedTemporaryFile
 from typing import Optional, List, Dict
 
@@ -50,26 +47,15 @@ class DriveApiService:
             Logger.log("w", "Could not get access token.")
             return []
 
-        backup_list_request = urllib.request.Request(self.GET_BACKUPS_URL, headers = {
+        backup_list_request = requests.get(self.GET_BACKUPS_URL, headers={
             "Authorization": "Bearer {}".format(access_token)
         })
-        backup_list_response = urllib.request.urlopen(backup_list_request)  # type: HTTPResponse
-        
-        if backup_list_response.status not in (200, 201):
-            Logger.log("w", "Could not get backups list from remote: %s", backup_list_response.read())
-            Message(Settings.translatable_messages["get_backups_error"],
-                    title = Settings.MESSAGE_TITLE,
+        if backup_list_request.status_code not in (200, 201):
+            Logger.log("w", "Could not get backups list from remote: %s", backup_list_request.text)
+            Message(Settings.translatable_messages["get_backups_error"], title = Settings.MESSAGE_TITLE,
                     lifetime = 10).show()
             return []
-        
-        try:
-            return json.loads(backup_list_response.read().decode()).get("data", [])
-        except ValueError as e:
-            Logger.log("w", "Could not parse backups response: %s", e)
-            Message(Settings.translatable_messages["get_backups_error"],
-                    title = Settings.MESSAGE_TITLE,
-                    lifetime = 10).show()
-            return []
+        return backup_list_request.json()["data"]
 
     def createBackup(self) -> None:
         """Create a backup and upload it to CuraDrive cloud storage."""
