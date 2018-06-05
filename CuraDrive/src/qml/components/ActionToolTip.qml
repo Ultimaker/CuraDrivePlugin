@@ -23,5 +23,6 @@ ToolTip
         text: tooltip.text
         color: UM.Theme.getColor("text")
         font: UM.Theme.getFont("very_small")
+        renderType: Text.NativeRendering
     }
 }

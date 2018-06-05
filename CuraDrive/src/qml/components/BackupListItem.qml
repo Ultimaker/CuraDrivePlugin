@@ -46,6 +46,7 @@ Item
             Layout.minimumWidth: 100
             Layout.maximumWidth: 500
             Layout.fillWidth: true
+            renderType: Text.NativeRendering
         }
 
         Label
@@ -55,6 +56,7 @@ Item
             Layout.minimumWidth: 100
             Layout.maximumWidth: 500
             Layout.fillWidth: true
+            renderType: Text.NativeRendering
         }
 
         ActionButton

@@ -34,6 +34,7 @@ Column
         horizontalAlignment: Text.AlignHCenter
         anchors.horizontalCenter: parent.horizontalCenter
         wrapMode: Label.WordWrap
+        renderType: Text.NativeRendering
     }
 
     ActionButton
