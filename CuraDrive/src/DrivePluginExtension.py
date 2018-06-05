@@ -5,10 +5,8 @@ from typing import Optional
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 
-from UM.Application import Application
 from UM.Extension import Extension
 from UM.Message import Message
-from UM.Preferences import Preferences
 
 from ..lib.CuraPluginOAuth2Module.OAuth2Client.AuthorizationService import AuthorizationService
 
@@ -39,20 +37,23 @@ class DrivePluginExtension(QObject, Extension):
     
     DATE_FORMAT = "%d/%m/%Y %H:%M:%S"
 
-    def __init__(self):
+    def __init__(self, application):
         super(DrivePluginExtension, self).__init__()
+        
+        # Re-usable instance of application.
+        self._application = application
 
         # Local data caching for the UI.
-        self._auth_error_message = ""
+        self._auth_error_message = ""  # type: str
         self._drive_window = None  # type: Optional[QObject]
         self._backups_list_model = BackupListModel()
         self._is_restoring_backup = False
         self._is_creating_backup = False
 
         # Initialize services.
-        self._preferences = Preferences.getInstance()
-        self._authorization_service = AuthorizationService(Settings.OAUTH_SETTINGS)  # type: AuthorizationService
-        self._drive_api_service = DriveApiService(self._authorization_service)  # type: DriveApiService
+        self._preferences = self._application.getPreferences()
+        self._authorization_service = AuthorizationService(application, Settings.OAUTH_SETTINGS)
+        self._drive_api_service = DriveApiService(self._authorization_service)
 
         # Attach signals.
         self._authorization_service.onAuthStateChanged.connect(self._onLoginStateChanged)
@@ -68,8 +69,8 @@ class DrivePluginExtension(QObject, Extension):
         # Register menu items.
         self._updateMenuItems()
 
-        # Make auto-backup on boot and quit.
-        Application.getInstance().engineCreatedSignal.connect(self._autoBackup)
+        # Make auto-backup on boot if required.
+        self._application.engineCreatedSignal.connect(self._autoBackup)
 
     def showDriveWindow(self) -> None:
         """Show the Drive UI popup window."""
@@ -84,7 +85,7 @@ class DrivePluginExtension(QObject, Extension):
         :return: The popup window object.
         """
         path = os.path.join(os.path.dirname(__file__), "qml", "main.qml")
-        return Application.getInstance().createQmlComponent(path, {"CuraDrive": self})
+        return self._application.createQmlComponent(path, {"CuraDrive": self})
     
     def _updateMenuItems(self) -> None:
         """Update the menu items."""

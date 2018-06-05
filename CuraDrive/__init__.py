@@ -11,4 +11,4 @@ if not is_testing:
         return {}
 
     def register(app):
-        return {"extension": DrivePluginExtension()}
+        return {"extension": DrivePluginExtension(app)}
