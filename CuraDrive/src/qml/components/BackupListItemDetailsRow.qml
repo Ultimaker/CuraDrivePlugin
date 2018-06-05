@@ -32,6 +32,7 @@ RowLayout
         Layout.minimumWidth: 50
         Layout.maximumWidth: 100
         Layout.fillWidth: true
+        renderType: Text.NativeRendering
     }
 
     Label
@@ -41,5 +42,6 @@ RowLayout
         Layout.minimumWidth: 50
         Layout.maximumWidth: 100
         Layout.fillWidth: true
+        renderType: Text.NativeRendering
     }
 }

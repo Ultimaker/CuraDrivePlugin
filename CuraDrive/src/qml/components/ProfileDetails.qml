@@ -35,6 +35,7 @@ Item
             Layout.alignment: Qt.AlignLeft
             Layout.fillWidth: true
             Layout.fillHeight: true
+            renderType: Text.NativeRendering
         }
 
         ActionButton

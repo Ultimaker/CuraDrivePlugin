@@ -40,6 +40,7 @@ Item
             font: UM.Theme.getFont("large")
             color: UM.Theme.getColor("text")
             Layout.fillWidth: true
+            renderType: Text.NativeRendering
         }
 
         Label
@@ -53,6 +54,7 @@ Item
             visible: backupList.count == 0
             Layout.fillWidth: true
             Layout.fillHeight: true
+            renderType: Text.NativeRendering
         }
 
         BackupList
@@ -72,6 +74,7 @@ Item
             color: UM.Theme.getColor("text")
             wrapMode: Label.WordWrap
             visible: backupList.count > 4
+            renderType: Text.NativeRendering
         }
 
         BackupListFooter
