@@ -47,6 +47,7 @@ Button
             color: button.enabled ? (button.hovered ? button.textHoverColor : button.textColor): button.textDisabledColor
             font: button.textFont
             visible: button.text != ""
+            renderType: Text.NativeRendering
         }
     }
 
