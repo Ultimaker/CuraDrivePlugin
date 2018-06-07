@@ -7,6 +7,7 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 
 from UM.Extension import Extension
 from UM.Message import Message
+from UM.Preferences import Preferences
 
 from ..lib.CuraPluginOAuth2Module.OAuth2Client.AuthorizationService import AuthorizationService
 
@@ -51,8 +52,12 @@ class DrivePluginExtension(QObject, Extension):
         self._is_creating_backup = False
 
         # Initialize services.
-        self._preferences = self._application.getPreferences()
-        self._authorization_service = AuthorizationService(application, Settings.OAUTH_SETTINGS)
+        if hasattr(self._application, "getPreferences"):
+            self._preferences = self._application.getPreferences()
+        else:
+            # Polyfill for Cura 3.4 Beta which does not have getPreferences on application yet.
+            self._preferences = Preferences.getInstance()
+        self._authorization_service = AuthorizationService(self._preferences, Settings.OAUTH_SETTINGS)
         self._drive_api_service = DriveApiService(self._authorization_service)
 
         # Attach signals.
