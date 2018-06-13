@@ -9,20 +9,22 @@ class Settings:
     Keeps the application settings.
     """
 
+    UM_CLOUD_API_ROOT = "https://api-staging.ultimaker.com"
+
     CALLBACK_PORT = 32118
 
     OAUTH_SETTINGS = OAuth2Settings(
-        OAUTH_SERVER_URL="https://api.ultimaker.com/auth/v1",
+        OAUTH_SERVER_URL="{}/auth/v1".format(UM_CLOUD_API_ROOT),
         CALLBACK_PORT = CALLBACK_PORT,  # CUR :)
         CALLBACK_URL = "http://localhost:{}/callback".format(CALLBACK_PORT),
         CLIENT_ID = "um---------------ultimaker_cura_drive_plugin",
         CLIENT_SCOPES = "user.read drive.backups.read drive.backups.write",
         AUTH_DATA_PREFERENCE_KEY = "cura_drive/auth_data",
-        AUTH_SUCCESS_REDIRECT = "https://api.ultimaker.com/cura-drive/v1/auth-success",
-        AUTH_FAILED_REDIRECT = "https://api.ultimaker.com/cura-drive/v1/auth-error"
+        AUTH_SUCCESS_REDIRECT = "{}/cura-drive/v1/auth-success".format(UM_CLOUD_API_ROOT),
+        AUTH_FAILED_REDIRECT = "{}/cura-drive/v1/auth-error".format(UM_CLOUD_API_ROOT)
     )
 
-    DRIVE_API_URL = "https://api.ultimaker.com/cura-drive/v1"
+    DRIVE_API_URL = "{}/cura-drive/v1".format(UM_CLOUD_API_ROOT)
     
     AUTO_BACKUP_ENABLED_PREFERENCE_KEY = "cura_drive/auto_backup_enabled"
     AUTO_BACKUP_LAST_DATE_PREFERENCE_KEY = "cura_drive/auto_backup_date"
