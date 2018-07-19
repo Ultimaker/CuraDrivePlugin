@@ -17,7 +17,7 @@ Window
     maximumHeight: minimumHeight * 1.2
     width: minimumWidth
     height: minimumHeight
-    color: "white"
+    color: UM.Theme.getColor("sidebar")
     title: catalog.i18nc("@title:window", "Cura Backups")
 
     // Globally available.
@@ -26,26 +26,6 @@ Window
         id: catalog
         name: "cura_drive"
     }
-
-//    Image
-//    {
-//        id: icon
-//        anchors.fill: curaDriveDialog
-//        y: 50
-//        source: "images/background.svg"
-//        fillMode: Image.PreserveAspectCrop
-//        clip: true
-//    }
-
-//    Image
-//    {
-//        id: previewBanner
-//        source: "images/preview_banner.png"
-//        width: 96
-//        height: width
-//        x: curaDriveDialog.width - width
-//        y: 0
-//    }
 
     WelcomePage
     {

@@ -14,6 +14,7 @@ ToolTip
 
     background: Rectangle
     {
+        color: UM.Theme.getColor("sidebar")
         border.color: UM.Theme.getColor("primary")
         border.width: 1
     }
