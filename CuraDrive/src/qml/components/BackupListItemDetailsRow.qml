@@ -3,6 +3,8 @@ import QtQuick 2.7
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 
+import UM 1.3 as UM
+
 RowLayout
 {
     id: detailsRow
@@ -23,11 +25,13 @@ RowLayout
     {
         width: 18
         iconSource: detailsRow.iconSource
+        color: UM.Theme.getColor("text")
     }
 
     Label
     {
         text: detailsRow.label
+        color: UM.Theme.getColor("text")
         elide: Text.ElideRight
         Layout.minimumWidth: 50
         Layout.maximumWidth: 100
@@ -38,6 +42,7 @@ RowLayout
     Label
     {
         text: detailsRow.value
+        color: UM.Theme.getColor("text")
         elide: Text.ElideRight
         Layout.minimumWidth: 50
         Layout.maximumWidth: 100

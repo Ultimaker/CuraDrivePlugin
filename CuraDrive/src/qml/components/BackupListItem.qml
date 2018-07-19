@@ -42,6 +42,7 @@ Item
         Label
         {
             text: new Date(model["generated_time"]).toLocaleString(UM.Preferences.getValue("general/language"))
+            color: UM.Theme.getColor("text")
             elide: Text.ElideRight
             Layout.minimumWidth: 100
             Layout.maximumWidth: 500
@@ -52,6 +53,7 @@ Item
         Label
         {
             text: model["data"]["description"]
+            color: UM.Theme.getColor("text")
             elide: Text.ElideRight
             Layout.minimumWidth: 100
             Layout.maximumWidth: 500
@@ -65,7 +67,7 @@ Item
             color: "transparent"
             hoverColor: "transparent"
             textColor: UM.Theme.getColor("text")
-            textHoverColor: UM.Theme.getColor("text_hover")
+            textHoverColor: UM.Theme.getColor("text_link")
             enabled: !CuraDrive.isCreatingBackup && !CuraDrive.isRestoringBackup
             onClicked: confirmRestoreDialog.visible = true
         }
@@ -74,8 +76,8 @@ Item
         {
             color: "transparent"
             hoverColor: "transparent"
-            textColor: UM.Theme.getColor("setting_validation_error_background")
-            textHoverColor: UM.Theme.getColor("setting_validation_error_background")
+            textColor: UM.Theme.getColor("setting_validation_error")
+            textHoverColor: UM.Theme.getColor("setting_validation_error")
             iconSource: "../images/delete.svg"
             onClicked: confirmDeleteDialog.visible = true
         }

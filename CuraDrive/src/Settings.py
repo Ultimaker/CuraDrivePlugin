@@ -9,7 +9,7 @@ class Settings:
     Keeps the application settings.
     """
 
-    UM_CLOUD_API_ROOT = "https://api.ultimaker.com"
+    UM_CLOUD_API_ROOT = "https://api-staging.ultimaker.com"
 
     CALLBACK_PORT = 32118
 
