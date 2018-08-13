@@ -105,7 +105,7 @@ Item
     {
         id: confirmRestoreDialog
         title: catalog.i18nc("@dialog:title", "Restore Backup")
-        text: catalog.i18nc("@dialog:info", "Cura will restart after your backup has been restored. Continue?")
+        text: catalog.i18nc("@dialog:info", "Cura will close and you need to start again for your backup to be restored. Continue?")
         standardButtons: StandardButton.Yes | StandardButton.No
         onYes: CuraDrive.restoreBackup(model["backup_id"])
     }
