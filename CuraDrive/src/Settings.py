@@ -9,13 +9,14 @@ class Settings:
     Keeps the application settings.
     """
 
+    UM_OAUTH_ROOT = "https://account.ultimaker.com"
     UM_CLOUD_API_ROOT = "https://api.ultimaker.com"
 
     CALLBACK_PORT = 32118
 
     OAUTH_SETTINGS = OAuth2Settings(
-        OAUTH_SERVER_URL="{}/auth/v1".format(UM_CLOUD_API_ROOT),
-        CALLBACK_PORT = CALLBACK_PORT,  # CUR :)
+        OAUTH_SERVER_URL=UM_OAUTH_ROOT,
+        CALLBACK_PORT = CALLBACK_PORT,
         CALLBACK_URL = "http://localhost:{}/callback".format(CALLBACK_PORT),
         CLIENT_ID = "um---------------ultimaker_cura_drive_plugin",
         CLIENT_SCOPES = "user.read drive.backups.read drive.backups.write",
