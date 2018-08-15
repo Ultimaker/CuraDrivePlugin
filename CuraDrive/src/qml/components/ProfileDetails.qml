@@ -47,7 +47,7 @@ Item
             textHoverColor: UM.Theme.getColor("text_link")
             iconSource: "../images/home.svg"
             Layout.alignment: Qt.AlignRight
-            onClicked: Qt.openUrlExternally("https://account-staging.ultimaker.com/app/profile")
+            onClicked: Qt.openUrlExternally("https://account.ultimaker.com")
         }
 
         ActionButton
