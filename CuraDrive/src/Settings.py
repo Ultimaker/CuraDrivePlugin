@@ -9,10 +9,8 @@ class Settings:
     Keeps the application settings.
     """
 
-    # UM_ENVIRONMENT = ""
-    UM_ENVIRONMENT = "-staging"  # Uncomment this to use the staging environment.
-    UM_OAUTH_ROOT = "https://account{}.ultimaker.com".format(UM_ENVIRONMENT)
-    UM_CLOUD_API_ROOT = "https://api{}.ultimaker.com".format(UM_ENVIRONMENT)
+    UM_OAUTH_ROOT = "https://account.ultimaker.com"
+    UM_CLOUD_API_ROOT = "https://api.ultimaker.com"
 
     CALLBACK_PORT = 32118
 
