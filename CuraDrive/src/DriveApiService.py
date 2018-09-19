@@ -50,7 +50,7 @@ class DriveApiService:
         backup_list_request = requests.get(self.GET_BACKUPS_URL, headers={
             "Authorization": "Bearer {}".format(access_token)
         })
-        if backup_list_request.status_code not in (200, 201):
+        if backup_list_request.status_code > 299:
             Logger.log("w", "Could not get backups list from remote: %s", backup_list_request.text)
             Message(Settings.translatable_messages["get_backups_error"], title = Settings.MESSAGE_TITLE,
                     lifetime = 10).show()
@@ -158,7 +158,7 @@ class DriveApiService:
         delete_backup = requests.delete("{}/{}".format(self.DELETE_BACKUP_URL, backup_id), headers = {
             "Authorization": "Bearer {}".format(access_token)
         })
-        if delete_backup.status_code not in (200, 201):
+        if delete_backup.status_code > 299:
             Logger.log("w", "Could not delete backup: %s", delete_backup.text)
             return False
         return True
@@ -178,7 +178,7 @@ class DriveApiService:
         }, headers={
             "Authorization": "Bearer {}".format(self._authorization_service.getAccessToken())
         })
-        if backup_upload_request.status_code not in (200, 201):
+        if backup_upload_request.status_code > 299:
             Logger.log("w", "Could not request backup upload: %s", backup_upload_request.text)
             return None
         return backup_upload_request.json()["data"]["upload_url"]
