@@ -5,11 +5,10 @@ from typing import Optional
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 
+from cura.API import CuraAPI
 from UM.Extension import Extension
 from UM.Message import Message
 from UM.Preferences import Preferences
-
-from ..lib.CuraPluginOAuth2Module.OAuth2Client.AuthorizationService import AuthorizationService
 
 from .Settings import Settings
 from .DriveApiService import DriveApiService
@@ -45,7 +44,6 @@ class DrivePluginExtension(QObject, Extension):
         self._application = application
 
         # Local data caching for the UI.
-        self._auth_error_message = ""  # type: str
         self._drive_window = None  # type: Optional[QObject]
         self._backups_list_model = BackupListModel()
         self._is_restoring_backup = False
@@ -57,12 +55,17 @@ class DrivePluginExtension(QObject, Extension):
         else:
             # Polyfill for Cura 3.4 Beta which does not have getPreferences on application yet.
             self._preferences = Preferences.getInstance()
-        self._authorization_service = AuthorizationService(self._preferences, Settings.OAUTH_SETTINGS)
-        self._drive_api_service = DriveApiService(self._authorization_service)
+        
+        # Re-used services.
+        self._cura_api = CuraAPI()
+        self._drive_api_service = DriveApiService()
 
-        # Attach signals.
-        self._authorization_service.onAuthStateChanged.connect(self._onLoginStateChanged)
-        self._authorization_service.onAuthenticationError.connect(self._onLoginStateChanged)
+        # Attach auth signals.
+        self._cura_api.account.loginStateChanged.connect(self.loginStateChanged)
+        self.loginStateChanged.connect(self._onLoginStateChanged)
+        # self._authorization_service.onAuthenticationError.connect(self._onLoginStateChanged)
+        
+        # Attach backup signals.
         self._drive_api_service.onRestoringStateChanged.connect(self._onRestoringStateChanged)
         self._drive_api_service.onCreatingStateChanged.connect(self._onCreatingStateChanged)
 
@@ -118,12 +121,10 @@ class DrivePluginExtension(QObject, Extension):
         backup_date = datetime.now().strftime(self.DATE_FORMAT)
         self._preferences.setValue(Settings.AUTO_BACKUP_LAST_DATE_PREFERENCE_KEY, backup_date)
 
-    def _onLoginStateChanged(self, logged_in: bool = False, error_message: str = None):
+    def _onLoginStateChanged(self, logged_in: bool = False):
         """Callback handler for changes in the login state."""
-        self.loginStateChanged.emit()
-        if error_message:
-            Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 30).show()
         if logged_in:
+            # TODO: make sure logged_in still exists
             self.refreshBackups()
 
     def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None):
@@ -159,17 +160,17 @@ class DrivePluginExtension(QObject, Extension):
     @pyqtProperty(bool, notify = loginStateChanged)
     def isLoggedIn(self) -> bool:
         """Check if a user is logged in or not."""
-        return bool(self._authorization_service.getUserProfile())
+        return self._cura_api.account.isLoggedIn()
 
     @pyqtSlot(name = "login")
     def login(self) -> None:
         """Start the OAuth2 authorization flow to log in."""
-        self._authorization_service.startAuthorizationFlow()
+        self._cura_api.account.login()
 
     @pyqtSlot(name = "logout")
     def logout(self) -> None:
         """Delete all auth data."""
-        self._authorization_service.deleteAuthData()
+        self._cura_api.account.logout()
 
     @pyqtProperty("QVariantMap", notify = loginStateChanged)
     def profile(self) -> Optional[dict]:
@@ -177,18 +178,7 @@ class DrivePluginExtension(QObject, Extension):
         Get the profile of the authenticated user.
         :return: A dict containing the profile information.
         """
-        user_profile = self._authorization_service.getUserProfile()
-        if not user_profile:
-            return None
-        return user_profile.__dict__
-
-    @pyqtProperty(str, notify = loginStateChanged)
-    def authError(self) -> str:
-        """
-        Get the error message from the authorization flow.
-        :return: The error message as string.
-        """
-        return self._auth_error_message
+        return self._cura_api.account.userProfile()
 
     @pyqtProperty(QObject, notify = backupsChanged)
     def backups(self) -> BackupListModel:
