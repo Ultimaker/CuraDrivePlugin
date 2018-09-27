@@ -36,7 +36,7 @@ class DriveApiService:
 
     def getBackups(self) -> List[Dict[str, any]]:
         """Get all backups from the API."""
-        access_token = self._cura_api.account.accessToken  # TODO: needs to be implemented in Cura
+        access_token = self._cura_api.account.accessToken
         if not access_token:
             Logger.log("w", "Could not get access token.")
             return []
@@ -144,7 +144,7 @@ class DriveApiService:
         :param backup_id: The ID of the backup to delete.
         :return: Success bool.
         """
-        access_token = self._cura_api.account.accessToken  # TODO: needs to be implemented in Cura
+        access_token = self._cura_api.account.accessToken
         if not access_token:
             Logger.log("w", "Could not get access token.")
             return False
@@ -164,7 +164,7 @@ class DriveApiService:
         :param backup_size: The size of the backup file in bytes.
         :return: The upload URL for the actual backup file if successful, otherwise None.
         """
-        access_token = self._cura_api.account.accessToken  # TODO: needs to be implemented in Cura
+        access_token = self._cura_api.account.accessToken
         if not access_token:
             Logger.log("w", "Could not get access token.")
             return None

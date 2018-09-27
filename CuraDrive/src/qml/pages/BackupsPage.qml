@@ -4,6 +4,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.3
 
 import UM 1.3 as UM
+import Cura 1.1 as Cura
 
 import "../components"
 
@@ -22,8 +23,8 @@ Item
         ProfileDetails
         {
             id: profileDetails
-            profile: CuraDrive.profile
-            logoutCallback: CuraDrive.logout
+            profile: Cura.API.account.userProfile
+            logoutCallback: Cura.API.account.logout
             Layout.fillWidth: true
         }
 

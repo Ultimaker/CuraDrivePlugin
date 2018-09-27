@@ -20,9 +20,6 @@ class DrivePluginExtension(QObject, Extension):
     The DivePluginExtension provides functionality to backup and restore your Cura configuration to Ultimaker's cloud.
     """
 
-    # Signal emitted when user logged in or out.
-    loginStateChanged = pyqtSignal()
-
     # Signal emitted when the list of backups changed.
     backupsChanged = pyqtSignal()
 
@@ -61,9 +58,7 @@ class DrivePluginExtension(QObject, Extension):
         self._drive_api_service = DriveApiService()
 
         # Attach auth signals.
-        self._cura_api.account.loginStateChanged.connect(self.loginStateChanged)
-        self.loginStateChanged.connect(self._onLoginStateChanged)
-        # self._authorization_service.onAuthenticationError.connect(self._onLoginStateChanged)
+        self._cura_api.account.loginStateChanged.connect(self._onLoginStateChanged)
         
         # Attach backup signals.
         self._drive_api_service.onRestoringStateChanged.connect(self._onRestoringStateChanged)
@@ -124,7 +119,6 @@ class DrivePluginExtension(QObject, Extension):
     def _onLoginStateChanged(self, logged_in: bool = False):
         """Callback handler for changes in the login state."""
         if logged_in:
-            # TODO: make sure logged_in still exists
             self.refreshBackups()
 
     def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None):
@@ -157,29 +151,6 @@ class DrivePluginExtension(QObject, Extension):
         """Check if auto-backup is enabled or not."""
         return bool(self._preferences.getValue(Settings.AUTO_BACKUP_ENABLED_PREFERENCE_KEY))
 
-    @pyqtProperty(bool, notify = loginStateChanged)
-    def isLoggedIn(self) -> bool:
-        """Check if a user is logged in or not."""
-        return self._cura_api.account.isLoggedIn()
-
-    @pyqtSlot(name = "login")
-    def login(self) -> None:
-        """Start the OAuth2 authorization flow to log in."""
-        self._cura_api.account.login()
-
-    @pyqtSlot(name = "logout")
-    def logout(self) -> None:
-        """Delete all auth data."""
-        self._cura_api.account.logout()
-
-    @pyqtProperty("QVariantMap", notify = loginStateChanged)
-    def profile(self) -> Optional[dict]:
-        """
-        Get the profile of the authenticated user.
-        :return: A dict containing the profile information.
-        """
-        return self._cura_api.account.userProfile()
-
     @pyqtProperty(QObject, notify = backupsChanged)
     def backups(self) -> BackupListModel:
         """
@@ -192,7 +163,6 @@ class DrivePluginExtension(QObject, Extension):
     def refreshBackups(self) -> None:
         """
         Forcefully refresh the backups list.
-        :return:
         """
         self._backups_list_model.loadBackups(self._drive_api_service.getBackups())
         self.backupsChanged.emit()
