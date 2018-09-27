@@ -47,20 +47,12 @@ class DrivePluginExtension(QObject, Extension):
         self._is_creating_backup = False
 
         # Initialize services.
-        if hasattr(self._application, "getPreferences"):
-            self._preferences = self._application.getPreferences()
-        else:
-            # Polyfill for Cura 3.4 Beta which does not have getPreferences on application yet.
-            self._preferences = Preferences.getInstance()
-        
-        # Re-used services.
+        self._preferences = self._application.getPreferences()
         self._cura_api = CuraAPI()
         self._drive_api_service = DriveApiService()
 
-        # Attach auth signals.
+        # Attach signals.
         self._cura_api.account.loginStateChanged.connect(self._onLoginStateChanged)
-        
-        # Attach backup signals.
         self._drive_api_service.onRestoringStateChanged.connect(self._onRestoringStateChanged)
         self._drive_api_service.onCreatingStateChanged.connect(self._onCreatingStateChanged)
 
@@ -79,8 +71,8 @@ class DrivePluginExtension(QObject, Extension):
         """Show the Drive UI popup window."""
         if not self._drive_window:
             self._drive_window = self.createDriveWindow()
-        self._drive_window.show()
         self.refreshBackups()
+        self._drive_window.show()
 
     def createDriveWindow(self) -> Optional["QObject"]:
         """
