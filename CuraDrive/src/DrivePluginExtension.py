@@ -8,7 +8,6 @@ from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 from cura.API import CuraAPI
 from UM.Extension import Extension
 from UM.Message import Message
-from UM.Preferences import Preferences
 
 from .Settings import Settings
 from .DriveApiService import DriveApiService
