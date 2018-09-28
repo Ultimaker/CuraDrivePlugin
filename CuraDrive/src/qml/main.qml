@@ -4,6 +4,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Window 2.2
 
 import UM 1.3 as UM
+import Cura 1.1 as Cura
 
 import "components"
 import "pages"
@@ -30,12 +31,12 @@ Window
     WelcomePage
     {
         id: welcomePage
-        visible: !CuraDrive.isLoggedIn
+        visible: !Cura.API.account.isLoggedIn
     }
 
     BackupsPage
     {
         id: backupsPage
-        visible: CuraDrive.isLoggedIn
+        visible: Cura.API.account.isLoggedIn
     }
 }

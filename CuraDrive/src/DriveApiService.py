@@ -12,9 +12,6 @@ from UM.Message import Message
 from UM.Signal import Signal
 
 from cura.API import CuraAPI
-
-from ..lib.CuraPluginOAuth2Module.OAuth2Client.AuthorizationService import AuthorizationService
-
 from .UploadBackupJob import UploadBackupJob
 from .Settings import Settings
 
@@ -29,7 +26,7 @@ class DriveApiService:
     DELETE_BACKUP_URL = "{}/backups".format(Settings.DRIVE_API_URL)
 
     # Re-used instance of the Cura plugin API.
-    api = CuraAPI()
+    _cura_api = CuraAPI()
 
     # Emit signal when restoring backup started or finished.
     onRestoringStateChanged = Signal()
@@ -37,12 +34,9 @@ class DriveApiService:
     # Emit signal when creating backup started or finished.
     onCreatingStateChanged = Signal()
 
-    def __init__(self, authorization_service: "AuthorizationService"):
-        self._authorization_service = authorization_service
-
     def getBackups(self) -> List[Dict[str, any]]:
         """Get all backups from the API."""
-        access_token = self._getAccessToken()
+        access_token = self._cura_api.account.accessToken
         if not access_token:
             Logger.log("w", "Could not get access token.")
             return []
@@ -62,7 +56,7 @@ class DriveApiService:
         self.onCreatingStateChanged.emit(is_creating=True)
 
         # Create the backup.
-        backup_zip_file, backup_meta_data = self.api.backups.createBackup()
+        backup_zip_file, backup_meta_data = self._cura_api.backups.createBackup()
         if not backup_zip_file or not backup_meta_data:
             self.onCreatingStateChanged.emit(is_creating=False, error_message="Could not create backup.")
             return
@@ -122,7 +116,7 @@ class DriveApiService:
 
         # Tell Cura to place the backup back in the user data folder.
         with open(temporary_backup_file.name, "rb") as read_backup:
-            self.api.backups.restoreBackup(read_backup.read(), backup.get("data"))
+            self._cura_api.backups.restoreBackup(read_backup.read(), backup.get("data"))
             self.onRestoringStateChanged.emit(is_restoring=False)
 
     def _emitRestoreError(self, error_message: str = Settings.translatable_messages["backup_restore_error_message"]):
@@ -150,7 +144,7 @@ class DriveApiService:
         :param backup_id: The ID of the backup to delete.
         :return: Success bool.
         """
-        access_token = self._getAccessToken()
+        access_token = self._cura_api.account.accessToken
         if not access_token:
             Logger.log("w", "Could not get access token.")
             return False
@@ -170,22 +164,22 @@ class DriveApiService:
         :param backup_size: The size of the backup file in bytes.
         :return: The upload URL for the actual backup file if successful, otherwise None.
         """
+        access_token = self._cura_api.account.accessToken
+        if not access_token:
+            Logger.log("w", "Could not get access token.")
+            return None
+        
         backup_upload_request = requests.put(self.PUT_BACKUP_URL, json={
             "data": {
                 "backup_size": backup_size,
                 "metadata": backup_metadata
             }
         }, headers={
-            "Authorization": "Bearer {}".format(self._authorization_service.getAccessToken())
+            "Authorization": "Bearer {}".format(access_token)
         })
+        
         if backup_upload_request.status_code > 299:
             Logger.log("w", "Could not request backup upload: %s", backup_upload_request.text)
             return None
+        
         return backup_upload_request.json()["data"]["upload_url"]
-
-    def _getAccessToken(self) -> Optional[str]:
-        """
-        Get the access token.
-        :return: The access token as string.
-        """
-        return self._authorization_service.getAccessToken()

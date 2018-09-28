@@ -4,6 +4,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Window 2.2
 
 import UM 1.3 as UM
+import Cura 1.1 as Cura
 
 import "../components"
 
@@ -40,7 +41,7 @@ Column
     ActionButton
     {
         id: loginButton
-        onClicked: CuraDrive.login()
+        onClicked: Cura.API.account.login()
         text: catalog.i18nc("@button", "Sign In")
         anchors.horizontalCenter: parent.horizontalCenter
     }
