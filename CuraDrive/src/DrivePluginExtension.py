@@ -107,19 +107,19 @@ class DrivePluginExtension(QObject, Extension):
         backup_date = datetime.now().strftime(self.DATE_FORMAT)
         self._preferences.setValue(Settings.AUTO_BACKUP_LAST_DATE_PREFERENCE_KEY, backup_date)
 
-    def _onLoginStateChanged(self, logged_in: bool = False):
+    def _onLoginStateChanged(self, logged_in: bool = False) -> None:
         """Callback handler for changes in the login state."""
         if logged_in:
             self.refreshBackups()
 
-    def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None):
+    def _onRestoringStateChanged(self, is_restoring: bool = False, error_message: str = None) -> None:
         """Callback handler for changes in the restoring state."""
         self._is_restoring_backup = is_restoring
         self.restoringStateChanged.emit()
         if error_message:
             Message(error_message, title = Settings.MESSAGE_TITLE, lifetime = 5).show()
 
-    def _onCreatingStateChanged(self, is_creating: bool = False, error_message: str = None):
+    def _onCreatingStateChanged(self, is_creating: bool = False, error_message: str = None) -> None:
         """Callback handler for changes in the creation state."""
         self._is_creating_backup = is_creating
         self.creatingStateChanged.emit()
