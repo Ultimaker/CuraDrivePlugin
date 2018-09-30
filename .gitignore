@@ -107,3 +107,4 @@ venv.bak/
 # build
 *.qmlc
 *.curapackage
+.env
