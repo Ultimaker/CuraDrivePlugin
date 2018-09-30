@@ -1,0 +1,22 @@
+image: docker:stable
+
+variables:
+  # Needed for Docker access in the container.
+  DOCKER_HOST: tcp://0.0.0.0:2375
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  services:
+    - docker:dind
+  tags:
+    - docker
+    - kubernetes
+  script:
+    - docker build .
+  only:
+    - master
+    - automate-deployment
