@@ -10,6 +10,7 @@ build:
     - docker
     - kubernetes
   script:
+    - pip install -r requirements.txt
     - python3 deploy.py
   except:
     - master
@@ -23,6 +24,7 @@ deploy:
   variables:
     DEPLOY: "True"
   script:
+    - pip install -r requirements.txt
     - python3 deploy.py
   only:
     - master
