@@ -1,22 +1,29 @@
-image: docker:stable
-
-variables:
-  # Needed for Docker access in the container.
-  DOCKER_HOST: tcp://0.0.0.0:2375
-  DOCKER_DRIVER: overlay2
+image: python:3.6-alpine
 
 stages:
+  - build
   - deploy
 
-deploy:
-  stage: deploy
-  services:
-    - docker:dind
+build:
+  stage: build
   tags:
     - docker
     - kubernetes
   script:
-    - docker build .
+    - python3 deploy.py
+  except:
+    - master
+    - automate-deployment
+
+deploy:
+  stage: deploy
+  tags:
+    - docker
+    - kubernetes
+  variables:
+    DEPLOY: "True"
+  script:
+    - python3 deploy.py
   only:
     - master
     - automate-deployment

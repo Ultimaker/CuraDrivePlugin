@@ -26,9 +26,12 @@ def main() -> int:
     deployer = CuraPackageDeployer(config)
     deployer.loadPluginSources()
     deployer.buildPlugin()
-    deployer.deploy()
-    time.sleep(3)  # Give the API some time to build the package.
-    deployer.requestReview()
+    
+    if os.getenv("DEPLOY") == "True":
+        deployer.deploy()
+        time.sleep(3)  # Give the API some time to build the package.
+        deployer.requestReview()
+        
     return 0
 
 
