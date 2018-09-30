@@ -9,6 +9,9 @@ from CuraPackageDeployer.Config import Config
 from CuraPackageDeployer.CuraPackageDeployer import CuraPackageDeployer
 
 
+load_dotenv()
+
+
 class CuraDriveConfig(Config):
     package_id = "CuraDrive"
     package_sources_dir = "./CuraDrive"
@@ -31,6 +34,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.INFO)
-    load_dotenv()
     exit_code = main()
     sys.exit(exit_code)
