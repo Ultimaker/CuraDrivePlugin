@@ -1,7 +1,7 @@
 # Copyright (c) 2017 Ultimaker B.V.
 import os
 from datetime import datetime
-from typing import Optional, TYPE_CHECKING
+from typing import Optional
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 
