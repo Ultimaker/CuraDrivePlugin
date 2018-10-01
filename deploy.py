@@ -10,8 +10,8 @@ from CuraPackageDeployer.CuraPackageDeployer import CuraPackageDeployer
 
 # Load the environment
 load_dotenv()
-should_build_remote = os.getenv("BUILD_REMOTE", "False") == "True"
-should_request_review = os.getenv("REQUEST_REVIEW", "False") == "True"
+SHOULD_BUILD_REMOTE = os.getenv("BUILD_REMOTE", "False") == "True"
+SHOULD_REQUEST_REVIEW = os.getenv("REQUEST_REVIEW", "False") == "True"
 
 
 class CuraDriveConfig(Config):
@@ -28,11 +28,11 @@ def main() -> None:
     deployer = CuraPackageDeployer(config)
     deployer.loadPluginSources()
     deployer.buildPlugin()
-    if should_build_remote:
+    if SHOULD_BUILD_REMOTE:
         deployer.deploy()
         time.sleep(3)  # Give the API some time to build the package.
         deployer.checkBuildStatus()
-    if should_request_review:
+    if SHOULD_REQUEST_REVIEW:
         deployer.requestReview()
 
 
