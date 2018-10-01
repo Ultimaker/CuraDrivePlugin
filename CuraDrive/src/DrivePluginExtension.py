@@ -1,13 +1,12 @@
 # Copyright (c) 2017 Ultimaker B.V.
 import os
 from datetime import datetime
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 
 from UM.Extension import Extension
 from UM.Message import Message
-from cura.API import CuraAPI
 
 from .Settings import Settings
 from .DriveApiService import DriveApiService
@@ -47,15 +46,7 @@ class DrivePluginExtension(QObject, Extension):
 
         # Initialize services.
         self._preferences = self._application.getPreferences()
-
-        if hasattr(self._application, "getCuraAPI"):
-            # From Cura 3.6 onwards, the application has an instance of the API to use.
-            self._cura_api = self._application.getCuraAPI()
-        else:
-            # Prior to Cura 3.6, application did not hold an instance of the API ready to use.
-            # We must create our own instance here.
-            self._cura_api = CuraAPI()
-
+        self._cura_api = self._application.getCuraAPI()
         self._drive_api_service = DriveApiService(self._cura_api)
 
         # Attach signals.
