@@ -1,0 +1,31 @@
+image: python:3.6-alpine
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  tags:
+    - docker
+    - kubernetes
+  script:
+    - pip install -r requirements.txt
+    - python3 deploy.py
+  except:
+    - master
+    - automate-deployment
+
+deploy:
+  stage: deploy
+  tags:
+    - docker
+    - kubernetes
+  variables:
+    DEPLOY: "True"
+  script:
+    - pip install -r requirements.txt
+    - python3 deploy.py
+  only:
+    - master
+    - automate-deployment
