@@ -21,7 +21,7 @@ class CuraDriveConfig(Config):
     access_token = os.getenv("ACCESS_TOKEN", None)
 
 
-def main() -> int:
+def main() -> None:
     config = CuraDriveConfig()
     deployer = CuraPackageDeployer(config)
     deployer.loadPluginSources()
@@ -31,11 +31,8 @@ def main() -> int:
         deployer.deploy()
         time.sleep(3)  # Give the API some time to build the package.
         deployer.requestReview()
-        
-    return 0
 
 
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.INFO)
-    exit_code = main()
-    sys.exit(exit_code)
+    main()
