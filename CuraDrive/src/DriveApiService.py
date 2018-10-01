@@ -11,7 +11,6 @@ from UM.Logger import Logger
 from UM.Message import Message
 from UM.Signal import Signal
 
-from cura.API import CuraAPI
 from .UploadBackupJob import UploadBackupJob
 from .Settings import Settings
 
@@ -25,14 +24,15 @@ class DriveApiService:
     PUT_BACKUP_URL = "{}/backups".format(Settings.DRIVE_API_URL)
     DELETE_BACKUP_URL = "{}/backups".format(Settings.DRIVE_API_URL)
 
-    # Re-used instance of the Cura plugin API.
-    _cura_api = CuraAPI()
-
     # Emit signal when restoring backup started or finished.
     onRestoringStateChanged = Signal()
 
     # Emit signal when creating backup started or finished.
     onCreatingStateChanged = Signal()
+
+    def __init__(self, cura_api) -> None:
+        """Create a new instance of the Drive API service and set the cura_api object."""
+        self._cura_api = cura_api
 
     def getBackups(self) -> List[Dict[str, any]]:
         """Get all backups from the API."""

@@ -1,11 +1,10 @@
 # Copyright (c) 2017 Ultimaker B.V.
 import os
 from datetime import datetime
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty, pyqtSignal
 
-from cura.API import CuraAPI
 from UM.Extension import Extension
 from UM.Message import Message
 
@@ -47,8 +46,8 @@ class DrivePluginExtension(QObject, Extension):
 
         # Initialize services.
         self._preferences = self._application.getPreferences()
-        self._cura_api = CuraAPI()
-        self._drive_api_service = DriveApiService()
+        self._cura_api = self._application.getCuraAPI()
+        self._drive_api_service = DriveApiService(self._cura_api)
 
         # Attach signals.
         self._cura_api.account.loginStateChanged.connect(self._onLoginStateChanged)
