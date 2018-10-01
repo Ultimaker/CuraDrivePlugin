@@ -1,7 +1,6 @@
 # Copyright (c) 2018 Ultimaker B.V.
 import os
 import logging
-import sys
 import time
 from dotenv import load_dotenv
 
@@ -27,9 +26,12 @@ def main() -> None:
     deployer.loadPluginSources()
     deployer.buildPlugin()
     
-    if os.getenv("DEPLOY") == "True":
+    if os.getenv("BUILD_REMOTE") == "True":
         deployer.deploy()
         time.sleep(3)  # Give the API some time to build the package.
+        deployer.checkBuildStatus()
+    
+    if os.getenv("DEPLOY") == "True":
         deployer.requestReview()
 
 

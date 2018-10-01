@@ -9,12 +9,13 @@ build:
   tags:
     - docker
     - kubernetes
+  variables:
+    BUILD_REMOTE: "True"
   script:
     - pip install -r requirements.txt
     - python3 deploy.py
   except:
     - master
-    - automate-deployment
 
 deploy:
   stage: deploy
@@ -23,9 +24,9 @@ deploy:
     - kubernetes
   variables:
     DEPLOY: "True"
+    BUILD_REMOTE: "True"
   script:
     - pip install -r requirements.txt
     - python3 deploy.py
   only:
     - master
-    - automate-deployment
