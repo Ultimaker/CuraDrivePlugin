@@ -23,8 +23,8 @@ deploy:
     - docker
     - kubernetes
   variables:
-    DEPLOY: "True"
     BUILD_REMOTE: "True"
+    REQUEST_REVIEW: "True"
   script:
     - pip install -r requirements.txt
     - python3 deploy.py
