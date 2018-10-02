@@ -25,6 +25,7 @@ deploy:
   variables:
     BUILD_REMOTE: "True"
     REQUEST_REVIEW: "True"
+    REMOTE_BUILD_SECONDS: "5"
   script:
     - pip install -r requirements.txt
     - python3 deploy.py
