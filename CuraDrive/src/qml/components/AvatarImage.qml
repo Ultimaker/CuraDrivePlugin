@@ -7,8 +7,8 @@ Item
 {
     id: avatar
 
-    width: 96
-    height: 96
+    width: 96 * screenScaleFactor
+    height: 96 * screenScaleFactor
 
     property var source
 
@@ -29,7 +29,7 @@ Item
         source: "../images/inverted_circle.png"
         sourceSize: Qt.size(parent.width, parent.height)
         width: parent.width
-        height :parent.height
+        height: parent.height
         visible: false
     }
 

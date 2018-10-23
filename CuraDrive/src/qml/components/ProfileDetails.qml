@@ -21,7 +21,7 @@ Item
 
         AvatarImage
         {
-            width: 64
+            width: 64 * screenScaleFactor
             height: width
             source: profile["profile_image_url"]
         }
