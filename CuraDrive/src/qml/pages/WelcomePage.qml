@@ -13,7 +13,7 @@ Column
     id: welcomePage
     spacing: UM.Theme.getSize("wide_margin").height
     width: parent.width
-    topPadding: 150
+    topPadding: 150 * screenScaleFactor
 
     Image
     {
@@ -21,14 +21,14 @@ Column
         fillMode: Image.PreserveAspectFit
         source: "../images/icon.png"
         anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width / 4
+        width: Math.round(parent.width / 4)
     }
 
     Label
     {
         id: welcomeTextLabel
         text: catalog.i18nc("@description", "Backup and synchronize your Cura settings.")
-        width: parent.width / 2
+        width: Math.round(parent.width / 2)
         font: UM.Theme.getFont("default")
         color: UM.Theme.getColor("text")
         verticalAlignment: Text.AlignVCenter

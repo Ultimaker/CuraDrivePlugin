@@ -16,7 +16,7 @@ ToolTip
     {
         color: UM.Theme.getColor("sidebar")
         border.color: UM.Theme.getColor("primary")
-        border.width: 1
+        border.width: 1 * screenScaleFactor
     }
 
     contentItem: Label

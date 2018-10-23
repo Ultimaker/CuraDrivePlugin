@@ -9,7 +9,7 @@ RowLayout
 {
     id: detailsRow
     width: parent.width
-    height: 40
+    height: 40 * screenScaleFactor
 
     property var iconSource
     property var label
@@ -18,12 +18,12 @@ RowLayout
     // Spacing.
     Item
     {
-        width: 40
+        width: 40 * screenScaleFactor
     }
 
     Icon
     {
-        width: 18
+        width: 18 * screenScaleFactor
         iconSource: detailsRow.iconSource
         color: UM.Theme.getColor("text")
     }
@@ -33,8 +33,8 @@ RowLayout
         text: detailsRow.label
         color: UM.Theme.getColor("text")
         elide: Text.ElideRight
-        Layout.minimumWidth: 50
-        Layout.maximumWidth: 100
+        Layout.minimumWidth: 50 * screenScaleFactor
+        Layout.maximumWidth: 100 * screenScaleFactor
         Layout.fillWidth: true
         renderType: Text.NativeRendering
     }
@@ -44,8 +44,8 @@ RowLayout
         text: detailsRow.value
         color: UM.Theme.getColor("text")
         elide: Text.ElideRight
-        Layout.minimumWidth: 50
-        Layout.maximumWidth: 100
+        Layout.minimumWidth: 50 * screenScaleFactor
+        Layout.maximumWidth: 100 * screenScaleFactor
         Layout.fillWidth: true
         renderType: Text.NativeRendering
     }

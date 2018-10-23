@@ -9,7 +9,7 @@ ColumnLayout
 {
     id: backupDetails
     width: parent.width
-    spacing: 10
+    spacing: 10 * screenScaleFactor
     property var backupDetailsData
 
     // Cura version
@@ -56,6 +56,6 @@ ColumnLayout
     Item
     {
         width: parent.width
-        height: 10
+        height: 10 * screenScaleFactor
     }
 }
