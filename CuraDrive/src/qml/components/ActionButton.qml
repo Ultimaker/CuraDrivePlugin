@@ -25,7 +25,7 @@ Button
         {
             id: buttonIcon
             iconSource: button.iconSource
-            width: 16
+            width: 16 * screenScaleFactor
             color: button.hovered ? button.textHoverColor : button.textColor
             visible: button.iconSource != "" && !loader.visible
         }
@@ -34,7 +34,7 @@ Button
         {
             id: loader
             iconSource: "../images/loading.gif"
-            width: 16
+            width: 16 * screenScaleFactor
             color: button.hovered ? button.textHoverColor : button.textColor
             visible: button.busy
             animated: true

@@ -27,7 +27,7 @@ Item
         id: dataRow
         spacing: UM.Theme.getSize("default_margin").width * 2
         width: parent.width
-        height: 50
+        height: 50 * screenScaleFactor
 
         ActionButton
         {
@@ -44,8 +44,8 @@ Item
             text: new Date(model["generated_time"]).toLocaleString(UM.Preferences.getValue("general/language"))
             color: UM.Theme.getColor("text")
             elide: Text.ElideRight
-            Layout.minimumWidth: 100
-            Layout.maximumWidth: 500
+            Layout.minimumWidth: 100 * screenScaleFactor
+            Layout.maximumWidth: 500 * screenScaleFactor
             Layout.fillWidth: true
             renderType: Text.NativeRendering
         }
@@ -55,8 +55,8 @@ Item
             text: model["data"]["description"]
             color: UM.Theme.getColor("text")
             elide: Text.ElideRight
-            Layout.minimumWidth: 100
-            Layout.maximumWidth: 500
+            Layout.minimumWidth: 100 * screenScaleFactor
+            Layout.maximumWidth: 500 * screenScaleFactor
             Layout.fillWidth: true
             renderType: Text.NativeRendering
         }

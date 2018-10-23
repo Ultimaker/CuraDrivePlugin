@@ -13,29 +13,33 @@ CheckBox
     property var label: ""
 
     indicator: Rectangle {
-        implicitWidth: 30
-        implicitHeight: 30
-        x: checkbox.leftPadding
-        y: parent.height / 2 - height / 2
+        implicitWidth: 30 * screenScaleFactor
+        implicitHeight: 30 * screenScaleFactor
+        x: 0
+        y: Math.round(parent.height / 2 - height / 2)
         color: UM.Theme.getColor("sidebar")
         border.color: UM.Theme.getColor("text")
 
         Rectangle {
-            width: 14
-            height: 14
-            x: 8
-            y: 8
+            width: 14 * screenScaleFactor
+            height: 14 * screenScaleFactor
+            x: 8 * screenScaleFactor
+            y: 8 * screenScaleFactor
             color: UM.Theme.getColor("primary")
             visible: checkbox.checked
         }
     }
 
     contentItem: Label {
+        anchors
+        {
+            left: checkbox.indicator.right
+            leftMargin: 5 * screenScaleFactor
+        }
         text: catalog.i18nc("@checkbox:description", "Auto Backup")
         color: UM.Theme.getColor("text")
         renderType: Text.NativeRendering
         verticalAlignment: Text.AlignVCenter
-        leftPadding: checkbox.indicator.width + 5
     }
 
     ActionToolTip
