@@ -20,20 +20,6 @@ Item
         width: parent.width
         anchors.fill: parent
 
-        ProfileDetails
-        {
-            id: profileDetails
-            profile: Cura.API.account.userProfile
-            logoutCallback: Cura.API.account.logout
-            Layout.fillWidth: true
-        }
-
-        Divider
-        {
-            width: parent.width
-            Layout.fillWidth: true
-        }
-
         Label
         {
             id: backupTitle
